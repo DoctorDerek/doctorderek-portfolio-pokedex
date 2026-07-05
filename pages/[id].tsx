@@ -1,5 +1,5 @@
-import type { NextPage } from "next"
 import gql from "graphql-tag"
+import type { NextPage } from "next"
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next"
 import Image from "next/image"
 import Link from "next/link"
