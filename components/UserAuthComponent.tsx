@@ -1,3 +1,4 @@
+import { useActor } from "@xstate/react"
 import Link from "next/link"
 import { useContext, useEffect, useState } from "react"
 
@@ -6,7 +7,6 @@ import authMachine, {
   LOCALSTORAGE_KEY_AUTH,
   validateHashToken,
 } from "@/utils/authMachine"
-import { useActor } from "@xstate/react"
 
 export default function UserAuthComponent() {
   // Retrieve our loggedIn/loggedOut status from the global context with xState:

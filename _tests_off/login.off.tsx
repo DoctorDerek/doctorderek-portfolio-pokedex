@@ -5,11 +5,10 @@
 //       36 |   const globalServices = useContext(GlobalStateContext)
 //       37 |   const [state] = useActor(globalServices.authService)
 //     > 38 |   const isLoggedIn = state.matches("loggedIn")
-
 import "@testing-library/jest-dom"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 
 import Login from "@/pages/login"
-import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 
 describe("/login page", () => {
   test("loads and displays login screen", async () => {

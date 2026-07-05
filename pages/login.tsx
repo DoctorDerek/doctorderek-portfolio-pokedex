@@ -1,17 +1,17 @@
+import { useActor } from "@xstate/react"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useContext, useState } from "react"
 import {
   FieldErrors,
   SubmitHandler,
-  useForm,
   UseFormRegister,
+  useForm,
 } from "react-hook-form"
 
 import AppContainer from "@/components/AppContainer"
 import GlobalStateContext from "@/components/GlobalStateContext"
 import classNames from "@/utils/classNames"
-import { useActor } from "@xstate/react"
 
 type LoginFormValues = {
   email: string
