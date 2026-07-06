@@ -45,6 +45,16 @@ Below you will find the complete feature set, a discussion section, and my techn
 3. There are optimizations possible for the pagination and data-fetching algorithms.
 4. Overall the app's performance is good because of Next.js SSR + use of next/image.
 
+## Local Development
+
+To run the project locally, please use `pnpm`:
+
+```bash
+corepack enable pnpm
+pnpm install
+pnpm dev
+```
+
 ## Test Coverage Report - Jest & React Testing Library
 
 ### `yarn run test`
