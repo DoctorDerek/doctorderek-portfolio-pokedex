@@ -11,7 +11,6 @@
     "test": "jest test --collectCoverage",
     "test:watch": "jest test --watch",
     "test:watchAll": "jest test --watchAll",
-    "prepare": "husky install",
     "generateTypes": "graphql-codegen"
   },
   "dependencies": {
@@ -40,7 +39,6 @@
     "eslint-config-next": "^12",
     "eslint-config-prettier": "^8",
     "graphql": "^16",
-    "husky": "^7",
     "jest": "^28",
     "jest-environment-jsdom": "^28",
     "postcss": "^8",

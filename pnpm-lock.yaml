@@ -78,9 +78,6 @@ importers:
       graphql:
         specifier: ^16
         version: 16.4.0
-      husky:
-        specifier: ^7
-        version: 7.0.4
       jest:
         specifier: ^28
         version: 28.1.0(@types/node@17.0.31)
@@ -2289,11 +2286,6 @@ packages:
   human-signals@2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
     engines: {node: '>=10.17.0'}
-
-  husky@7.0.4:
-    resolution: {integrity: sha512-vbaCKN2QLtP/vD4yvs6iz6hBEo6wkSzs8HpRah1Z6aGmF2KW5PdYuAd7uX5a+OyBZHBhd+TFLqgjUgytQr4RvQ==}
-    engines: {node: '>=12'}
-    hasBin: true
 
   iconv-lite@0.6.3:
     resolution: {integrity: sha512-4fCk79wshMdzMp2rH06qWrJE4iolqLhCUH+OiuIgU++RB0+94NlDL81atO7GX55uUKueo0txHNtvEyI6D7WdMw==}
@@ -7119,8 +7111,6 @@ snapshots:
       - supports-color
 
   human-signals@2.1.0: {}
-
-  husky@7.0.4: {}
 
   iconv-lite@0.6.3:
     dependencies:
