@@ -9,98 +9,98 @@ importers:
   .:
     dependencies:
       '@xstate/react':
-        specifier: ^3.0.0
+        specifier: ^3
         version: 3.0.0(@types/react@18.0.9)(react@18.1.0)(xstate@4.32.0)
       next:
-        specifier: ^12.1.6
+        specifier: ^12
         version: 12.1.6(@babel/core@7.29.7)(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
       react:
-        specifier: ^18.1.0
+        specifier: ^18
         version: 18.1.0
       react-dom:
-        specifier: ^18.1.0
+        specifier: ^18
         version: 18.1.0(react@18.1.0)
       react-hook-form:
-        specifier: ^7.30.0
+        specifier: ^7
         version: 7.30.0(react@18.1.0)
       react-query:
-        specifier: ^3.38.1
+        specifier: ^3
         version: 3.38.1(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
       sharp:
-        specifier: ^0.30.4
+        specifier: ^0.30.0
         version: 0.30.4
       xstate:
-        specifier: ^4.32.0
+        specifier: ^4
         version: 4.32.0
     devDependencies:
       '@graphql-codegen/cli':
-        specifier: ^2.6.2
+        specifier: ^2
         version: 2.6.2(@babel/core@7.29.7)(@types/node@17.0.31)(graphql@16.4.0)
       '@graphql-codegen/typescript':
-        specifier: ^2.4.10
+        specifier: ^2
         version: 2.4.10(graphql@16.4.0)
       '@graphql-codegen/typescript-operations':
-        specifier: ^2.3.7
+        specifier: ^2
         version: 2.3.7(graphql@16.4.0)
       '@graphql-codegen/typescript-react-query':
-        specifier: ^3.5.11
+        specifier: ^3
         version: 3.5.11(graphql@16.4.0)
       '@ianvs/prettier-plugin-sort-imports':
-        specifier: ^4.7.1
+        specifier: ^4
         version: 4.7.1(prettier@2.6.2)
       '@testing-library/jest-dom':
-        specifier: ^5.16.4
+        specifier: ^5
         version: 5.16.4
       '@testing-library/react':
-        specifier: ^13.2.0
+        specifier: ^13
         version: 13.2.0(react-dom@18.1.0(react@18.1.0))(react@18.1.0)
       '@types/node':
-        specifier: ^17.0.31
+        specifier: ^17
         version: 17.0.31
       '@types/react':
-        specifier: ^18.0.9
+        specifier: ^18
         version: 18.0.9
       '@types/react-dom':
-        specifier: ^18.0.3
+        specifier: ^18
         version: 18.0.3
       autoprefixer:
-        specifier: ^10.4.7
+        specifier: ^10
         version: 10.4.7(postcss@8.4.13)
       eslint:
-        specifier: ^8.15.0
+        specifier: ^8
         version: 8.15.0
       eslint-config-next:
-        specifier: ^12.1.6
+        specifier: ^12
         version: 12.1.6(eslint@8.15.0)(next@12.1.6(@babel/core@7.29.7)(react-dom@18.1.0(react@18.1.0))(react@18.1.0))(typescript@4.6.4)
       eslint-config-prettier:
-        specifier: ^8.5.0
+        specifier: ^8
         version: 8.5.0(eslint@8.15.0)
       graphql:
-        specifier: ^16.4.0
+        specifier: ^16
         version: 16.4.0
       husky:
-        specifier: ^7.0.4
+        specifier: ^7
         version: 7.0.4
       jest:
-        specifier: ^28.1.0
+        specifier: ^28
         version: 28.1.0(@types/node@17.0.31)
       jest-environment-jsdom:
-        specifier: ^28.1.0
+        specifier: ^28
         version: 28.1.0
       postcss:
-        specifier: ^8.4.13
+        specifier: ^8
         version: 8.4.13
       prettier:
-        specifier: ^2.6.2
+        specifier: ^2
         version: 2.6.2
       prettier-plugin-tailwindcss:
-        specifier: ^0.1.10
+        specifier: ^0.1.0
         version: 0.1.10(prettier@2.6.2)
       tailwindcss:
-        specifier: ^3.0.24
+        specifier: ^3
         version: 3.0.24(postcss@8.4.13)
       typescript:
-        specifier: ^4.6.4
+        specifier: ^4
         version: 4.6.4
 
 packages:
