@@ -61,10 +61,6 @@ pnpm dev
 
 Launches the test runner and generates code coverage report.
 
-### `pnpm run test:watch`
-
-Launches the test runner in the interactive watch mode.
-
 ## Technical Journal
 
 - `0.1.0` Bootstrapped with create-next-app (TypeScript)
