@@ -47,9 +47,10 @@ Below you will find the complete feature set, a discussion section, and my techn
 
 ## Local Development
 
-To run the project locally, please use `pnpm`:
+Use [fnm](https://github.com/Schniz/fnm) for Node version management and [pnpm](https://pnpm.io/) as the package manager:
 
 ```bash
+fnm use
 corepack enable pnpm
 pnpm install
 pnpm dev
