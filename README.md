@@ -57,11 +57,11 @@ pnpm dev
 
 ## Test Coverage Report - Jest & React Testing Library
 
-### `yarn run test`
+### `pnpm test`
 
 Launches the test runner and generates code coverage report.
 
-### `yarn test:watch`
+### `pnpm run test:watch`
 
 Launches the test runner in the interactive watch mode.
 
