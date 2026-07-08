@@ -6,6 +6,10 @@ See LICENSE or README files inside individual asset or vendor directories for sp
 
 --
 
+This project is a transformative parody and is not affiliated with or endorsed by Nintendo or The Pokémon Company. Pokémon is a trademark of Nintendo.
+
+--
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE

@@ -72,3 +72,7 @@ Launches the test runner and generates code coverage report.
 - `0.6.0` Improve display of sidebar for edge case #151
 - `0.7.0` Correct behavior of Prev and Next page buttons
 - `0.8.0` Disable broken tests and write basic util test
+
+## Legal / Parody Notice
+
+This project is a transformative parody and is not affiliated with or endorsed by Nintendo or The Pokémon Company. Pokémon is a trademark of Nintendo.
