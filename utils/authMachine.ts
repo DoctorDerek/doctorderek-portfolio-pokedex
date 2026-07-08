@@ -67,15 +67,15 @@ const authMachine = createMachine(
           hashAuthToken({ user: event.authorizedUser }),
       }),
       // LOG_IN 2 -- Once we've updated context, we can save it to localStorage:
-      saveUserToLocalStorage: (context, event) =>
+      saveUserToLocalStorage: (context) =>
         localStorage.setItem(LOCALSTORAGE_KEY_AUTH, JSON.stringify(context)),
       // LOG_OUT 1 -- When we log out, we clear the state machine's context:
       clearUserFromContext: assign({
-        authorizedUser: (context, event) => "",
-        authToken: (context, event) => "",
+        authorizedUser: () => "",
+        authToken: () => "",
       }),
       // LOG_OUT 2 -- Once we logged out, we delete our entry from localStorage:
-      clearUserFromLocalStorage: (context, event) =>
+      clearUserFromLocalStorage: () =>
         localStorage.removeItem(LOCALSTORAGE_KEY_AUTH),
     },
   },

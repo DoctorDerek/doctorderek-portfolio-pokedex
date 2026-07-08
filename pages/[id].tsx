@@ -1,9 +1,8 @@
 import gql from "graphql-tag"
-import type { NextPage } from "next"
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import React, { Fragment } from "react"
+import { Fragment } from "react"
 import AppContainer from "@/components/AppContainer"
 import { Pokemon, PokemonsQuery } from "@/graphql/generated"
 import classNames from "@/utils/classNames"
@@ -67,10 +66,6 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
 
   const {
     // Destructure the current Pokémon based on the GraphQL schema.
-    attacks,
-    classification,
-    evolutionRequirements,
-    evolutions,
     fleeRate,
     height,
     image,
