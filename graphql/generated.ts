@@ -1,4 +1,4 @@
-import { UseQueryOptions, useQuery } from "react-query"
+import { useQuery, UseQueryOptions } from "react-query"
 
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
@@ -16,7 +16,7 @@ function fetcher<TData, TVariables>(
   endpoint: string,
   requestInit: RequestInit,
   query: string,
-  variables?: TVariables
+  variables?: TVariables,
 ) {
   return async (): Promise<TData> => {
     const res = await fetch(endpoint, {
@@ -195,7 +195,7 @@ export const PokemonsDocument = `
 export const usePokemonsQuery = <TData = PokemonsQuery, TError = unknown>(
   dataSource: { endpoint: string; fetchParams?: RequestInit },
   variables?: PokemonsQueryVariables,
-  options?: UseQueryOptions<PokemonsQuery, TError, TData>
+  options?: UseQueryOptions<PokemonsQuery, TError, TData>,
 ) =>
   useQuery<PokemonsQuery, TError, TData>(
     variables === undefined ? ["pokemons"] : ["pokemons", variables],
@@ -203,7 +203,7 @@ export const usePokemonsQuery = <TData = PokemonsQuery, TError = unknown>(
       dataSource.endpoint,
       dataSource.fetchParams || {},
       PokemonsDocument,
-      variables
+      variables,
     ),
-    options
+    options,
   )

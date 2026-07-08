@@ -1,7 +1,6 @@
 import { useActor } from "@xstate/react"
 import Link from "next/link"
 import { useContext, useEffect, useState } from "react"
-
 import GlobalStateContext from "@/components/GlobalStateContext"
 import authMachine, {
   LOCALSTORAGE_KEY_AUTH,
