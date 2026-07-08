@@ -1,7 +1,6 @@
 import Head from "next/head"
 import Link from "next/link"
 import React from "react"
-
 import UserAuthComponent from "@/components/UserAuthComponent"
 import classNames from "@/utils/classNames"
 
@@ -18,7 +17,7 @@ export default function AppContainer({
     <div
       className={classNames(
         "flex h-screen w-screen flex-col items-center justify-center text-white",
-        bgColor ? bgColor : "bg-gray-900"
+        bgColor ? bgColor : "bg-gray-900",
       )}
     >
       <Head>

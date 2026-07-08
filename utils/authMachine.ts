@@ -29,8 +29,7 @@ const authMachine = createMachine(
       context: {} as { authorizedUser: string; authToken: string },
       // The events this machine handles:
       events: {} as
-        | { type: "LOG_IN"; authorizedUser: string }
-        | { type: "LOG_OUT" },
+        { type: "LOG_IN"; authorizedUser: string } | { type: "LOG_OUT" },
     },
     initial: "loggedOut",
     context: {
@@ -79,7 +78,7 @@ const authMachine = createMachine(
       clearUserFromLocalStorage: (context, event) =>
         localStorage.removeItem(LOCALSTORAGE_KEY_AUTH),
     },
-  }
+  },
 )
 
 export default authMachine

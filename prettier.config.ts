@@ -1,4 +1,6 @@
-module.exports = {
+import { type Config } from "prettier"
+
+const config: Config = {
   semi: false,
   plugins: [
     "@ianvs/prettier-plugin-sort-imports",
@@ -6,3 +8,5 @@ module.exports = {
   ],
   importOrder: ["^@/(.*)$", "^[./]"],
 }
+
+export default config
