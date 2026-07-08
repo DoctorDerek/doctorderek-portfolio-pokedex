@@ -1,7 +1,6 @@
 import { useInterpret } from "@xstate/react"
 import type { AppProps } from "next/app"
 import { QueryClient, QueryClientProvider } from "react-query"
-
 import GlobalStateContext from "@/components/GlobalStateContext"
 import "@/styles/globals.css"
 import authMachine from "@/utils/authMachine"

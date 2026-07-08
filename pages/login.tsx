@@ -5,10 +5,9 @@ import { useContext, useState } from "react"
 import {
   FieldErrors,
   SubmitHandler,
-  UseFormRegister,
   useForm,
+  UseFormRegister,
 } from "react-hook-form"
-
 import AppContainer from "@/components/AppContainer"
 import GlobalStateContext from "@/components/GlobalStateContext"
 import classNames from "@/utils/classNames"
@@ -29,7 +28,7 @@ export default function Login() {
   const [justLoggedIn, setJustLoggedIn] = useState(false)
   // Set up a redirectInXSeconds variable so we can have a redirect countdown.
   const [redirectInXSeconds, setRedirectInXSeconds] = useState(
-    REDIRECT_AFTER_X_SECONDS
+    REDIRECT_AFTER_X_SECONDS,
   )
 
   // Retrieve our loggedIn/loggedOut status from the global context with xState:
@@ -60,14 +59,17 @@ export default function Login() {
     // First, we fill an array from 1 to REDIRECT_AFTER_X_SECONDS:
     const countdownArray = Array.from(
       { length: REDIRECT_AFTER_X_SECONDS },
-      (_, index) => index + 1
+      (_, index) => index + 1,
     )
     // Then, we'll spawn a new setTimeout callback for each x (integer seconds).
     countdownArray.forEach((x) => {
-      setTimeout(() => {
-        // Given an x (i.e. 3 sec), we update the countdown (i.e. after 2 sec).
-        setRedirectInXSeconds(x)
-      }, (REDIRECT_AFTER_X_SECONDS - x) * 1000) // Convert seconds to ms.
+      setTimeout(
+        () => {
+          // Given an x (i.e. 3 sec), we update the countdown (i.e. after 2 sec).
+          setRedirectInXSeconds(x)
+        },
+        (REDIRECT_AFTER_X_SECONDS - x) * 1000,
+      ) // Convert seconds to ms.
       // Note: We subtract x from REDIRECT_AFTER_X_SECONDS - x for the timer.
     })
   }
@@ -160,7 +162,7 @@ function LoginInput({
           BUTTON_HEIGHT,
           "mb-7 rounded-lg bg-gray-700 pl-4",
           // Center the placeholders, compensating for ***** (password):
-          isPassword ? "pt-1 text-2xl placeholder-shown:pt-3" : "pt-1"
+          isPassword ? "pt-1 text-2xl placeholder-shown:pt-3" : "pt-1",
         )}
         type={isPassword ? "password" : "text"}
       />
@@ -199,7 +201,7 @@ function FormButton({
       type={type === "login" ? "submit" : undefined} // undefined for logout
       className={classNames(
         "mt-4 rounded-lg bg-yellow-400 p-2 font-bold uppercase",
-        BUTTON_HEIGHT
+        BUTTON_HEIGHT,
       )}
       onClick={type === "logout" ? onClick : undefined} // undefined for login
     >
