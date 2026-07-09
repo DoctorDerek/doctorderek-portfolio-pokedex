@@ -1,9 +1,15 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next"
+
+const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     // Configure next/image to use the website returned by the GraphQL API:
-    domains: ["img.pokemondb.net"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "img.pokemondb.net",
+      },
+    ],
   },
   async rewrites() {
     return [
@@ -16,4 +22,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+export default nextConfig

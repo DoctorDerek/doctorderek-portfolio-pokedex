@@ -6,6 +6,7 @@ import { Fragment } from "react"
 import AppContainer from "@/components/AppContainer"
 import { Pokemon, PokemonsQuery } from "@/graphql/generated"
 import classNames from "@/utils/classNames"
+import { fetchPokemonApi } from "@/utils/fetchPokemonApi"
 
 const ACCESSIBLE_ATTRIBUTE_TITLES: { [key in keyof Pokemon]: string } = {
   attacks: "The attacks of this Pokémon",
@@ -48,6 +49,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
   if (!currentPokemon) return <div>Sorry, Pokémon #{id} not found 😔.</div>
 
   const {
+    classification,
     fleeRate,
     height,
     image,
@@ -146,24 +148,24 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
             <div className="flex space-x-2">
               <PaginationButton
                 paddingX="px-3"
-                href={`/${
+                href={
                   currentPageNumber === 1
                     ? convertPageNumberToHref({ pageNumber: 1 })
                     : convertPageNumberToHref({
                         pageNumber: currentPageNumber - 1,
                       })
-                }`}
+                }
                 text="Prev"
               />
               <PaginationButton
                 paddingX="px-3"
-                href={`/${
+                href={
                   currentPageNumber === MAX_PAGE_NUMBER
                     ? convertPageNumberToHref({ pageNumber: MAX_PAGE_NUMBER })
                     : convertPageNumberToHref({
                         pageNumber: currentPageNumber + 1,
                       })
-                }`}
+                }
                 text="Next"
               />
             </div>
@@ -376,43 +378,6 @@ gql`
   }
 `
 
-async function fetchPokemon({ pokemonCount }: { pokemonCount: number }) {
-  return await fetch("https://graphql-pokemon2.vercel.app/", {
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `
-        query pokemons {
-          pokemons(first: ${pokemonCount}) {
-            id
-            number
-            name
-            weight{
-              minimum
-              maximum
-            }
-            height{
-              minimum
-              maximum
-            }
-            classification
-            types
-            resistant
-            weaknesses
-            fleeRate
-            maxCP
-            maxHP
-            image
-          }
-        }
-      `,
-      variables: {},
-    }),
-    method: "POST",
-  })
-    .then((res) => res.json())
-    .then((res) => res.data as PokemonsQuery)
-}
-
 function calculatePokemonCount({ id }: { id: string }) {
   return 10 * (Math.floor((Number(id) - 1) / 10) + 1)
 }
@@ -427,7 +392,7 @@ function convertPageNumberToHref({ pageNumber }: { pageNumber: number }) {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { id } = params as { id: string }
   const pokemonCount = calculatePokemonCount({ id })
-  return { props: { data: await fetchPokemon({ pokemonCount }), id } }
+  return { props: { data: await fetchPokemonApi({ pokemonCount }), id } }
 }
 
 export const getStaticPaths: GetStaticPaths = () => {
