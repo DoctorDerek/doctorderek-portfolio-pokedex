@@ -13,6 +13,9 @@ const eslintConfig: Linter.Config[] = [
       "only-warn": onlyWarn,
     },
   },
+  {
+    ignores: ["utils/authMachine.typegen.ts", "jest.config.js"],
+  },
 ]
 
 export default eslintConfig
