@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@xstate/react": "^3",
-    "next": "^12",
+    "next": "^16",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7",
@@ -47,7 +47,7 @@
     "prettier": "^3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^3",
-    "typescript": "^4"
+    "typescript": "^6"
   },
   "packageManager": "pnpm@11.9.0+sha512.bd682d5d03fe525ef7c9fd6780c6884d1e756ac4c9c9fe00c538782824310dcf90e3ddc4f53835f06dfaebd5085e41855e0bcbb3b60de2ac5bbab89e5036f03b"
 }
