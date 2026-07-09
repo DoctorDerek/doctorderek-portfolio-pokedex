@@ -3,6 +3,7 @@ import gitignore from "eslint-config-flat-gitignore"
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals"
 import eslintConfigPrettier from "eslint-config-prettier"
 import onlyWarn from "eslint-plugin-only-warn"
+import { type ESLint } from "eslint"
 
 /**
  * ONE-TIME EXCEPTION TO NO CODE COMMENT RULE:
@@ -17,7 +18,7 @@ const eslintConfig: Linter.Config[] = [
   eslintConfigPrettier,
   {
     plugins: {
-      "only-warn": onlyWarn,
+      "only-warn": onlyWarn as unknown as ESLint.Plugin,
     },
   },
   {
