@@ -48,6 +48,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
   if (!currentPokemon) return <div>Sorry, Pokémon #{id} not found 😔.</div>
 
   const {
+    classification,
     fleeRate,
     height,
     image,
@@ -146,24 +147,24 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
             <div className="flex space-x-2">
               <PaginationButton
                 paddingX="px-3"
-                href={`/${
+                href={
                   currentPageNumber === 1
                     ? convertPageNumberToHref({ pageNumber: 1 })
                     : convertPageNumberToHref({
                         pageNumber: currentPageNumber - 1,
                       })
-                }`}
+                }
                 text="Prev"
               />
               <PaginationButton
                 paddingX="px-3"
-                href={`/${
+                href={
                   currentPageNumber === MAX_PAGE_NUMBER
                     ? convertPageNumberToHref({ pageNumber: MAX_PAGE_NUMBER })
                     : convertPageNumberToHref({
                         pageNumber: currentPageNumber + 1,
                       })
-                }`}
+                }
                 text="Next"
               />
             </div>
