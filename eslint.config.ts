@@ -7,7 +7,8 @@ import onlyWarn from "eslint-plugin-only-warn"
 /**
  * ONE-TIME EXCEPTION TO NO CODE COMMENT RULE:
  * typescript-eslint (v8.63.0) is broken with TypeScript 7 (v7.0.2)
- * TODO Restore typescript-eslint rules as soon as possible!!
+ * until TS 7 releases an API (planned for v7.1.0+)
+ * TODO Upgrade to TS 7 when the version is >7.1.0 and typescript-eslint is working with TS7
  * */
 
 const eslintConfig: Linter.Config[] = [
@@ -20,7 +21,7 @@ const eslintConfig: Linter.Config[] = [
     },
   },
   {
-    ignores: ["utils/authMachine.typegen.ts", "jest.config.js", "**/*.ts", "**/*.tsx"],
+    ignores: ["utils/authMachine.typegen.ts", "jest.config.js"],
   },
 ]
 
