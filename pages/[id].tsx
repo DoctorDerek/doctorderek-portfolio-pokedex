@@ -48,6 +48,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
   if (!currentPokemon) return <div>Sorry, Pokémon #{id} not found 😔.</div>
 
   const {
+    classification,
     fleeRate,
     height,
     image,
