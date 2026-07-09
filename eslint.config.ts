@@ -4,6 +4,12 @@ import nextCoreWebVitals from "eslint-config-next/core-web-vitals"
 import eslintConfigPrettier from "eslint-config-prettier"
 import onlyWarn from "eslint-plugin-only-warn"
 
+/**
+ * ONE-TIME EXCEPTION TO NO CODE COMMENT RULE:
+ * typescript-eslint (v8.63.0) is broken with TypeScript 7 (v7.0.2)
+ * TODO Restore typescript-eslint rules as soon as possible!!
+ * */
+
 const eslintConfig: Linter.Config[] = [
   gitignore(),
   ...nextCoreWebVitals,
@@ -14,7 +20,7 @@ const eslintConfig: Linter.Config[] = [
     },
   },
   {
-    ignores: ["utils/authMachine.typegen.ts", "jest.config.js"],
+    ignores: ["utils/authMachine.typegen.ts", "jest.config.js", "**/*.ts", "**/*.tsx"],
   },
 ]
 
