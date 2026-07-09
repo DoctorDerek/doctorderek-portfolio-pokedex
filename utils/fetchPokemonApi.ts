@@ -10,7 +10,6 @@ export async function fetchPokemonApi({
   return await fetch(GRAPHQL_API_ENDPOINT, {
     headers: {
       "Content-Type": "application/json",
-      // "Authorization": `Bearer ${process.env.POKEMON_API_KEY}` // Ready for future secrets
     },
     body: JSON.stringify({
       query: `

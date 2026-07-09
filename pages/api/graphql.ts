@@ -14,7 +14,6 @@ export default async function handler(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        // "Authorization": `Bearer ${process.env.POKEMON_API_KEY}` // Ready for future secrets
       },
       body: JSON.stringify(req.body),
     })
