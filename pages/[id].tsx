@@ -8,7 +8,6 @@ import { Pokemon, PokemonsQuery } from "@/graphql/generated"
 import classNames from "@/utils/classNames"
 
 const ACCESSIBLE_ATTRIBUTE_TITLES: { [key in keyof Pokemon]: string } = {
-  // Look-up table for filling in the `title` prop to improve accessibility.
   attacks: "The attacks of this Pokémon",
   classification: "The classification of this Pokémon",
   evolutionRequirements: "The evolution requirements of this Pokémon",
@@ -23,13 +22,11 @@ const ACCESSIBLE_ATTRIBUTE_TITLES: { [key in keyof Pokemon]: string } = {
   types: "The type(s) of this Pokémon",
   weaknesses: "The type(s) of Pokémons that this Pokémon weak to",
   weight: "The minimum and maximum weight of this Pokémon",
-  // Note that id is unused, but it's required for TypeScript to compile:
   id: "The unique identifier of this Pokémon in the API",
 }
 
-const MAX_POKEMON_NUMBER = 151 // Only load Pokemon up to Mew in Red/Blue.
+const MAX_POKEMON_NUMBER = 151
 const MAX_PAGE_NUMBER = calculateCurrentPage({
-  // There are a maximum of 16 pages, based on MAX_POKEMON_NUMBER of 151.
   id: String(MAX_POKEMON_NUMBER),
 })
 
@@ -40,32 +37,17 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
   data: PokemonsQuery
   id: string
 }) => {
-  // We inefficiently fetch all the Pokémon we need from 1 to the current id.
-  // The advantage is we only make 1 GraphQL request, vs. 10x requests for the
-  // current page, but we fetch much more data than is needed. Note that the
-  // data fetching only happens on the server-side, never on the client side.
   const allPokemons = data.pokemons as Pokemon[]
-  // Since we have all of the Pokémons loaded from 1 to a little more than the
-  // current id (specifically all of them to fill out the current page), then
-  // we can grab the current Pokémon by checking the index at pokemons[id - 1].
-  // (For example, Bulbasaur (#1) is at index 0 in the pokemons array.)
   const currentPokemon = allPokemons[Number(id) - 1]
-  // Next, we need to figure out which page of the pagination we should be on.
   const currentPageNumber = calculateCurrentPage({ id })
-  // Finally, we need to filter out the pokemons to only match the current page.
   const pokemons = allPokemons.slice(
-    // For example, for Pokemon #32, we'd be on page 4. Then we...
-    (currentPageNumber - 1) * 10, // Start at Pokemon #30 (index 29), included.
-    currentPageNumber * 10, // Slice to Pokemon #41 (index 40), excluded.
-    // And, of course, remember that .slice() includes start but not end items.
+    (currentPageNumber - 1) * 10,
+    currentPageNumber * 10,
   )
 
-  // We should never hit the following guard clause, but it's here just in case.
   if (!currentPokemon) return <div>Sorry, Pokémon #{id} not found 😔.</div>
-  // Without checking for currentPokemon, then the destructuring could error.
 
   const {
-    // Destructure the current Pokémon based on the GraphQL schema.
     fleeRate,
     height,
     image,
@@ -79,15 +61,9 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
     weight,
   } = currentPokemon
 
-  /**
-   * Generate the pages for the pagination bar as a number[] array.
-   */
   const getPagesToShow = () => {
-    if (currentPageNumber === 1)
-      // Beginning of the list
-      return [1, 2, 3, 4]
+    if (currentPageNumber === 1) return [1, 2, 3, 4]
     if (currentPageNumber === MAX_PAGE_NUMBER)
-      // End of the list
       return [
         MAX_PAGE_NUMBER - 3,
         MAX_PAGE_NUMBER - 2,
@@ -95,14 +71,12 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
         MAX_PAGE_NUMBER,
       ]
     if (currentPageNumber < MAX_PAGE_NUMBER / 2)
-      // Early in the list
       return [
         currentPageNumber - 1,
         currentPageNumber,
         currentPageNumber + 1,
         currentPageNumber + 2,
       ]
-    // Late in the list (default case)
     return [
       currentPageNumber - 2,
       currentPageNumber - 1,
@@ -110,15 +84,12 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
       currentPageNumber + 1,
     ]
   }
-  const pagesToShow = getPagesToShow() // Show 4 pages, from 1 to MAX_PAGE_COUNT
+  const pagesToShow = getPagesToShow()
 
   return (
     <AppContainer pageTitle="Homepage" bgColor="bg-gray-600">
       <div className="flex h-128 w-192 overflow-hidden rounded-lg">
-        {/* Pokédex component: Pokémon wrapper box for the [id] page. */}
-        {/* We use overflow-hidden here is to round off the corners. */}
         <div className="relative w-[40%] space-y-4 overflow-y-auto bg-gray-800 text-sm">
-          {/* Pokédex component: Pokémon sidebar -- pagination component. */}
           {pokemons?.map((thisPokemon) => {
             const {
               id,
@@ -126,22 +97,17 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
               name: thisName,
               image: thisImage,
             } = thisPokemon
-            // Fields can be potentially undefined, so coerce to string type:
             const thisPokemonNumber = thisNumber ? thisNumber : ""
             const thisPokemonName = thisName ? thisName : ""
             const thisImageUrl = thisImage ? thisImage : ""
             return (
-              // Link to the active Pokemon:
               <Link key={id} href={`/${Number(thisPokemonNumber)}`}>
                 <div
                   className={classNames(
                     "m-4 flex items-center justify-start space-x-4 rounded-lg border-2 border-solid py-3 pl-4",
-                    // Highlight the active Pokémon:
                     thisPokemonNumber === number
-                      ? "border-yellow-400 bg-gray-700" // active state
+                      ? "border-yellow-400 bg-gray-700"
                       : "border-transparent bg-gray-600 hover:bg-gray-700",
-                    // Note: We use border-transparent for an invisible border
-                    // that helps with the alignment of the CSS flexbox items.
                   )}
                 >
                   <PokemonImage
@@ -160,22 +126,16 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
           <div
             className={classNames(
               "bottom-0 flex w-full items-center justify-between bg-gray-900 p-4 text-xs",
-              // To handle #151, page 16 with Mew, we use position: absolute
-              // instead of position sticky because this page has only 1 item.
               currentPageNumber === MAX_PAGE_NUMBER ? "absolute" : "sticky",
             )}
           >
-            {/* Pokédex component: Pokémon sidebar -- pagination component. */}
-            {/* The pagination bar uses position: sticky to stick in place. */}
             <div className="flex space-x-2">
               {pagesToShow.map((pageNumber) => {
                 return (
                   <Fragment key={`page${pageNumber}`}>
                     <PaginationButton
                       paddingX="px-2"
-                      // Page 1 links to #1, page 2 links to #11, etc:
                       href={convertPageNumberToHref({ pageNumber })}
-                      // Highlight the current page:
                       currentPage={currentPageNumber === pageNumber}
                       text={String(pageNumber)}
                     />
@@ -186,7 +146,6 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
             <div className="flex space-x-2">
               <PaginationButton
                 paddingX="px-3"
-                // Link to the previous page, unless we're on the first page:
                 href={`/${
                   currentPageNumber === 1
                     ? convertPageNumberToHref({ pageNumber: 1 })
@@ -198,7 +157,6 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
               />
               <PaginationButton
                 paddingX="px-3"
-                // Link to the next page, unless we're on the last page:
                 href={`/${
                   currentPageNumber === MAX_PAGE_NUMBER
                     ? convertPageNumberToHref({ pageNumber: MAX_PAGE_NUMBER })
@@ -212,7 +170,6 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
           </div>
         </div>
         <div className="w-[60%] bg-gray-700">
-          {/* Pokédex component: Pokémon details */}
           <h2 className="flex justify-between border-b-2 border-solid border-b-gray-800 p-8 text-2xl">
             {name && (
               <h3
@@ -310,10 +267,6 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
                 />
               )}
             </div>
-            {/* Note: I did not see the following in the GraphQL data: */}
-            {/* attacks */}
-            {/* evolutionRequirements */}
-            {/* evolutions */}
           </div>
         </div>
       </div>
@@ -339,10 +292,8 @@ function PaginationButton({
           "flex flex-col content-center items-center rounded-md border-2 border-solid py-1",
           paddingX ? paddingX : "px-2",
           currentPage
-            ? "border-yellow-400 bg-gray-700" // active state
+            ? "border-yellow-400 bg-gray-700"
             : "border-transparent bg-gray-600 hover:bg-gray-700",
-          // Note that we use border-transparent for an invisible border
-          // that helps with the alignment of the CSS flexbox items.
         )}
       >
         {text}
@@ -369,15 +320,12 @@ function PokemonImage({
           : "h-8 w-8",
       )}
     >
-      {/* We again use overflow-hidden to round the corners */}
       <Image
         src={imageUrl}
         layout="fill"
         alt={altText}
         className="h-full w-full object-contain"
       />
-      {/* Note: The image itself has a white background, and */}
-      {/*       we use object-contain to prevent clipping. */}
     </div>
   )
 }
@@ -402,9 +350,6 @@ function PokemonDetails({
   )
 }
 
-// The following line is currently duplicated as it needs to be tagged gql
-// in order for the @graphql-codegen/cli to pick the query up correctly.
-// API Reference: https://wayfair.github.io/dociql/
 gql`
   query pokemons {
     pokemons(first: $first) {
@@ -468,17 +413,9 @@ async function fetchPokemon({ pokemonCount }: { pokemonCount: number }) {
     .then((res) => res.data as PokemonsQuery)
 }
 
-/**
- * We need to calculate the number of Pokémon to retrieve, which will be
- * 10 for #1, 20 for #15, 30 for #30, etc. The math is 10*((n-1)/10+1).
- **/
 function calculatePokemonCount({ id }: { id: string }) {
   return 10 * (Math.floor((Number(id) - 1) / 10) + 1)
 }
-/**
- * We need to calculate the current page based on the current id, which will be
- * the pokemonCount divided by 10: page 1 for #1, page 2 for #15, pg 3 for #30.
- */
 function calculateCurrentPage({ id }: { id: string }) {
   return calculatePokemonCount({ id }) / 10
 }
@@ -495,7 +432,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
 export const getStaticPaths: GetStaticPaths = () => {
   return {
-    // Fill a new array from 1 to MAX_POKEMON_NUMBER, then map the valid paths.
     paths: Array(MAX_POKEMON_NUMBER)
       .fill(MAX_POKEMON_NUMBER)
       .map((_, index) => index + 1)
@@ -504,8 +440,7 @@ export const getStaticPaths: GetStaticPaths = () => {
           id: String(pokemonNumber),
         },
       })),
-    //[{ params: { id: "1" } }],
-    fallback: false, // We don't handle ids beyond the MAX_POKEMON_NUMBER
+    fallback: false,
   }
 }
 

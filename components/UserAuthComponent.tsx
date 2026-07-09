@@ -8,14 +8,11 @@ import authMachine, {
 } from "@/utils/authMachine"
 
 export default function UserAuthComponent() {
-  // Retrieve our loggedIn/loggedOut status from the global context with xState:
   const globalServices = useContext(GlobalStateContext)
   const [state] = useActor(globalServices.authService)
   const isLoggedIn = state.matches("loggedIn")
   const { send } = globalServices.authService
 
-  // When we first load, load persisted context from localStorage, if it exists.
-  // The following useEffect hook will set the authorizedUser from localStorage:
   useEffect(() => {
     const localStorageString = localStorage.getItem(LOCALSTORAGE_KEY_AUTH)
     try {
@@ -27,23 +24,15 @@ export default function UserAuthComponent() {
         localStorageObject?.authorizedUser &&
         localStorageObject?.authToken
       ) {
-        // Now we know it's safe to destructure the object.
         const { authorizedUser, authToken } = localStorageObject
-        // Check to see if we have a valid authorization token in localStorage.
         const isValidAuthToken = validateHashToken({
           user: authorizedUser,
           token: authToken,
         })
-        // We should only log in from localStorage with a valid auth token.
         if (isValidAuthToken) send("LOG_IN", { authorizedUser })
       }
-    } catch (e) {
-      // We probably failed on JSON.parse() of corrupted localStorage data.
-      // Let's just console.log() the error and move on with our lives 😅
-      console.log(e)
-    }
-  }, [send]) // Only run the useEffect hook the 1st time we load the component.
-  // Note that send should never change, since it's a helper from authService.
+    } catch (e) {}
+  }, [send])
 
   return (
     <div>
