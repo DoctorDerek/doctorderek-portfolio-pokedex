@@ -6,6 +6,7 @@ import authMachine, {
   LOCALSTORAGE_KEY_AUTH,
   validateHashToken,
 } from "@/utils/authMachine"
+import { getErrorMessage } from "@/utils/getErrorMessage"
 
 export default function UserAuthComponent() {
   const globalServices = useContext(GlobalStateContext)
@@ -31,7 +32,9 @@ export default function UserAuthComponent() {
         })
         if (isValidAuthToken) send("LOG_IN", { authorizedUser })
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error(getErrorMessage(e))
+    }
   }, [send])
 
   return (
