@@ -22,7 +22,6 @@ export default function AppContainer({
     >
       <Head>
         <title>
-          {/* Add "Pokédex" before the passed-in pageTitle prop, if any: */}
           Pokédex by @DoctorDerek{pageTitle ? ` - ${pageTitle}` : ""}
         </title>
       </Head>
