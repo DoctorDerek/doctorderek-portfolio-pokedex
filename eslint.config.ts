@@ -1,4 +1,4 @@
-import type { Linter } from "eslint"
+import type { Linter, ESLint } from "eslint"
 import gitignore from "eslint-config-flat-gitignore"
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals"
 import eslintConfigPrettier from "eslint-config-prettier"
@@ -11,13 +11,13 @@ import onlyWarn from "eslint-plugin-only-warn"
  * TODO Upgrade to TS 7 when the version is >7.1.0 and typescript-eslint is working with TS7
  * */
 
-const eslintConfig = [
+const eslintConfig: Linter.Config[] = [
   gitignore(),
   ...nextCoreWebVitals,
   eslintConfigPrettier,
   {
     plugins: {
-      "only-warn": onlyWarn,
+      "only-warn": onlyWarn as unknown as ESLint.Plugin,
     },
   },
   {
