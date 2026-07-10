@@ -191,7 +191,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
             )}
           </h2>
           <div className="flex h-104 flex-col items-stretch justify-between p-4">
-            <div className="flex flex-shrink-0 justify-between">
+            <div className="flex shrink-0 justify-between">
               {classification && (
                 <PokemonDetails
                   title="classification"
@@ -214,7 +214,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
                 />
               )}
             </div>
-            <div className="flex flex-shrink-0 justify-between">
+            <div className="flex shrink-0 justify-between">
               {maxCP && (
                 <PokemonDetails
                   title="maxCP"
@@ -237,7 +237,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
                 />
               )}
             </div>
-            <div className="flex flex-shrink-0 justify-between">
+            <div className="flex shrink-0 justify-between">
               {height && height.minimum && height.maximum && (
                 <PokemonDetails
                   title="height"
