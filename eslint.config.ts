@@ -1,5 +1,4 @@
-import type { Linter } from "eslint"
-import { type ESLint } from "eslint"
+import type { Linter, ESLint } from "eslint"
 import gitignore from "eslint-config-flat-gitignore"
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals"
 import eslintConfigPrettier from "eslint-config-prettier"
