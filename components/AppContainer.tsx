@@ -24,30 +24,11 @@ export default function AppContainer({
           Pokédex by @DoctorDerek{pageTitle ? ` - ${pageTitle}` : ""}
         </title>
       </Head>
-      <header className="absolute top-0 w-full">
-        <FlexAlignmentBox>
-          <div>
-            <Link href="/">Pokédex</Link> by{" "}
-            <Link href="https://linkedin.com/in/derek-austin">
-              @DoctorDerek
-            </Link>
-            {pageTitle ? ` - ${pageTitle}` : ""}
-          </div>
-        </FlexAlignmentBox>
+      <header className="absolute top-0 w-full px-4 py-2">
+        <Link href="/">Pokédex</Link> by @DoctorDerek
+        {pageTitle ? ` - ${pageTitle}` : ""}
       </header>
       <main>{children}</main>
-      <footer className="absolute bottom-0 w-full">
-        <FlexAlignmentBox>
-          <Link href="https://github.com/DoctorDerek/pokedex">
-            View the source code on GitHub
-          </Link>
-          <Link href="https://DoctorDerek.medium.com">Read my Medium blog</Link>
-        </FlexAlignmentBox>
-      </footer>
     </div>
   )
-}
-
-function FlexAlignmentBox({ children }: { children: React.ReactNode }) {
-  return <div className="flex w-full justify-between px-4 py-2">{children}</div>
 }
