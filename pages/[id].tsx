@@ -89,7 +89,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
   const pagesToShow = getPagesToShow()
 
   return (
-    <AppContainer pageTitle="Homepage" bgColor="bg-gray-600">
+    <AppContainer bgColor="bg-gray-600">
       <div className="flex h-128 w-192 overflow-hidden rounded-lg">
         <div className="relative w-[40%] space-y-4 overflow-y-auto bg-gray-800 text-sm">
           {pokemons?.map((thisPokemon) => {
@@ -174,20 +174,20 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
         <div className="w-[60%] bg-gray-700">
           <h2 className="flex justify-between border-b-2 border-solid border-b-gray-800 p-8 text-2xl">
             {name && (
-              <h3
+              <span
                 className="tracking-wide"
                 title={ACCESSIBLE_ATTRIBUTE_TITLES["name"]}
               >
                 {name}
-              </h3>
+              </span>
             )}
             {number && (
-              <h3
+              <span
                 className="tracking-widest text-yellow-400"
                 title={ACCESSIBLE_ATTRIBUTE_TITLES["number"]}
               >
                 #{number}
-              </h3>
+              </span>
             )}
           </h2>
           <div className="flex h-104 flex-col items-stretch justify-between p-4">
@@ -324,7 +324,8 @@ function PokemonImage({
     >
       <Image
         src={imageUrl}
-        layout="fill"
+        fill
+        sizes={size === "h-16 w-16" ? "64px" : "32px"}
         alt={altText}
         className="h-full w-full object-contain"
       />

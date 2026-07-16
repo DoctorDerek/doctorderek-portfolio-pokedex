@@ -1,15 +1,12 @@
 import Head from "next/head"
 import Link from "next/link"
 import React from "react"
-import UserAuthComponent from "@/components/UserAuthComponent"
 import classNames from "@/utils/classNames"
 
 export default function AppContainer({
-  pageTitle,
   children,
   bgColor,
 }: {
-  pageTitle?: string
   bgColor?: "bg-gray-900" | "bg-gray-600"
   children: React.ReactNode
 }) {
@@ -21,35 +18,13 @@ export default function AppContainer({
       )}
     >
       <Head>
-        <title>
-          Pokédex by @DoctorDerek{pageTitle ? ` - ${pageTitle}` : ""}
-        </title>
+        <title>Pokédex by @DoctorDerek</title>
       </Head>
-      <header className="absolute top-0 w-full">
-        <FlexAlignmentBox>
-          <div>
-            <Link href="/">Pokédex</Link> by{" "}
-            <Link href="https://linkedin.com/in/derek-austin">
-              @DoctorDerek
-            </Link>
-            {pageTitle ? ` - ${pageTitle}` : ""}
-          </div>
-          <UserAuthComponent />
-        </FlexAlignmentBox>
+      <header className="absolute top-0 w-full px-4 py-2 text-center">
+        <Link href="/">Pokédex</Link> by{" "}
+        <a href="https://www.doctorderek.com/">@DoctorDerek</a>
       </header>
       <main>{children}</main>
-      <footer className="absolute bottom-0 w-full">
-        <FlexAlignmentBox>
-          <Link href="https://github.com/DoctorDerek/pokedex">
-            View the source code on GitHub
-          </Link>
-          <Link href="https://DoctorDerek.medium.com">Read my Medium blog</Link>
-        </FlexAlignmentBox>
-      </footer>
     </div>
   )
-}
-
-function FlexAlignmentBox({ children }: { children: React.ReactNode }) {
-  return <div className="flex w-full justify-between px-4 py-2">{children}</div>
 }
