@@ -20,8 +20,9 @@ export default function AppContainer({
       <Head>
         <title>Pokédex by @DoctorDerek</title>
       </Head>
-      <header className="absolute top-0 w-full px-4 py-2">
-        <Link href="/">Pokédex</Link> by @DoctorDerek
+      <header className="absolute top-0 w-full px-4 py-2 text-center">
+        <Link href="/">Pokédex</Link> by{" "}
+        <a href="https://www.doctorderek.com/">@DoctorDerek</a>
       </header>
       <main>{children}</main>
     </div>
