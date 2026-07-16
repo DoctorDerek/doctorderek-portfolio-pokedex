@@ -4,11 +4,9 @@ import React from "react"
 import classNames from "@/utils/classNames"
 
 export default function AppContainer({
-  pageTitle,
   children,
   bgColor,
 }: {
-  pageTitle?: string
   bgColor?: "bg-gray-900" | "bg-gray-600"
   children: React.ReactNode
 }) {
@@ -20,13 +18,10 @@ export default function AppContainer({
       )}
     >
       <Head>
-        <title>
-          Pokédex by @DoctorDerek{pageTitle ? ` - ${pageTitle}` : ""}
-        </title>
+        <title>Pokédex by @DoctorDerek</title>
       </Head>
       <header className="absolute top-0 w-full px-4 py-2">
         <Link href="/">Pokédex</Link> by @DoctorDerek
-        {pageTitle ? ` - ${pageTitle}` : ""}
       </header>
       <main>{children}</main>
     </div>

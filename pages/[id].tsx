@@ -89,7 +89,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
   const pagesToShow = getPagesToShow()
 
   return (
-    <AppContainer pageTitle="Homepage" bgColor="bg-gray-600">
+    <AppContainer bgColor="bg-gray-600">
       <div className="flex h-128 w-192 overflow-hidden rounded-lg">
         <div className="relative w-[40%] space-y-4 overflow-y-auto bg-gray-800 text-sm">
           {pokemons?.map((thisPokemon) => {
