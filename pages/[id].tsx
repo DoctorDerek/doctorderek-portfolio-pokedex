@@ -324,7 +324,8 @@ function PokemonImage({
     >
       <Image
         src={imageUrl}
-        layout="fill"
+        fill
+        sizes={size === "h-16 w-16" ? "64px" : "32px"}
         alt={altText}
         className="h-full w-full object-contain"
       />
