@@ -13,15 +13,12 @@
     "generateTypes": "graphql-codegen"
   },
   "dependencies": {
-    "@xstate/react": "^3",
     "graphql-tag": "^2",
     "next": "^16",
     "react": "^18",
     "react-dom": "^18",
-    "react-hook-form": "^7",
     "react-query": "^3",
-    "sharp": "^0.35.2",
-    "xstate": "^4"
+    "sharp": "^0.35.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
