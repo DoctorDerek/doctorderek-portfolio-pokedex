@@ -1,4 +1,4 @@
-[![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=pokedex-doctorderek)](https://pokedex-doctorderek.vercel.app/) [![codecov](https://codecov.io/gh/DoctorDerek/pokedex/branch/main/graph/badge.svg?token=3gfQ4azgws)](https://codecov.io/gh/DoctorDerek/pokedex) [![Build Status](https://app.travis-ci.com/DoctorDerek/pokedex.svg?branch=main)](https://app.travis-ci.com/DoctorDerek/pokedex)
+[![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=pokedex-doctorderek)](https://pokedex-doctorderek.vercel.app/) [![Codecov](https://codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex/graph/badge.svg)](https://app.codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex) [![Build Status](https://app.travis-ci.com/DoctorDerek/pokedex.svg?branch=main)](https://app.travis-ci.com/DoctorDerek/pokedex)
 
 # 🃏 Pokédex - Next.js 12 + React 18 + Tailwind CSS + XState + Mock Login
 
