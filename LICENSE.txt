@@ -2,11 +2,7 @@ Copyright (c) 2026 Dr. Derek Austin, all rights reserved.
 
 --
 
-See LICENSE or README files inside individual asset or vendor directories for specific assets' licenses, where applicable. All assets used with permission.
-
---
-
-This project is a transformative parody and is not affiliated with or endorsed by Nintendo or The Pokémon Company. Pokémon is a trademark of Nintendo.
+This is an unofficial, non-commercial parody project created as a software-engineering and GraphQL portfolio demonstration. It is not affiliated with or endorsed by Nintendo, The Pokémon Company, or their affiliates. Pokémon names, characters, imagery, and trademarks belong to their respective owners.
 
 --
 
