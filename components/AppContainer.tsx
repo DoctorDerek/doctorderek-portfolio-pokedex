@@ -1,7 +1,6 @@
 import Head from "next/head"
 import Link from "next/link"
 import React from "react"
-import UserAuthComponent from "@/components/UserAuthComponent"
 import classNames from "@/utils/classNames"
 
 export default function AppContainer({
@@ -34,7 +33,6 @@ export default function AppContainer({
             </Link>
             {pageTitle ? ` - ${pageTitle}` : ""}
           </div>
-          <UserAuthComponent />
         </FlexAlignmentBox>
       </header>
       <main>{children}</main>
