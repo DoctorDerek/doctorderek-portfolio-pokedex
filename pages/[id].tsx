@@ -174,20 +174,20 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
         <div className="w-[60%] bg-gray-700">
           <h2 className="flex justify-between border-b-2 border-solid border-b-gray-800 p-8 text-2xl">
             {name && (
-              <h3
+              <span
                 className="tracking-wide"
                 title={ACCESSIBLE_ATTRIBUTE_TITLES["name"]}
               >
                 {name}
-              </h3>
+              </span>
             )}
             {number && (
-              <h3
+              <span
                 className="tracking-widest text-yellow-400"
                 title={ACCESSIBLE_ATTRIBUTE_TITLES["number"]}
               >
                 #{number}
-              </h3>
+              </span>
             )}
           </h2>
           <div className="flex h-104 flex-col items-stretch justify-between p-4">
