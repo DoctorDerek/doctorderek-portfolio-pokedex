@@ -354,7 +354,7 @@ function PokemonDetails({
 }
 
 gql`
-  query pokemons {
+  query pokemons($first: Int!) {
     pokemons(first: $first) {
       id
       number
