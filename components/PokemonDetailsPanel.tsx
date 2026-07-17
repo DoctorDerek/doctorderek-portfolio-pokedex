@@ -37,8 +37,14 @@ export default function PokemonDetailsPanel({ pokemon }: { pokemon: Pokemon }) {
   } = pokemon
 
   return (
-    <div className="w-full bg-gray-700">
-      <h2 className="flex justify-between border-b-2 border-solid border-b-gray-800 p-5 text-xl sm:p-6 sm:text-2xl md:p-8">
+    <section
+      aria-labelledby="selected-pokemon-heading"
+      className="w-full bg-gray-700"
+    >
+      <h2
+        id="selected-pokemon-heading"
+        className="flex justify-between border-b-2 border-solid border-b-gray-800 p-5 text-xl sm:p-6 sm:text-2xl md:p-8"
+      >
         {name && (
           <span
             className="tracking-wide"
@@ -140,7 +146,7 @@ export default function PokemonDetailsPanel({ pokemon }: { pokemon: Pokemon }) {
           )}
         </div>
       </div>
-    </div>
+    </section>
   )
 }
 
@@ -156,15 +162,15 @@ function PokemonAttribute({
   className?: string
 }) {
   return (
-    <div
+    <dl
       className={classNames(
         "flex min-w-0 flex-col rounded-md border-2 border-solid border-gray-400 p-2 text-center text-sm sm:text-base",
         className,
       )}
       title={ACCESSIBLE_ATTRIBUTE_TITLES[title]}
     >
-      <h3 className="font-semi-bold underline">{attribute}</h3>
-      <p className="break-words">{value}</p>
-    </div>
+      <dt className="font-semi-bold underline">{attribute}</dt>
+      <dd className="break-words">{value}</dd>
+    </dl>
   )
 }
