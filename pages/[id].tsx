@@ -7,6 +7,14 @@ import PokemonImage from "@/components/PokemonImage"
 import { Pokemon, PokemonsQuery } from "@/graphql/generated"
 import classNames from "@/utils/classNames"
 import { fetchPokemonApi } from "@/utils/fetchPokemonApi"
+import {
+  calculateCurrentPage,
+  calculatePokemonCount,
+  getCatalogPageHref,
+  getVisibleCatalogPageNumbers,
+  MAX_PAGE_NUMBER,
+  MAX_POKEMON_NUMBER,
+} from "@/utils/pokemonPagination"
 
 const ACCESSIBLE_ATTRIBUTE_TITLES: { [key in keyof Pokemon]: string } = {
   attacks: "The attacks of this Pokémon",
@@ -25,11 +33,6 @@ const ACCESSIBLE_ATTRIBUTE_TITLES: { [key in keyof Pokemon]: string } = {
   weight: "The minimum and maximum weight of this Pokémon",
   id: "The unique identifier of this Pokémon in the API",
 }
-
-const MAX_POKEMON_NUMBER = 151
-const MAX_PAGE_NUMBER = calculateCurrentPage({
-  id: String(MAX_POKEMON_NUMBER),
-})
 
 const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
   data,
@@ -63,30 +66,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
     weight,
   } = currentPokemon
 
-  const getPagesToShow = () => {
-    if (currentPageNumber === 1) return [1, 2, 3, 4]
-    if (currentPageNumber === MAX_PAGE_NUMBER)
-      return [
-        MAX_PAGE_NUMBER - 3,
-        MAX_PAGE_NUMBER - 2,
-        MAX_PAGE_NUMBER - 1,
-        MAX_PAGE_NUMBER,
-      ]
-    if (currentPageNumber < MAX_PAGE_NUMBER / 2)
-      return [
-        currentPageNumber - 1,
-        currentPageNumber,
-        currentPageNumber + 1,
-        currentPageNumber + 2,
-      ]
-    return [
-      currentPageNumber - 2,
-      currentPageNumber - 1,
-      currentPageNumber,
-      currentPageNumber + 1,
-    ]
-  }
-  const pagesToShow = getPagesToShow()
+  const pagesToShow = getVisibleCatalogPageNumbers({ currentPageNumber })
 
   return (
     <AppContainer bgColor="bg-gray-600">
@@ -137,7 +117,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
                   <Fragment key={`page${pageNumber}`}>
                     <PaginationButton
                       paddingX="px-2"
-                      href={convertPageNumberToHref({ pageNumber })}
+                      href={getCatalogPageHref({ pageNumber })}
                       currentPage={currentPageNumber === pageNumber}
                       text={String(pageNumber)}
                     />
@@ -150,8 +130,8 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
                 paddingX="px-3"
                 href={
                   currentPageNumber === 1
-                    ? convertPageNumberToHref({ pageNumber: 1 })
-                    : convertPageNumberToHref({
+                    ? getCatalogPageHref({ pageNumber: 1 })
+                    : getCatalogPageHref({
                         pageNumber: currentPageNumber - 1,
                       })
                 }
@@ -161,8 +141,8 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
                 paddingX="px-3"
                 href={
                   currentPageNumber === MAX_PAGE_NUMBER
-                    ? convertPageNumberToHref({ pageNumber: MAX_PAGE_NUMBER })
-                    : convertPageNumberToHref({
+                    ? getCatalogPageHref({ pageNumber: MAX_PAGE_NUMBER })
+                    : getCatalogPageHref({
                         pageNumber: currentPageNumber + 1,
                       })
                 }
@@ -349,17 +329,6 @@ gql`
     }
   }
 `
-
-function calculatePokemonCount({ id }: { id: string }) {
-  return 10 * (Math.floor((Number(id) - 1) / 10) + 1)
-}
-function calculateCurrentPage({ id }: { id: string }) {
-  return calculatePokemonCount({ id }) / 10
-}
-
-function convertPageNumberToHref({ pageNumber }: { pageNumber: number }) {
-  return `/${(pageNumber - 1) * 10 + 1}`
-}
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { id } = params as { id: string }
