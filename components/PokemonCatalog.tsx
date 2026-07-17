@@ -14,7 +14,7 @@ export default function PokemonCatalog({
   currentPageNumber: number
 }) {
   return (
-    <div className="relative w-[40%] space-y-4 overflow-y-auto bg-gray-800 text-sm">
+    <div className="relative w-full space-y-4 bg-gray-800 text-sm md:overflow-y-auto">
       {pokemons.map((pokemon) => {
         const pokemonNumber = pokemon.number ?? ""
         const pokemonName = pokemon.name ?? ""

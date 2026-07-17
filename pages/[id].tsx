@@ -30,7 +30,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
 
   return (
     <AppContainer bgColor="bg-gray-600">
-      <div className="flex h-128 w-192 overflow-hidden rounded-lg">
+      <div className="grid w-full max-w-4xl overflow-hidden rounded-lg shadow-2xl md:h-128 md:grid-cols-[minmax(18rem,2fr)_3fr]">
         <PokemonCatalog
           pokemons={pokemons}
           currentPokemonNumber={currentPokemon.number ?? ""}

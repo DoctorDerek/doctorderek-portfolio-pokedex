@@ -36,7 +36,7 @@ export default function PokemonDetailsPanel({ pokemon }: { pokemon: Pokemon }) {
   } = pokemon
 
   return (
-    <div className="w-[60%] bg-gray-700">
+    <div className="w-full bg-gray-700">
       <h2 className="flex justify-between border-b-2 border-solid border-b-gray-800 p-8 text-2xl">
         {name && (
           <span
