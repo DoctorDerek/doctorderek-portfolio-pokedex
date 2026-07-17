@@ -1,18 +1,15 @@
 import gql from "graphql-tag"
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next"
 import Link from "next/link"
-import { Fragment } from "react"
 import AppContainer from "@/components/AppContainer"
 import PokemonImage from "@/components/PokemonImage"
+import PokemonPagination from "@/components/PokemonPagination"
 import { Pokemon, PokemonsQuery } from "@/graphql/generated"
 import classNames from "@/utils/classNames"
 import { fetchPokemonApi } from "@/utils/fetchPokemonApi"
 import {
   calculateCurrentPage,
   calculatePokemonCount,
-  getCatalogPageHref,
-  getVisibleCatalogPageNumbers,
-  MAX_PAGE_NUMBER,
   MAX_POKEMON_NUMBER,
 } from "@/utils/pokemonPagination"
 
@@ -66,8 +63,6 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
     weight,
   } = currentPokemon
 
-  const pagesToShow = getVisibleCatalogPageNumbers({ currentPageNumber })
-
   return (
     <AppContainer bgColor="bg-gray-600">
       <div className="flex h-128 w-192 overflow-hidden rounded-lg">
@@ -105,51 +100,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
               </Link>
             )
           })}
-          <div
-            className={classNames(
-              "bottom-0 flex w-full items-center justify-between bg-gray-900 p-4 text-xs",
-              currentPageNumber === MAX_PAGE_NUMBER ? "absolute" : "sticky",
-            )}
-          >
-            <div className="flex space-x-2">
-              {pagesToShow.map((pageNumber) => {
-                return (
-                  <Fragment key={`page${pageNumber}`}>
-                    <PaginationButton
-                      paddingX="px-2"
-                      href={getCatalogPageHref({ pageNumber })}
-                      currentPage={currentPageNumber === pageNumber}
-                      text={String(pageNumber)}
-                    />
-                  </Fragment>
-                )
-              })}
-            </div>
-            <div className="flex space-x-2">
-              <PaginationButton
-                paddingX="px-3"
-                href={
-                  currentPageNumber === 1
-                    ? getCatalogPageHref({ pageNumber: 1 })
-                    : getCatalogPageHref({
-                        pageNumber: currentPageNumber - 1,
-                      })
-                }
-                text="Prev"
-              />
-              <PaginationButton
-                paddingX="px-3"
-                href={
-                  currentPageNumber === MAX_PAGE_NUMBER
-                    ? getCatalogPageHref({ pageNumber: MAX_PAGE_NUMBER })
-                    : getCatalogPageHref({
-                        pageNumber: currentPageNumber + 1,
-                      })
-                }
-                text="Next"
-              />
-            </div>
-          </div>
+          <PokemonPagination currentPageNumber={currentPageNumber} />
         </div>
         <div className="w-[60%] bg-gray-700">
           <h2 className="flex justify-between border-b-2 border-solid border-b-gray-800 p-8 text-2xl">
@@ -253,34 +204,6 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
         </div>
       </div>
     </AppContainer>
-  )
-}
-
-function PaginationButton({
-  paddingX,
-  href,
-  currentPage,
-  text,
-}: {
-  paddingX?: "px-2" | "px-3"
-  href: string
-  currentPage?: boolean
-  text: string
-}) {
-  return (
-    <Link href={href}>
-      <div
-        className={classNames(
-          "flex flex-col content-center items-center rounded-md border-2 border-solid py-1",
-          paddingX ? paddingX : "px-2",
-          currentPage
-            ? "border-yellow-400 bg-gray-700"
-            : "border-transparent bg-gray-600 hover:bg-gray-700",
-        )}
-      >
-        {text}
-      </div>
-    </Link>
   )
 }
 
