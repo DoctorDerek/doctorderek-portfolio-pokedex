@@ -16,33 +16,30 @@ export default function PokemonPagination({
   })
 
   return (
-    <div
-      className={classNames(
-        "bottom-0 flex w-full items-center justify-between bg-gray-900 p-4 text-xs",
-        currentPageNumber === MAX_PAGE_NUMBER ? "absolute" : "sticky",
-      )}
+    <nav
+      aria-label="Pokémon catalog pages"
+      className="sticky bottom-0 flex w-full flex-wrap items-center justify-between gap-2 bg-gray-900 px-3 py-3 text-xs md:px-4"
     >
-      <div className="flex space-x-2">
+      <div className="flex gap-2">
         {visiblePageNumbers.map((pageNumber) => (
           <PaginationLink
             key={`page${pageNumber}`}
-            paddingX="px-2"
             href={getCatalogPageHref({ pageNumber })}
             currentPage={currentPageNumber === pageNumber}
             text={String(pageNumber)}
           />
         ))}
       </div>
-      <div className="flex space-x-2">
+      <div className="flex gap-2">
         <PaginationLink
-          paddingX="px-3"
+          wide
           href={getCatalogPageHref({
             pageNumber: currentPageNumber === 1 ? 1 : currentPageNumber - 1,
           })}
           text="Prev"
         />
         <PaginationLink
-          paddingX="px-3"
+          wide
           href={getCatalogPageHref({
             pageNumber:
               currentPageNumber === MAX_PAGE_NUMBER
@@ -52,34 +49,34 @@ export default function PokemonPagination({
           text="Next"
         />
       </div>
-    </div>
+    </nav>
   )
 }
 
 function PaginationLink({
-  paddingX,
   href,
   currentPage,
   text,
+  wide,
 }: {
-  paddingX: "px-2" | "px-3"
   href: string
   currentPage?: boolean
   text: string
+  wide?: boolean
 }) {
   return (
-    <Link href={href}>
-      <div
-        className={classNames(
-          "flex flex-col content-center items-center rounded-md border-2 border-solid py-1",
-          paddingX,
-          currentPage
-            ? "border-yellow-400 bg-gray-700"
-            : "border-transparent bg-gray-600 hover:bg-gray-700",
-        )}
-      >
-        {text}
-      </div>
+    <Link
+      href={href}
+      aria-current={currentPage ? "page" : undefined}
+      className={classNames(
+        "flex min-h-11 items-center justify-center rounded-md border-2 border-solid px-2",
+        wide ? "min-w-14" : "min-w-11",
+        currentPage
+          ? "border-yellow-400 bg-gray-700"
+          : "border-transparent bg-gray-600 hover:bg-gray-700",
+      )}
+    >
+      {text}
     </Link>
   )
 }
