@@ -14,8 +14,12 @@ const config: CodegenConfig = {
       config: {
         fetcher: "fetch",
         legacyMode: true,
+        useTypeImports: true,
       },
     },
+  },
+  hooks: {
+    afterOneFileWrite: ["prettier --write"],
   },
 }
 
