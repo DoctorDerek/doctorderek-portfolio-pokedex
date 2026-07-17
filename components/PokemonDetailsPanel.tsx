@@ -1,5 +1,6 @@
 import PokemonImage from "@/components/PokemonImage"
 import type { Pokemon } from "@/graphql/generated"
+import classNames from "@/utils/classNames"
 
 const ACCESSIBLE_ATTRIBUTE_TITLES: { [key in keyof Pokemon]: string } = {
   attacks: "The attacks of this Pokémon",
@@ -37,7 +38,7 @@ export default function PokemonDetailsPanel({ pokemon }: { pokemon: Pokemon }) {
 
   return (
     <div className="w-full bg-gray-700">
-      <h2 className="flex justify-between border-b-2 border-solid border-b-gray-800 p-8 text-2xl">
+      <h2 className="flex justify-between border-b-2 border-solid border-b-gray-800 p-5 text-xl sm:p-6 sm:text-2xl md:p-8">
         {name && (
           <span
             className="tracking-wide"
@@ -55,31 +56,35 @@ export default function PokemonDetailsPanel({ pokemon }: { pokemon: Pokemon }) {
           </span>
         )}
       </h2>
-      <div className="flex h-104 flex-col items-stretch justify-between p-4">
-        <div className="flex shrink-0 justify-between">
+      <div className="grid gap-3 p-4 md:h-104 md:content-between">
+        <div className="grid grid-cols-2 items-stretch gap-3 sm:grid-cols-[1fr_auto_1fr]">
           {classification && (
             <PokemonAttribute
               title="classification"
               attribute="Classification"
               value={`“${classification}”`}
+              className="col-start-1 row-start-2 sm:row-start-1"
             />
           )}
           {image && (
-            <PokemonImage
-              size="h-16 w-16"
-              imageUrl={image}
-              altText={name ?? ""}
-            />
+            <div className="col-span-2 row-start-1 flex items-center justify-center sm:col-span-1 sm:col-start-2">
+              <PokemonImage
+                size="h-16 w-16"
+                imageUrl={image}
+                altText={name ?? ""}
+              />
+            </div>
           )}
           {Array.isArray(types) && (
             <PokemonAttribute
               title="types"
               attribute="Types"
               value={types.join(", ")}
+              className="col-start-2 row-start-2 sm:col-start-3 sm:row-start-1"
             />
           )}
         </div>
-        <div className="flex shrink-0 justify-between">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
           {maxCP && (
             <PokemonAttribute
               title="maxCP"
@@ -102,7 +107,7 @@ export default function PokemonDetailsPanel({ pokemon }: { pokemon: Pokemon }) {
             />
           )}
         </div>
-        <div className="flex shrink-0 justify-between">
+        <div className="grid gap-3 sm:grid-cols-2">
           {height?.minimum && height.maximum && (
             <PokemonAttribute
               title="height"
@@ -118,7 +123,7 @@ export default function PokemonDetailsPanel({ pokemon }: { pokemon: Pokemon }) {
             />
           )}
         </div>
-        <div className="flex justify-between">
+        <div className="grid gap-3 sm:grid-cols-2">
           {Array.isArray(weaknesses) && (
             <PokemonAttribute
               title="weaknesses"
@@ -143,18 +148,23 @@ function PokemonAttribute({
   title,
   attribute,
   value,
+  className = "",
 }: {
   title: keyof typeof ACCESSIBLE_ATTRIBUTE_TITLES
   attribute: string
   value: string
+  className?: string
 }) {
   return (
     <div
-      className="flex flex-col rounded-md border-2 border-solid border-gray-400 p-2 text-center"
+      className={classNames(
+        "flex min-w-0 flex-col rounded-md border-2 border-solid border-gray-400 p-2 text-center text-sm sm:text-base",
+        className,
+      )}
       title={ACCESSIBLE_ATTRIBUTE_TITLES[title]}
     >
       <h3 className="font-semi-bold underline">{attribute}</h3>
-      <h4>{value}</h4>
+      <p className="break-words">{value}</p>
     </div>
   )
 }
