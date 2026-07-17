@@ -1,5 +1,5 @@
 import type { DocumentTypeDecoration } from "@graphql-typed-document-node/core"
-import { useQuery, type UseQueryOptions } from "react-query"
+import { useQuery, type UseQueryOptions } from "@tanstack/react-query"
 
 /** Internal type. DO NOT USE DIRECTLY. */
 type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
@@ -210,16 +210,18 @@ export const PokemonsDocument = new TypedDocumentString(`
 export const usePokemonsQuery = <TData = PokemonsQuery, TError = unknown>(
   dataSource: { endpoint: string; fetchParams?: RequestInit },
   variables: PokemonsQueryVariables,
-  options?: UseQueryOptions<PokemonsQuery, TError, TData>,
+  options?: Omit<UseQueryOptions<PokemonsQuery, TError, TData>, "queryKey"> & {
+    queryKey?: UseQueryOptions<PokemonsQuery, TError, TData>["queryKey"]
+  },
 ) => {
-  return useQuery<PokemonsQuery, TError, TData>(
-    ["pokemons", variables],
-    fetcher<PokemonsQuery, PokemonsQueryVariables>(
+  return useQuery<PokemonsQuery, TError, TData>({
+    queryKey: ["pokemons", variables],
+    queryFn: fetcher<PokemonsQuery, PokemonsQueryVariables>(
       dataSource.endpoint,
       dataSource.fetchParams || {},
       PokemonsDocument,
       variables,
     ),
-    options,
-  )
+    ...options,
+  })
 }
