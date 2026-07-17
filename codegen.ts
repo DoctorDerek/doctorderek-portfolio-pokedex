@@ -1,4 +1,3 @@
-// @ts-expect-error - The package has broken type exports in moduleResolution: bundler
 import type { CodegenConfig } from "@graphql-codegen/cli"
 
 const config: CodegenConfig = {
@@ -14,6 +13,7 @@ const config: CodegenConfig = {
       ],
       config: {
         fetcher: "fetch",
+        legacyMode: true,
       },
     },
   },
