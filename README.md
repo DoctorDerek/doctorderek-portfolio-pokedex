@@ -1,78 +1,59 @@
-[![Vercel](https://therealsujitk-vercel-badge.vercel.app/?app=pokedex-doctorderek)](https://pokedex-doctorderek.vercel.app/) [![Codecov](https://codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex/graph/badge.svg)](https://app.codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex) [![Build Status](https://app.travis-ci.com/DoctorDerek/pokedex.svg?branch=main)](https://app.travis-ci.com/DoctorDerek/pokedex)
+# Pokédex
 
-# 🃏 Pokédex - Next.js 12 + React 18 + Tailwind CSS + XState + Mock Login
+An unofficial, non-commercial parody and GraphQL portfolio demo that turns the original 151 Pokémon into a suspiciously bureaucratic little field guide. The current interface is desktop-oriented and intentionally preserves the project’s original compact catalog design.
 
-# 👀 View Production Build at https://pokedex-doctorderek.vercel.app/
+[Open the live demo](https://portfolio-pokedex.doctorderek.com/)
 
-I built a Pokédex that queries a GraphQL endpoint at https://graphql-pokemon2.vercel.app/
+## What It Demonstrates
 
-Additionally, I added 3 other major features, including best practices and XState for mock login (admin/admin).
+- 151 statically generated Pokémon detail routes using the Next.js Pages Router
+- Build-time GraphQL data fetching from the [community Pokémon GraphQL API](https://graphql-pokemon2.vercel.app/)
+- Ten-entry catalog pages with active-selection, previous, next, and numbered navigation
+- Pokémon statistics including classification, types, size, combat values, weaknesses, and resistances
+- Strict TypeScript, generated GraphQL models, optimized remote images, and reproducible pnpm installs
 
-Below you will find the complete feature set, a discussion section, and my technical journal.
+## Stack
 
-## Required Features
-
-1. ✅ Ability to create forms
-2. ✅ Ability to implement the various form states (field validation, error, success etc)
-3. ✅ Ability to implement style to spec
-4. ✅ Responsiveness
-5. ✅ Ability to use Graphql correctly
-6. ✅ Ability to integrate a real API
-7. ✅ Ability to implement a pagination API
-8. ✅ Clean-code and separation of component concerns
-9. ✅ Ability to design new UIs
-
-## Additional Features
-
-### ✅ === DONE
-
-### 🌠 === TODO
-
-1. ✅ Deployed production build of Next.js to Vercel with CI/CD
-2. ✅ Used Next.js version 12.1.6 with React 18.1.0 and Tailwind CSS 3.0.24
-3. ✅ Established engineering best practices:
-   - Prettier, ESLint, Husky (Git Hooks), `tsconfig.json`, TypeScript Import Sorter, XState
-4. 🌠 Crafted unit tests for new code features (TDD / Test Driven Development)
-   - Jest + React Testing Library with React Test Renderer
-5. 🌠 Wrote unit testing (100% test coverage)
-6. 🌠 Developed mobile-first, responsive UX design with Tailwind CSS
-7. 🌠 Implemented Tailwind CSS dark mode for app with animated SVG toggle
-
-## Discussion Section
-
-1. The feature set is complete, but the app could use additional features and testing.
-2. I wrote the login feature to save the authenticated user to localStorage via XState.
-3. There are optimizations possible for the pagination and data-fetching algorithms.
-4. Overall the app's performance is good because of Next.js SSR + use of next/image.
+- Next.js 16, React 18, and the Pages Router
+- TypeScript 6 and Tailwind CSS 4
+- GraphQL, GraphQL Code Generator, and React Query 3
+- Vitest, Testing Library, Playwright, ESLint, and Prettier
 
 ## Local Development
 
-Use [fnm](https://github.com/Schniz/fnm) for Node version management and [pnpm](https://pnpm.io/) as the package manager:
+Use [fnm](https://github.com/Schniz/fnm) for the Node version declared in `.node-version` and [pnpm](https://pnpm.io/) for dependency management.
 
 ```bash
 fnm use
 corepack enable pnpm
-pnpm install
+pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-## Test Coverage Report - Jest & React Testing Library
+The development server is available at [http://localhost:3000](http://localhost:3000).
 
-### `pnpm test`
+## Verification
 
-Launches the test runner and generates code coverage report.
+```bash
+pnpm exec tsc --noEmit
+pnpm lint
+pnpm test
+pnpm test:coverage
+pnpm build
+```
 
-## Technical Journal
+Vitest, Testing Library, and Playwright are configured, but automated UI and end-to-end suites have not landed yet. The Vitest commands currently use a deliberate no-tests compatibility baseline, so the project does not claim meaningful coverage until those suites exist.
 
-- `0.1.0` Bootstrapped with create-next-app (TypeScript)
-- `0.2.0` Added all best practices & basic dependencies
-- `0.3.0` Implemented data fetching, login, and Pokédex
-- `0.4.0` Redirected / to /1 with SSR via getStaticProps
-- `0.5.0` Highlight active Pokémon & current page number
-- `0.6.0` Improve display of sidebar for edge case #151
-- `0.7.0` Correct behavior of Prev and Next page buttons
-- `0.8.0` Disable broken tests and write basic util test
+## Roadmap
 
-## Legal / Parody Notice
+- Expand the catalog beyond the original 151 Pokémon using a maintained data source
+- Modernize data fetching with TanStack Query and typed GraphQL documents
+- Move to the App Router after the data layer is stable
+- Deliver a responsive, parody-forward visual redesign with purposeful motion
+- Add Testing Trophy integration coverage, Playwright journeys, and measured Codecov reporting
 
-This project is a transformative parody and is not affiliated with or endorsed by Nintendo or The Pokémon Company. Pokémon is a trademark of Nintendo.
+## License and Parody Notice
+
+The source code is provided under the all-rights-reserved terms in [LICENSE.txt](LICENSE.txt).
+
+This is an unofficial, non-commercial parody project created as a software-engineering and GraphQL portfolio demonstration. It is not affiliated with or endorsed by Nintendo, The Pokémon Company, or their affiliates. Pokémon names, characters, imagery, and trademarks belong to their respective owners.
