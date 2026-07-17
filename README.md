@@ -16,7 +16,7 @@ An unofficial, non-commercial parody and GraphQL portfolio demo that turns the o
 
 - Next.js 16, React 18, and the Pages Router
 - TypeScript 6 and Tailwind CSS 4
-- GraphQL, GraphQL Code Generator, and React Query 3
+- GraphQL, GraphQL Code Generator, and TanStack Query 5
 - Vitest, Testing Library, Playwright, ESLint, and Prettier
 
 ## Local Development
@@ -42,14 +42,15 @@ pnpm test:coverage
 pnpm build
 ```
 
-Vitest, Testing Library, and Playwright are configured, but automated UI and end-to-end suites have not landed yet. The Vitest commands currently use a deliberate no-tests compatibility baseline, so the project does not claim meaningful coverage until those suites exist.
+Vitest and Testing Library cover the TanStack Query provider and generated GraphQL hook integration. Playwright is configured, but end-to-end journeys have not landed yet, so the project does not claim comprehensive coverage.
 
 ## Roadmap
 
+- Deliver a mobile-first responsive layout while preserving the desktop catalog experience
+- Upgrade to React 19 after the responsive baseline
 - Expand the catalog beyond the original 151 Pokémon using a maintained data source
-- Modernize data fetching with TanStack Query and typed GraphQL documents
 - Move to the App Router after the data layer is stable
-- Deliver a responsive, parody-forward visual redesign with purposeful motion
+- Deepen the parody-forward visual design with purposeful motion
 - Add Testing Trophy integration coverage, Playwright journeys, and measured Codecov reporting
 
 ## License and Parody Notice
