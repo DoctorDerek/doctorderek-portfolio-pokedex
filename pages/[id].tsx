@@ -1,11 +1,9 @@
 import gql from "graphql-tag"
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next"
-import Link from "next/link"
 import AppContainer from "@/components/AppContainer"
+import PokemonCatalog from "@/components/PokemonCatalog"
 import PokemonImage from "@/components/PokemonImage"
-import PokemonPagination from "@/components/PokemonPagination"
 import { Pokemon, PokemonsQuery } from "@/graphql/generated"
-import classNames from "@/utils/classNames"
 import { fetchPokemonApi } from "@/utils/fetchPokemonApi"
 import {
   calculateCurrentPage,
@@ -66,42 +64,11 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
   return (
     <AppContainer bgColor="bg-gray-600">
       <div className="flex h-128 w-192 overflow-hidden rounded-lg">
-        <div className="relative w-[40%] space-y-4 overflow-y-auto bg-gray-800 text-sm">
-          {pokemons?.map((thisPokemon) => {
-            const {
-              id,
-              number: thisNumber,
-              name: thisName,
-              image: thisImage,
-            } = thisPokemon
-            const thisPokemonNumber = thisNumber ? thisNumber : ""
-            const thisPokemonName = thisName ? thisName : ""
-            const thisImageUrl = thisImage ? thisImage : ""
-            return (
-              <Link key={id} href={`/${Number(thisPokemonNumber)}`}>
-                <div
-                  className={classNames(
-                    "m-4 flex items-center justify-start space-x-4 rounded-lg border-2 border-solid py-3 pl-4",
-                    thisPokemonNumber === number
-                      ? "border-yellow-400 bg-gray-700"
-                      : "border-transparent bg-gray-600 hover:bg-gray-700",
-                  )}
-                >
-                  <PokemonImage
-                    size="h-8 w-8"
-                    imageUrl={thisImageUrl}
-                    altText={thisPokemonName}
-                  />
-                  <span className="font-bold text-yellow-400">
-                    {thisPokemonNumber}
-                  </span>
-                  <span>{thisPokemonName}</span>
-                </div>
-              </Link>
-            )
-          })}
-          <PokemonPagination currentPageNumber={currentPageNumber} />
-        </div>
+        <PokemonCatalog
+          pokemons={pokemons}
+          currentPokemonNumber={number ?? ""}
+          currentPageNumber={currentPageNumber}
+        />
         <div className="w-[60%] bg-gray-700">
           <h2 className="flex justify-between border-b-2 border-solid border-b-gray-800 p-8 text-2xl">
             {name && (
