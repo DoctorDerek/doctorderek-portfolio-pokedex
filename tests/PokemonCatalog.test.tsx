@@ -1,28 +1,13 @@
 import { render, screen, within } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 import PokemonCatalog from "@/components/PokemonCatalog"
-import type { Pokemon } from "@/graphql/generated"
-
-const POKEMONS: Pokemon[] = [
-  {
-    id: "UG9rZW1vbjowMDE=",
-    image: "https://img.pokemondb.net/artwork/bulbasaur.jpg",
-    name: "Bulbasaur",
-    number: "001",
-  },
-  {
-    id: "UG9rZW1vbjowMDI=",
-    image: "https://img.pokemondb.net/artwork/ivysaur.jpg",
-    name: "Ivysaur",
-    number: "002",
-  },
-]
+import { POKEMON_CATALOG_FIXTURES } from "@/tests/fixtures/pokemon"
 
 describe("PokemonCatalog", () => {
   it("exposes the selected Pokémon and catalog page through navigation semantics", () => {
     render(
       <PokemonCatalog
-        pokemons={POKEMONS}
+        pokemons={POKEMON_CATALOG_FIXTURES}
         currentPokemonNumber="001"
         currentPageNumber={1}
       />,
