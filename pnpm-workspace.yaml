@@ -4,5 +4,6 @@ overrides:
   postcss: "^8"
 allowBuilds:
   core-js: true
+  msw: false
   sharp: true
   unrs-resolver: true
