@@ -15,7 +15,7 @@ An unofficial, non-commercial parody and GraphQL portfolio demo that turns the o
 
 ## Stack
 
-- Next.js 16, React 18, and the Pages Router
+- Next.js 16, React 19, and the Pages Router
 - TypeScript 6 and Tailwind CSS 4
 - GraphQL, GraphQL Code Generator, and TanStack Query 5
 - Vitest, Testing Library, Playwright, ESLint, and Prettier
@@ -48,7 +48,6 @@ Vitest and Testing Library cover the TanStack Query provider, generated GraphQL 
 
 ## Roadmap
 
-- Upgrade to React 19 now that the responsive baseline is established
 - Expand the catalog beyond the original 151 Pokémon using a maintained data source
 - Move to the App Router after the data layer is stable
 - Deepen the parody-forward visual design with purposeful motion
