@@ -1,6 +1,6 @@
 # Pokédex
 
-An unofficial, non-commercial parody and GraphQL portfolio demo that turns the original 151 Pokémon into a suspiciously bureaucratic little field guide. The current interface is desktop-oriented and intentionally preserves the project’s original compact catalog design.
+An unofficial, non-commercial parody and GraphQL portfolio demo that turns the original 151 Pokémon into a suspiciously bureaucratic little field guide. The interface stacks into a touch-friendly mobile dossier and expands into the project’s original compact catalog-and-details layout on larger screens.
 
 [Open the live demo](https://portfolio-pokedex.doctorderek.com/)
 
@@ -10,6 +10,7 @@ An unofficial, non-commercial parody and GraphQL portfolio demo that turns the o
 - Build-time GraphQL data fetching from the [community Pokémon GraphQL API](https://graphql-pokemon2.vercel.app/)
 - Ten-entry catalog pages with active-selection, previous, next, and numbered navigation
 - Pokémon statistics including classification, types, size, combat values, weaknesses, and resistances
+- Mobile-first responsive layouts, visible keyboard focus, and semantic navigation state
 - Strict TypeScript, generated GraphQL models, optimized remote images, and reproducible pnpm installs
 
 ## Stack
@@ -39,19 +40,19 @@ pnpm exec tsc --noEmit
 pnpm lint
 pnpm test
 pnpm test:coverage
+pnpm exec playwright test
 pnpm build
 ```
 
-Vitest and Testing Library cover the TanStack Query provider and generated GraphQL hook integration. Playwright is configured, but end-to-end journeys have not landed yet, so the project does not claim comprehensive coverage.
+Vitest and Testing Library cover the TanStack Query provider, generated GraphQL hook integration, catalog selection and paging state, and the selected Pokémon statistics. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, and the desktop split layout without relying on test-only selectors.
 
 ## Roadmap
 
-- Deliver a mobile-first responsive layout while preserving the desktop catalog experience
-- Upgrade to React 19 after the responsive baseline
+- Upgrade to React 19 now that the responsive baseline is established
 - Expand the catalog beyond the original 151 Pokémon using a maintained data source
 - Move to the App Router after the data layer is stable
 - Deepen the parody-forward visual design with purposeful motion
-- Add Testing Trophy integration coverage, Playwright journeys, and measured Codecov reporting
+- Expand Testing Trophy coverage and measured Codecov reporting around future user journeys
 
 ## License and Parody Notice
 
