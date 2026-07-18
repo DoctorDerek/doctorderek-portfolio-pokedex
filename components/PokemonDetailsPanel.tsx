@@ -13,9 +13,9 @@ const ACCESSIBLE_ATTRIBUTE_TITLES: { [key in keyof Pokemon]: string } = {
   maxHP: "The maximum Hit Points (HP) of this Pokémon",
   name: "The name of this Pokémon",
   number: "The identifier of this Pokémon",
-  resistant: "The type(s) of Pokémons that this Pokémon is resistant to",
+  resistant: "The types this Pokémon resists",
   types: "The type(s) of this Pokémon",
-  weaknesses: "The type(s) of Pokémons that this Pokémon weak to",
+  weaknesses: "The types this Pokémon is weak to",
   weight: "The minimum and maximum weight of this Pokémon",
   id: "The unique identifier of this Pokémon in the API",
 }
