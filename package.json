@@ -16,8 +16,8 @@
     "@tanstack/react-query": "^5",
     "graphql-tag": "^2",
     "next": "^16",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^19",
+    "react-dom": "^19",
     "sharp": "^0.35.2"
   },
   "devDependencies": {
@@ -34,8 +34,8 @@
     "@testing-library/jest-dom": "^6",
     "@testing-library/react": "^16",
     "@types/node": "^24",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6",
     "@vitest/coverage-v8": "^4",
     "eslint": "^9",
