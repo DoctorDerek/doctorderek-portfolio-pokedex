@@ -1,6 +1,6 @@
 import Head from "next/head"
 import Link from "next/link"
-import React from "react"
+import type { ReactNode } from "react"
 import classNames from "@/utils/classNames"
 
 export default function AppContainer({
@@ -8,7 +8,7 @@ export default function AppContainer({
   bgColor,
 }: {
   bgColor?: "bg-gray-900" | "bg-gray-600"
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <div
