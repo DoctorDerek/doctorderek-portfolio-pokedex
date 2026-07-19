@@ -20,6 +20,11 @@ const ACCESSIBLE_ATTRIBUTE_TITLES: { [key in keyof Pokemon]: string } = {
   id: "The unique identifier of this Pokémon in the API",
 }
 
+const PERCENTAGE_FORMATTER = new Intl.NumberFormat("en-US", {
+  style: "percent",
+  maximumFractionDigits: 2,
+})
+
 export default function PokemonDetailsPanel({ pokemon }: { pokemon: Pokemon }) {
   const {
     classification,
@@ -109,7 +114,7 @@ export default function PokemonDetailsPanel({ pokemon }: { pokemon: Pokemon }) {
             <PokemonAttribute
               title="fleeRate"
               attribute="Flee Rate"
-              value={String(fleeRate * 100) + "%"}
+              value={PERCENTAGE_FORMATTER.format(fleeRate)}
             />
           )}
         </div>

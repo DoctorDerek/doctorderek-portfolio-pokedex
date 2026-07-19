@@ -36,4 +36,18 @@ describe("PokemonDetailsPanel", () => {
       within(selectedPokemonRegion).getByText("Fire, Ice, Flying, Psychic"),
     ).toBeInTheDocument()
   })
+
+  it("formats fractional flee rates without floating-point artifacts", () => {
+    render(
+      <PokemonDetailsPanel
+        pokemon={{ ...BULBASAUR_FIXTURE, fleeRate: 0.07, image: null }}
+      />,
+    )
+
+    const fleeRateStatistic = screen.getByTitle("The flee rate of this Pokémon")
+
+    expect(within(fleeRateStatistic).getByRole("definition")).toHaveTextContent(
+      "7%",
+    )
+  })
 })
