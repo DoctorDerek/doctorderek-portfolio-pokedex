@@ -11,6 +11,7 @@ An unofficial, non-commercial parody and GraphQL portfolio demo that turns the o
 - Ten-entry catalog pages with active-selection, previous, next, and numbered navigation
 - Pokémon statistics including classification, types, size, combat values, weaknesses, and resistances
 - Mobile-first responsive layouts, visible keyboard focus, and semantic navigation state
+- Motion-aware interaction feedback with reduced-motion safeguards
 - Strict TypeScript, generated GraphQL models, optimized remote images, and reproducible pnpm installs
 
 ## Stack
@@ -44,13 +45,13 @@ pnpm exec playwright test
 pnpm build
 ```
 
-Vitest, Testing Library, and MSW cover the TanStack Query provider, generated GraphQL success and failure behavior, build-time query variables, catalog selection and paging state, and the selected Pokémon statistics without contacting the live API. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, and the desktop split layout without relying on test-only selectors.
+Vitest, Testing Library, and MSW cover the TanStack Query provider, generated GraphQL success and failure behavior, build-time query variables, catalog selection and paging state, and the selected Pokémon statistics without contacting the live API. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, motion preferences, and the desktop split layout without relying on test-only selectors.
 
 ## Roadmap
 
 - Expand the catalog beyond the original 151 Pokémon using a maintained data source
 - Move to the App Router after the data layer is stable
-- Deepen the parody-forward visual design with purposeful motion
+- Deepen the parody-forward visual design and dossier copy
 - Expand Testing Trophy coverage and measured Codecov reporting around future user journeys
 
 ## License and Parody Notice
