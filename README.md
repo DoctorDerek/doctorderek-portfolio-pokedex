@@ -18,7 +18,7 @@ An unofficial, non-commercial parody and GraphQL portfolio demo that turns the o
 - Next.js 16, React 19, and the Pages Router
 - TypeScript 6 and Tailwind CSS 4
 - GraphQL, GraphQL Code Generator, and TanStack Query 5
-- Vitest, Testing Library, Playwright, ESLint, and Prettier
+- Vitest, Testing Library, MSW, Playwright, ESLint, and Prettier
 
 ## Local Development
 
@@ -44,7 +44,7 @@ pnpm exec playwright test
 pnpm build
 ```
 
-Vitest and Testing Library cover the TanStack Query provider, generated GraphQL hook integration, catalog selection and paging state, and the selected Pokémon statistics. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, and the desktop split layout without relying on test-only selectors.
+Vitest, Testing Library, and MSW cover the TanStack Query provider, generated GraphQL success and failure behavior, build-time query variables, catalog selection and paging state, and the selected Pokémon statistics without contacting the live API. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, and the desktop split layout without relying on test-only selectors.
 
 ## Roadmap
 
