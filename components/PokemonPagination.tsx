@@ -69,7 +69,7 @@ function PaginationLink({
       href={href}
       aria-current={currentPage ? "page" : undefined}
       className={classNames(
-        "flex min-h-11 items-center justify-center rounded-md border-2 border-solid px-2",
+        "flex min-h-11 items-center justify-center rounded-md border-2 border-solid px-2 motion-safe:transition-[background-color,border-color,transform] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0",
         wide ? "min-w-14" : "min-w-11",
         currentPage
           ? "border-yellow-400 bg-gray-700"
