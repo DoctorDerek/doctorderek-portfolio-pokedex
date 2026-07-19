@@ -36,7 +36,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
           currentPokemonNumber={currentPokemon.number ?? ""}
           currentPageNumber={currentPageNumber}
         />
-        <PokemonDetailsPanel pokemon={currentPokemon} />
+        <PokemonDetailsPanel key={currentPokemon.id} pokemon={currentPokemon} />
       </div>
     </AppContainer>
   )

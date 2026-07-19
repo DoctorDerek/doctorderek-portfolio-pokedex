@@ -39,7 +39,7 @@ export default function PokemonDetailsPanel({ pokemon }: { pokemon: Pokemon }) {
   return (
     <section
       aria-labelledby="selected-pokemon-heading"
-      className="w-full bg-gray-700"
+      className="w-full bg-gray-700 motion-safe:animate-[dossier-reveal_240ms_ease-out]"
     >
       <h2
         id="selected-pokemon-heading"

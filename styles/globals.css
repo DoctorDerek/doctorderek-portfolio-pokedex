@@ -8,6 +8,18 @@
   --spacing-224: 58rem;
 }
 
+@keyframes dossier-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 :focus:not(:focus-visible) {
   outline: none;
 }
