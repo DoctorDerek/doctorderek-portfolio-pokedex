@@ -24,15 +24,13 @@ function PokemonQueryConsumer() {
 describe("MyApp", () => {
   it("provides TanStack Query to generated Pokémon hooks", async () => {
     pokemonApiServer.use(
-      graphql
-        .link(GRAPHQL_API_ENDPOINT)
-        .query("pokemons", ({ variables }) => {
-          expect(variables).toEqual({ first: 1 })
+      graphql.link(GRAPHQL_API_ENDPOINT).query("pokemons", ({ variables }) => {
+        expect(variables).toEqual({ first: 1 })
 
-          return HttpResponse.json({
-            data: { pokemons: [BULBASAUR_FIXTURE] },
-          })
-        }),
+        return HttpResponse.json({
+          data: { pokemons: [BULBASAUR_FIXTURE] },
+        })
+      }),
     )
 
     render(
@@ -49,13 +47,11 @@ describe("MyApp", () => {
 
   it("surfaces GraphQL failures through generated Pokémon hooks", async () => {
     pokemonApiServer.use(
-      graphql
-        .link(GRAPHQL_API_ENDPOINT)
-        .query("pokemons", () =>
-          HttpResponse.json({
-            errors: [{ message: "Pokémon registry unavailable." }],
-          }),
-        ),
+      graphql.link(GRAPHQL_API_ENDPOINT).query("pokemons", () =>
+        HttpResponse.json({
+          errors: [{ message: "Pokémon registry unavailable." }],
+        }),
+      ),
     )
 
     render(
