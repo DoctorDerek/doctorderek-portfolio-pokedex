@@ -77,6 +77,11 @@ test.describe("desktop Pokédex", () => {
 
     await expect(catalog).toBeVisible()
     await expect(selectedPokemon).toBeVisible()
+    await selectedPokemon.evaluate((element) =>
+      Promise.all(
+        element.getAnimations().map((animation) => animation.finished),
+      ),
+    )
 
     const catalogBounds = await catalog.evaluate((element) => {
       const bounds = element.getBoundingClientRect()
@@ -89,5 +94,77 @@ test.describe("desktop Pokédex", () => {
 
     expect(selectedPokemonBounds.top).toBe(catalogBounds.top)
     expect(selectedPokemonBounds.left).toBe(catalogBounds.right)
+  })
+})
+
+test.describe("Pokédex motion feedback", () => {
+  test.use({ viewport: DESKTOP_VIEWPORT })
+
+  test("reveals the selected dossier and animates catalog feedback", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: "no-preference" })
+    await page.goto("/1")
+
+    const selectedPokemon = page.getByRole("region", {
+      name: "Bulbasaur #001",
+    })
+    const currentPokemonLink = page.getByRole("link", {
+      name: "001 Bulbasaur",
+    })
+
+    await expect(selectedPokemon).toBeVisible()
+    await expect(currentPokemonLink).toBeVisible()
+    expect(
+      await page.evaluate(
+        () => matchMedia("(prefers-reduced-motion: no-preference)").matches,
+      ),
+    ).toBe(true)
+
+    expect(
+      await selectedPokemon.evaluate(
+        (element) => getComputedStyle(element).animationName,
+      ),
+    ).toBe("dossier-reveal")
+    expect(
+      await currentPokemonLink.evaluate(
+        (element) => getComputedStyle(element).transitionDuration,
+      ),
+    ).toBe("0.2s")
+  })
+})
+
+test.describe("reduced-motion Pokédex", () => {
+  test.use({ viewport: DESKTOP_VIEWPORT })
+
+  test("removes nonessential dossier and catalog motion", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" })
+    await page.goto("/1")
+
+    const selectedPokemon = page.getByRole("region", {
+      name: "Bulbasaur #001",
+    })
+    const currentPokemonLink = page.getByRole("link", {
+      name: "001 Bulbasaur",
+    })
+
+    await expect(selectedPokemon).toBeVisible()
+    await expect(currentPokemonLink).toBeVisible()
+    expect(
+      await page.evaluate(
+        () => matchMedia("(prefers-reduced-motion: reduce)").matches,
+      ),
+    ).toBe(true)
+
+    expect(
+      await selectedPokemon.evaluate(
+        (element) => getComputedStyle(element).animationName,
+      ),
+    ).toBe("none")
+    expect(
+      await currentPokemonLink.evaluate(
+        (element) => getComputedStyle(element).transitionDuration,
+      ),
+    ).toBe("0s")
   })
 })
