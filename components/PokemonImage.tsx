@@ -24,7 +24,7 @@ export default function PokemonImage({
         fill
         sizes={size === "h-16 w-16" ? "64px" : "32px"}
         alt={altText}
-        className="h-full w-full object-contain"
+        className="h-full w-full object-contain motion-safe:transition-transform motion-safe:duration-200 motion-safe:ease-out motion-safe:group-hover:scale-105 motion-safe:group-focus-visible:scale-105"
       />
     </div>
   )

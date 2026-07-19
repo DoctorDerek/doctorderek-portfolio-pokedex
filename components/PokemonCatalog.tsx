@@ -29,7 +29,7 @@ export default function PokemonCatalog({
                   href={`/${Number(pokemonNumber)}`}
                   aria-current={isCurrentPokemon ? "page" : undefined}
                   className={classNames(
-                    "flex min-h-12 items-center justify-start gap-3 rounded-lg border-2 border-solid px-3 py-2 md:gap-4 md:px-4 md:py-3",
+                    "group flex min-h-12 items-center justify-start gap-3 rounded-lg border-2 border-solid px-3 py-2 motion-safe:transition-[background-color,border-color,transform] motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:-translate-y-0.5 md:gap-4 md:px-4 md:py-3",
                     isCurrentPokemon
                       ? "border-yellow-400 bg-gray-700"
                       : "border-transparent bg-gray-600 hover:bg-gray-700",
