@@ -3,6 +3,9 @@ import Link from "next/link"
 import type { ReactNode } from "react"
 import classNames from "@/utils/classNames"
 
+const HEADER_LINK_CLASS_NAME =
+  "rounded-sm font-semibold text-yellow-300 underline-offset-4 hover:text-yellow-200 hover:underline motion-safe:transition-colors motion-safe:duration-150"
+
 export default function AppContainer({
   children,
   bgColor,
@@ -21,16 +24,13 @@ export default function AppContainer({
         <title>Pokédex by @DoctorDerek</title>
       </Head>
       <header className="flex min-h-12 w-full items-center justify-center px-4 py-3 text-center">
-        <Link
-          href="/"
-          className="rounded-sm font-semibold text-yellow-300 underline-offset-4 hover:underline"
-        >
+        <Link href="/" className={HEADER_LINK_CLASS_NAME}>
           Pokédex
         </Link>{" "}
         by{" "}
         <a
           href="https://www.doctorderek.com/"
-          className="rounded-sm font-semibold text-yellow-300 underline-offset-4 hover:underline"
+          className={HEADER_LINK_CLASS_NAME}
         >
           @DoctorDerek
         </a>
