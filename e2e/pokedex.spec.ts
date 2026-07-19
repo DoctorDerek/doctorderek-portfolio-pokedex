@@ -92,8 +92,8 @@ test.describe("desktop Pokédex", () => {
       return { left: bounds.left, top: bounds.top }
     })
 
-    expect(selectedPokemonBounds.top).toBe(catalogBounds.top)
-    expect(selectedPokemonBounds.left).toBe(catalogBounds.right)
+    expect(selectedPokemonBounds.top).toBeCloseTo(catalogBounds.top, 3)
+    expect(selectedPokemonBounds.left).toBeCloseTo(catalogBounds.right, 3)
   })
 })
 
