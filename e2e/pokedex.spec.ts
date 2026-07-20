@@ -3,6 +3,27 @@ import { expect, test } from "@playwright/test"
 const MOBILE_VIEWPORT = { width: 320, height: 800 }
 const DESKTOP_VIEWPORT = { width: 1280, height: 720 }
 
+test.describe("App Router Pokédex entry points", () => {
+  test.use({ viewport: DESKTOP_VIEWPORT })
+
+  test("redirects the root to the canonical first dossier", async ({ page }) => {
+    await page.goto("/")
+
+    await expect(page).toHaveURL(/\/1$/)
+    await expect(
+      page.getByRole("heading", { level: 2, name: "Bulbasaur #001" }),
+    ).toBeVisible()
+  })
+
+  test("rejects dossier numbers outside the generated static catalog", async ({
+    page,
+  }) => {
+    const response = await page.goto("/152")
+
+    expect(response?.status()).toBe(404)
+  })
+})
+
 test.describe("mobile Pokédex", () => {
   test.use({ viewport: MOBILE_VIEWPORT })
 
