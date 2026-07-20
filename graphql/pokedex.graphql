@@ -1,0 +1,63 @@
+# Approved documentation exception: this executable document is GraphQL Code Generator’s canonical human-readable operation source.
+fragment PokemonCatalogEntry on Pokemon {
+  id
+  number
+  name
+  image
+  types
+  maxCP
+}
+
+fragment PokemonDossier on Pokemon {
+  ...PokemonCatalogEntry
+  weight {
+    minimum
+    maximum
+  }
+  height {
+    minimum
+    maximum
+  }
+  classification
+  resistant
+  weaknesses
+  fleeRate
+  maxHP
+  attacks {
+    fast {
+      damage
+      name
+      type
+    }
+    special {
+      damage
+      name
+      type
+    }
+  }
+  evolutionRequirements {
+    amount
+    name
+  }
+  evolutions {
+    id
+    number
+    name
+    image
+  }
+}
+
+query PokedexPage($catalogSize: Int!, $pokemonId: String!) {
+  pokemons(first: $catalogSize) {
+    ...PokemonCatalogEntry
+  }
+  pokemon(id: $pokemonId) {
+    ...PokemonDossier
+  }
+}
+
+query PokemonCatalog($first: Int!) {
+  pokemons(first: $first) {
+    ...PokemonCatalogEntry
+  }
+}
