@@ -6,7 +6,9 @@ const DESKTOP_VIEWPORT = { width: 1280, height: 720 }
 test.describe("App Router Pokédex entry points", () => {
   test.use({ viewport: DESKTOP_VIEWPORT })
 
-  test("redirects the root to the canonical first dossier", async ({ page }) => {
+  test("redirects the root to the canonical first dossier", async ({
+    page,
+  }) => {
     await page.goto("/")
 
     await expect(page).toHaveURL(/\/1$/)

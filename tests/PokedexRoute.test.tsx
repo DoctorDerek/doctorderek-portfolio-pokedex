@@ -60,16 +60,15 @@ describe("App Router Pokédex route", () => {
       params: Promise.resolve({ id: "2" }),
     })
 
-    render(
-      <ApplicationProviders>{routeContent}</ApplicationProviders>,
-    )
+    render(<ApplicationProviders>{routeContent}</ApplicationProviders>)
 
     expect(
       screen.getByRole("heading", { level: 2, name: "Ivysaur #002" }),
     ).toBeVisible()
-    expect(
-      screen.getByRole("link", { name: "002 Ivysaur" }),
-    ).toHaveAttribute("aria-current", "page")
+    expect(screen.getByRole("link", { name: "002 Ivysaur" })).toHaveAttribute(
+      "aria-current",
+      "page",
+    )
     expect(
       await screen.findByRole("link", { name: "004 Charmander" }),
     ).toBeVisible()
