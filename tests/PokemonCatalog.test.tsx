@@ -69,8 +69,97 @@ describe("PokemonCatalog", () => {
     expect(nextPokemonLink).not.toHaveAttribute("aria-current")
     expect(nextPokemonLink).toHaveAttribute("href", "/2")
     expect(screen.getByRole("status")).toHaveTextContent(
-      `2 of ${MAX_POKEMON_NUMBER} Pokémon ready.`,
+      `3 of ${MAX_POKEMON_NUMBER} Pokémon ready · 3 shown.`,
     )
+  })
+
+  it("searches by name and number while filtering by Pokémon type", async () => {
+    mockCompleteCatalogResponse()
+    renderPokemonCatalog()
+
+    const pokemonNavigation = screen.getByRole("navigation", {
+      name: "Pokémon catalog",
+    })
+    await within(pokemonNavigation).findByRole("link", {
+      name: "004 Charmander",
+    })
+    const pokemonSearch = screen.getByRole("searchbox", {
+      name: "Search Pokémon",
+    })
+    const pokemonType = screen.getByRole("combobox", { name: "Type" })
+
+    fireEvent.change(pokemonSearch, { target: { value: "saur" } })
+
+    expect(
+      within(pokemonNavigation).getByRole("link", { name: "001 Bulbasaur" }),
+    ).toBeInTheDocument()
+    expect(
+      within(pokemonNavigation).getByRole("link", { name: "002 Ivysaur" }),
+    ).toBeInTheDocument()
+    expect(
+      within(pokemonNavigation).queryByRole("link", { name: "004 Charmander" }),
+    ).not.toBeInTheDocument()
+
+    fireEvent.change(pokemonSearch, { target: { value: "#004" } })
+
+    expect(
+      within(pokemonNavigation).getByRole("link", { name: "004 Charmander" }),
+    ).toBeInTheDocument()
+    expect(within(pokemonNavigation).getAllByRole("link")).toHaveLength(1)
+
+    fireEvent.change(pokemonSearch, { target: { value: "" } })
+    fireEvent.change(pokemonType, { target: { value: "Fire" } })
+
+    expect(
+      within(pokemonNavigation).getByRole("link", { name: "004 Charmander" }),
+    ).toBeInTheDocument()
+    expect(within(pokemonNavigation).getAllByRole("link")).toHaveLength(1)
+    expect(screen.getByRole("status")).toHaveTextContent("1 shown.")
+  })
+
+  it("sorts the catalog and resets every discovery control", async () => {
+    mockCompleteCatalogResponse()
+    renderPokemonCatalog()
+
+    const pokemonNavigation = screen.getByRole("navigation", {
+      name: "Pokémon catalog",
+    })
+    await within(pokemonNavigation).findByRole("link", {
+      name: "004 Charmander",
+    })
+    const pokemonSearch = screen.getByRole("searchbox", {
+      name: "Search Pokémon",
+    })
+    const pokemonType = screen.getByRole("combobox", { name: "Type" })
+    const pokemonSort = screen.getByRole("combobox", { name: "Sort" })
+
+    fireEvent.change(pokemonSort, {
+      target: { value: "maximumCombatPower" },
+    })
+
+    expect(
+      within(pokemonNavigation)
+        .getAllByRole("link")
+        .map((link) => link.getAttribute("href")),
+    ).toEqual(["/2", "/1", "/4"])
+
+    fireEvent.change(pokemonSearch, { target: { value: "MissingNo" } })
+    fireEvent.change(pokemonType, { target: { value: "Fire" } })
+
+    expect(
+      within(pokemonNavigation).getByText("No Pokémon match these filters."),
+    ).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole("button", { name: "Reset filters" }))
+
+    expect(pokemonSearch).toHaveValue("")
+    expect(pokemonType).toHaveValue("all")
+    expect(pokemonSort).toHaveValue("nationalNumber")
+    expect(
+      within(pokemonNavigation)
+        .getAllByRole("link")
+        .map((link) => link.getAttribute("href")),
+    ).toEqual(["/1", "/2", "/4"])
   })
 
   it("preserves ready Pokémon and offers recovery when background loading fails", async () => {
@@ -85,7 +174,7 @@ describe("PokemonCatalog", () => {
 
     const alert = await screen.findByRole("alert")
     expect(alert).toHaveTextContent(
-      `Couldn’t finish loading all ${MAX_POKEMON_NUMBER} Pokémon. Showing 2 ready.`,
+      `Couldn’t finish loading all ${MAX_POKEMON_NUMBER} Pokémon. Showing 2 matches from 2 ready Pokémon.`,
     )
     expect(
       screen.getByRole("link", { name: "001 Bulbasaur" }),
@@ -101,7 +190,7 @@ describe("PokemonCatalog", () => {
       expect(screen.queryByRole("alert")).not.toBeInTheDocument()
     })
     expect(screen.getByRole("status")).toHaveTextContent(
-      `2 of ${MAX_POKEMON_NUMBER} Pokémon ready.`,
+      `3 of ${MAX_POKEMON_NUMBER} Pokémon ready · 3 shown.`,
     )
   })
 })
