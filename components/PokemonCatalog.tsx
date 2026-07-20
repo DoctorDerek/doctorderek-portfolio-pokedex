@@ -69,8 +69,9 @@ export default function PokemonCatalog({
 
   return (
     <FormProvider {...catalogForm}>
-      <div
-        className="relative flex w-full flex-col bg-gray-800 text-sm md:min-h-0"
+      <section
+        aria-label="Pokémon discovery"
+        className="relative order-2 flex w-full flex-col bg-gray-800 text-sm md:order-1 md:min-h-0"
         aria-busy={isFetching}
       >
         <PokemonCatalogControls pokemonTypes={pokemonTypes} />
@@ -104,7 +105,7 @@ export default function PokemonCatalog({
           currentPokemonNumber={currentPokemonNumber}
           pokemons={visiblePokemons}
         />
-      </div>
+      </section>
     </FormProvider>
   )
 }
