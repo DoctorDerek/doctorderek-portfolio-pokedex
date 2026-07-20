@@ -1,6 +1,6 @@
 import { DocumentTypeDecoration } from "@graphql-typed-document-node/core"
 import { useQuery, UseQueryOptions } from "@tanstack/react-query"
-import { pokemonApiQueryFetcher } from "../utils/fetchPokemonApi"
+import { pokemonApiQueryFetcher } from "@/utils/fetchPokemonApi"
 
 /** Internal type. DO NOT USE DIRECTLY. */
 type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }

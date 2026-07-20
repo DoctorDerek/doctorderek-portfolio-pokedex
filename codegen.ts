@@ -12,7 +12,7 @@ const config: CodegenConfig = {
         "typescript-react-query",
       ],
       config: {
-        fetcher: "../utils/fetchPokemonApi#pokemonApiQueryFetcher",
+        fetcher: "@/utils/fetchPokemonApi#pokemonApiQueryFetcher",
         reactQueryVersion: 5,
         useTypeImports: false,
       },
