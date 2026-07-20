@@ -1,3 +1,5 @@
+"use client"
+
 import { FormProvider, useForm, useWatch } from "react-hook-form"
 import PokemonCatalogControls from "@/components/PokemonCatalogControls"
 import PokemonCatalogList from "@/components/PokemonCatalogList"

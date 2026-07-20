@@ -1,4 +1,3 @@
-import Head from "next/head"
 import Link from "next/link"
 import type { ReactNode } from "react"
 import classNames from "@/utils/classNames"
@@ -20,9 +19,6 @@ export default function AppContainer({
         bgColor ? bgColor : "bg-gray-900",
       )}
     >
-      <Head>
-        <title>Pokédex by @DoctorDerek</title>
-      </Head>
       <header className="flex min-h-12 w-full flex-wrap items-center justify-center gap-x-1 gap-y-1 px-4 py-3 text-center">
         <Link href="/" className={HEADER_LINK_CLASS_NAME}>
           Pokédex
