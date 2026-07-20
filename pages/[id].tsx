@@ -6,9 +6,9 @@ import {
   PokedexPageDocument,
   type PokedexPageQuery,
   type PokedexPageQueryVariables,
-  type Pokemon,
 } from "@/graphql/generated"
 import { fetchPokemonApi } from "@/utils/fetchPokemonApi"
+import { compactPokemonCatalogEntries } from "@/utils/pokemonCatalog"
 import { getPokemonApiGlobalId } from "@/utils/pokemonIdentity"
 import {
   calculateCurrentPage,
@@ -23,8 +23,8 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
   data: PokedexPageQuery
   id: string
 }) => {
-  const allPokemons = data.pokemons as Pokemon[]
-  const currentPokemon = data.pokemon as Pokemon | null
+  const allPokemons = compactPokemonCatalogEntries({ pokemons: data.pokemons })
+  const currentPokemon = data.pokemon
   const currentPageNumber = calculateCurrentPage({ id })
   const pokemons = allPokemons.slice(
     (currentPageNumber - 1) * 10,
