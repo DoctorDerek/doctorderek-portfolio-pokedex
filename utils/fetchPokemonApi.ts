@@ -25,7 +25,9 @@ export async function fetchPokemonApi<TData, TVariables>({
     method: "POST",
   })
   if (!response.ok)
-    throw new Error(`Pokémon API request failed with status ${response.status}.`)
+    throw new Error(
+      `Pokémon API request failed with status ${response.status}.`,
+    )
 
   const { data, errors } = (await response.json()) as GraphqlApiResponse<TData>
 

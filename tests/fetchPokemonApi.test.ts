@@ -1,4 +1,4 @@
-import { graphql, HttpResponse, http } from "msw"
+import { graphql, http, HttpResponse } from "msw"
 import { describe, expect, it } from "vitest"
 import { PokedexPageDocument } from "@/graphql/generated"
 import { BULBASAUR_FIXTURE } from "@/tests/fixtures/pokemon"
