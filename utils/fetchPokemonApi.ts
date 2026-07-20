@@ -34,3 +34,14 @@ export async function fetchPokemonApi<TData, TVariables>({
 
   return data
 }
+
+export function pokemonApiQueryFetcher<TData, TVariables>(
+  document: TypedDocumentString<unknown, unknown>,
+  variables: TVariables,
+) {
+  return () =>
+    fetchPokemonApi({
+      document: document as TypedDocumentString<TData, TVariables>,
+      variables,
+    })
+}

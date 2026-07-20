@@ -10,7 +10,6 @@ import { GRAPHQL_API_ENDPOINT } from "@/utils/fetchPokemonApi"
 
 function PokemonQueryConsumer() {
   const { data, error, isPending } = usePokemonCatalogQuery(
-    { endpoint: GRAPHQL_API_ENDPOINT },
     { first: 1 },
     { retry: false },
   )

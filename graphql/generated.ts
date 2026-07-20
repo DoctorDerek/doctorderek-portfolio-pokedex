@@ -1,5 +1,6 @@
-import type { DocumentTypeDecoration } from "@graphql-typed-document-node/core"
-import { useQuery, type UseQueryOptions } from "@tanstack/react-query"
+import { DocumentTypeDecoration } from "@graphql-typed-document-node/core"
+import { useQuery, UseQueryOptions } from "@tanstack/react-query"
+import { pokemonApiQueryFetcher } from "../utils/fetchPokemonApi"
 
 /** Internal type. DO NOT USE DIRECTLY. */
 type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
@@ -12,31 +13,6 @@ export type Incremental<T> =
 
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
-
-function fetcher<TData, TVariables>(
-  endpoint: string,
-  requestInit: RequestInit,
-  query: TypedDocumentString<unknown, unknown>,
-  variables?: TVariables,
-) {
-  return async (): Promise<TData> => {
-    const res = await fetch(endpoint, {
-      method: "POST",
-      ...requestInit,
-      body: JSON.stringify({ query, variables }),
-    })
-
-    const json = await res.json()
-
-    if (json.errors) {
-      const { message } = json.errors[0]
-
-      throw new Error(message)
-    }
-
-    return json.data
-  }
-}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string }
@@ -387,7 +363,6 @@ fragment PokemonDossier on Pokemon {
 }`)
 
 export const usePokedexPageQuery = <TData = PokedexPageQuery, TError = unknown>(
-  dataSource: { endpoint: string; fetchParams?: RequestInit },
   variables: PokedexPageQueryVariables,
   options?: Omit<
     UseQueryOptions<PokedexPageQuery, TError, TData>,
@@ -398,12 +373,10 @@ export const usePokedexPageQuery = <TData = PokedexPageQuery, TError = unknown>(
 ) => {
   return useQuery<PokedexPageQuery, TError, TData>({
     queryKey: ["PokedexPage", variables],
-    queryFn: fetcher<PokedexPageQuery, PokedexPageQueryVariables>(
-      dataSource.endpoint,
-      dataSource.fetchParams || {},
-      PokedexPageDocument,
-      variables,
-    ),
+    queryFn: pokemonApiQueryFetcher<
+      PokedexPageQuery,
+      PokedexPageQueryVariables
+    >(PokedexPageDocument, variables),
     ...options,
   })
 }
@@ -427,7 +400,6 @@ export const usePokemonCatalogQuery = <
   TData = PokemonCatalogQuery,
   TError = unknown,
 >(
-  dataSource: { endpoint: string; fetchParams?: RequestInit },
   variables: PokemonCatalogQueryVariables,
   options?: Omit<
     UseQueryOptions<PokemonCatalogQuery, TError, TData>,
@@ -438,12 +410,10 @@ export const usePokemonCatalogQuery = <
 ) => {
   return useQuery<PokemonCatalogQuery, TError, TData>({
     queryKey: ["PokemonCatalog", variables],
-    queryFn: fetcher<PokemonCatalogQuery, PokemonCatalogQueryVariables>(
-      dataSource.endpoint,
-      dataSource.fetchParams || {},
-      PokemonCatalogDocument,
-      variables,
-    ),
+    queryFn: pokemonApiQueryFetcher<
+      PokemonCatalogQuery,
+      PokemonCatalogQueryVariables
+    >(PokemonCatalogDocument, variables),
     ...options,
   })
 }
