@@ -17,6 +17,7 @@
     "next": "^16",
     "react": "^19",
     "react-dom": "^19",
+    "react-hook-form": "^7",
     "sharp": "^0.35.2"
   },
   "devDependencies": {
