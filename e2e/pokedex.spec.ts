@@ -48,6 +48,12 @@ test.describe("mobile Pokédex", () => {
       name: "Pokémon discovery",
     })
 
+    await selectedPokemon.evaluate((element) =>
+      Promise.all(
+        element.getAnimations().map((animation) => animation.finished),
+      ),
+    )
+
     const selectedPokemonBounds = await selectedPokemon.evaluate((element) => {
       const bounds = element.getBoundingClientRect()
       return { bottom: bounds.bottom, top: bounds.top }
