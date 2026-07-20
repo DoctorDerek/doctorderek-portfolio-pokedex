@@ -1,32 +1,36 @@
-import {
-  PokemonsDocument,
-  type PokemonsQuery,
-  type PokemonsQueryVariables,
-} from "@/graphql/generated"
+import type { TypedDocumentString } from "@/graphql/generated"
 
 export const GRAPHQL_API_ENDPOINT = "https://graphql-pokemon2.vercel.app/"
 
-interface PokemonsApiResponse {
-  data: PokemonsQuery
+interface GraphqlApiResponse<TData> {
+  data?: TData
+  errors?: Array<{ message: string }>
 }
 
-export async function fetchPokemonApi({
-  pokemonCount,
+export async function fetchPokemonApi<TData, TVariables>({
+  document,
+  variables,
 }: {
-  pokemonCount: number
+  document: TypedDocumentString<TData, TVariables>
+  variables: TVariables
 }) {
-  const variables: PokemonsQueryVariables = { first: pokemonCount }
   const response = await fetch(GRAPHQL_API_ENDPOINT, {
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      query: PokemonsDocument,
+      query: document.toString(),
       variables,
     }),
     method: "POST",
   })
-  const { data } = (await response.json()) as PokemonsApiResponse
+  if (!response.ok)
+    throw new Error(`Pokémon API request failed with status ${response.status}.`)
+
+  const { data, errors } = (await response.json()) as GraphqlApiResponse<TData>
+
+  if (errors?.[0]) throw new Error(errors[0].message)
+  if (!data) throw new Error("Pokémon API returned no data.")
 
   return data
 }
