@@ -2,6 +2,9 @@ import type { PokemonCatalogEntryFragment } from "@/graphql/generated"
 
 export const INITIAL_POKEMON_CATALOG_SIZE = 20
 export const MAX_POKEMON_NUMBER = 151
+export const POKEMON_CATALOG_STALE_TIME_MS = 24 * 60 * 60 * 1_000
+export const POKEMON_CATALOG_RETRY_COUNT = 1
+export const POKEMON_CATALOG_RETRY_DELAY_MS = 500
 export const ALL_POKEMON_TYPES_VALUE = "all"
 
 export const POKEMON_CATALOG_SORT_OPTIONS = [
@@ -72,10 +75,7 @@ export function getVisiblePokemonCatalogEntries({
   filters: PokemonCatalogFilters
   pokemons: ReadonlyArray<PokemonCatalogEntryFragment>
 }) {
-  const normalizedSearch = filters.search
-    .trim()
-    .toLowerCase()
-    .replace(/^#/, "")
+  const normalizedSearch = filters.search.trim().toLowerCase().replace(/^#/, "")
   const matchingPokemons = pokemons.filter((pokemon) => {
     const matchesSearch =
       normalizedSearch.length === 0 ||

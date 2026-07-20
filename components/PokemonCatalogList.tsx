@@ -11,7 +11,10 @@ export default function PokemonCatalogList({
   pokemons: ReadonlyArray<PokemonCatalogEntryFragment>
 }) {
   return (
-    <nav aria-label="Pokémon catalog">
+    <nav
+      aria-label="Pokémon catalog"
+      className="md:min-h-0 md:flex-1 md:overflow-y-auto"
+    >
       <ul className="space-y-2 p-3 md:space-y-4 md:p-4">
         {pokemons.map((pokemon) => {
           const pokemonNumber = pokemon.number ?? ""

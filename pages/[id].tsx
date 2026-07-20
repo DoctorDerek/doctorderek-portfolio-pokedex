@@ -8,13 +8,13 @@ import {
   type PokedexPageQueryVariables,
 } from "@/graphql/generated"
 import { fetchPokemonApi } from "@/utils/fetchPokemonApi"
-import { compactPokemonCatalogEntries } from "@/utils/pokemonCatalog"
-import { getPokemonApiGlobalId } from "@/utils/pokemonIdentity"
 import {
-  calculateCurrentPage,
-  calculatePokemonCount,
+  compactPokemonCatalogEntries,
+  includeSelectedPokemon,
+  INITIAL_POKEMON_CATALOG_SIZE,
   MAX_POKEMON_NUMBER,
-} from "@/utils/pokemonPagination"
+} from "@/utils/pokemonCatalog"
+import { getPokemonApiGlobalId } from "@/utils/pokemonIdentity"
 
 const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
   data,
@@ -25,21 +25,20 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
 }) => {
   const allPokemons = compactPokemonCatalogEntries({ pokemons: data.pokemons })
   const currentPokemon = data.pokemon
-  const currentPageNumber = calculateCurrentPage({ id })
-  const pokemons = allPokemons.slice(
-    (currentPageNumber - 1) * 10,
-    currentPageNumber * 10,
-  )
 
   if (!currentPokemon) return <div>Sorry, Pokémon #{id} not found 😔.</div>
+
+  const initialPokemons = includeSelectedPokemon({
+    pokemons: allPokemons,
+    selectedPokemon: currentPokemon,
+  })
 
   return (
     <AppContainer bgColor="bg-gray-600">
       <div className="grid w-full max-w-4xl overflow-hidden rounded-lg shadow-2xl md:h-128 md:grid-cols-[minmax(18rem,2fr)_3fr]">
         <PokemonCatalog
-          pokemons={pokemons}
           currentPokemonNumber={currentPokemon.number ?? ""}
-          currentPageNumber={currentPageNumber}
+          initialPokemons={initialPokemons}
         />
         <PokemonDetailsPanel key={currentPokemon.id} pokemon={currentPokemon} />
       </div>
@@ -50,7 +49,7 @@ const Pokedex: InferGetStaticPropsType<typeof getStaticProps> = ({
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { id } = params as { id: string }
   const variables: PokedexPageQueryVariables = {
-    catalogSize: calculatePokemonCount({ id }),
+    catalogSize: INITIAL_POKEMON_CATALOG_SIZE,
     pokemonId: getPokemonApiGlobalId({
       nationalPokedexNumber: Number(id),
     }),
