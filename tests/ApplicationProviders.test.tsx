@@ -1,9 +1,8 @@
 import { render, screen } from "@testing-library/react"
 import { graphql, HttpResponse } from "msw"
-import type { AppProps } from "next/app"
 import { describe, expect, it } from "vitest"
+import ApplicationProviders from "@/app/providers"
 import { usePokemonCatalogQuery } from "@/graphql/generated"
-import MyApp from "@/pages/_app"
 import { BULBASAUR_FIXTURE } from "@/tests/fixtures/pokemon"
 import { pokemonApiServer } from "@/tests/mocks/pokemonApiServer"
 import { GRAPHQL_API_ENDPOINT } from "@/utils/fetchPokemonApi"
@@ -20,7 +19,7 @@ function PokemonQueryConsumer() {
   return <p>{data?.pokemons?.[0]?.name}</p>
 }
 
-describe("MyApp", () => {
+describe("ApplicationProviders", () => {
   it("provides TanStack Query to generated Pokémon hooks", async () => {
     pokemonApiServer.use(
       graphql
@@ -35,11 +34,9 @@ describe("MyApp", () => {
     )
 
     render(
-      <MyApp
-        Component={PokemonQueryConsumer}
-        pageProps={{}}
-        router={{} as AppProps["router"]}
-      />,
+      <ApplicationProviders>
+        <PokemonQueryConsumer />
+      </ApplicationProviders>,
     )
 
     expect(screen.getByText("Loading Pokémon…")).toBeInTheDocument()
@@ -56,11 +53,9 @@ describe("MyApp", () => {
     )
 
     render(
-      <MyApp
-        Component={PokemonQueryConsumer}
-        pageProps={{}}
-        router={{} as AppProps["router"]}
-      />,
+      <ApplicationProviders>
+        <PokemonQueryConsumer />
+      </ApplicationProviders>,
     )
 
     expect(screen.getByText("Loading Pokémon…")).toBeInTheDocument()
