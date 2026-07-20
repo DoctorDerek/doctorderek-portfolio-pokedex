@@ -14,9 +14,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5
         version: 5.101.2(react@19.2.7)
-      graphql-tag:
-        specifier: ^2
-        version: 2.12.7(graphql@16.14.2)
       next:
         specifier: ^16
         version: 16.2.10(@babel/core@7.29.7)(@playwright/test@1.61.1)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)

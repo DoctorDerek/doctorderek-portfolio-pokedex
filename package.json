@@ -14,7 +14,6 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5",
-    "graphql-tag": "^2",
     "next": "^16",
     "react": "^19",
     "react-dom": "^19",
