@@ -23,11 +23,11 @@ export default function AppContainer({
       <Head>
         <title>Pokédex by @DoctorDerek</title>
       </Head>
-      <header className="flex min-h-12 w-full items-center justify-center px-4 py-3 text-center">
+      <header className="flex min-h-12 w-full flex-wrap items-center justify-center gap-x-1 gap-y-1 px-4 py-3 text-center">
         <Link href="/" className={HEADER_LINK_CLASS_NAME}>
           Pokédex
-        </Link>{" "}
-        by{" "}
+        </Link>
+        <span>by</span>
         <a
           href="https://www.doctorderek.com/"
           className={HEADER_LINK_CLASS_NAME}

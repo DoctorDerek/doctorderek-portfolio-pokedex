@@ -3,7 +3,7 @@ import type { CodegenConfig } from "@graphql-codegen/cli"
 const config: CodegenConfig = {
   overwrite: true,
   schema: "https://graphql-pokemon2.vercel.app/",
-  documents: "**/*.tsx",
+  documents: "graphql/**/*.graphql",
   generates: {
     "./graphql/generated.ts": {
       plugins: [
@@ -12,9 +12,9 @@ const config: CodegenConfig = {
         "typescript-react-query",
       ],
       config: {
-        fetcher: "fetch",
+        fetcher: "@/utils/fetchPokemonApi#pokemonApiQueryFetcher",
         reactQueryVersion: 5,
-        useTypeImports: true,
+        useTypeImports: false,
       },
     },
   },

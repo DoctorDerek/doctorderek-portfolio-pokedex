@@ -19,8 +19,23 @@ export const BULBASAUR_FIXTURE: Pokemon = {
 export const IVYSAUR_FIXTURE: Pokemon = {
   id: "UG9rZW1vbjowMDI=",
   image: "https://img.pokemondb.net/artwork/ivysaur.jpg",
+  maxCP: 1483,
   name: "Ivysaur",
   number: "002",
+  types: ["Grass", "Poison"],
 }
 
-export const POKEMON_CATALOG_FIXTURES = [BULBASAUR_FIXTURE, IVYSAUR_FIXTURE]
+export const CHARMANDER_FIXTURE: Pokemon = {
+  id: "UG9rZW1vbjowMDQ=",
+  image: "https://img.pokemondb.net/artwork/charmander.jpg",
+  maxCP: 841,
+  name: "Charmander",
+  number: "004",
+  types: ["Fire"],
+}
+
+export const POKEMON_CATALOG_FIXTURES = [
+  BULBASAUR_FIXTURE,
+  IVYSAUR_FIXTURE,
+  CHARMANDER_FIXTURE,
+]

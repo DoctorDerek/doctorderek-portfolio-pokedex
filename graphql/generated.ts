@@ -1,5 +1,6 @@
-import type { DocumentTypeDecoration } from "@graphql-typed-document-node/core"
-import { useQuery, type UseQueryOptions } from "@tanstack/react-query"
+import { DocumentTypeDecoration } from "@graphql-typed-document-node/core"
+import { useQuery, UseQueryOptions } from "@tanstack/react-query"
+import { pokemonApiQueryFetcher } from "@/utils/fetchPokemonApi"
 
 /** Internal type. DO NOT USE DIRECTLY. */
 type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] }
@@ -12,31 +13,6 @@ export type Incremental<T> =
 
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
-
-function fetcher<TData, TVariables>(
-  endpoint: string,
-  requestInit: RequestInit,
-  query: TypedDocumentString<unknown, unknown>,
-  variables?: TVariables,
-) {
-  return async (): Promise<TData> => {
-    const res = await fetch(endpoint, {
-      method: "POST",
-      ...requestInit,
-      body: JSON.stringify({ query, variables }),
-    })
-
-    const json = await res.json()
-
-    if (json.errors) {
-      const { message } = json.errors[0]
-
-      throw new Error(message)
-    }
-
-    return json.data
-  }
-}
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string }
@@ -138,25 +114,112 @@ export type QueryPokemonsArgs = {
   first: Scalars["Int"]["input"]
 }
 
-export type PokemonsQueryVariables = Exact<{
-  first: number
+export type PokemonCatalogEntryFragment = {
+  id: string
+  number: string | null
+  name: string | null
+  image: string | null
+  types: Array<string | null> | null
+  maxCP: number | null
+}
+
+export type PokemonDossierFragment = {
+  classification: string | null
+  resistant: Array<string | null> | null
+  weaknesses: Array<string | null> | null
+  fleeRate: number | null
+  maxHP: number | null
+  id: string
+  number: string | null
+  name: string | null
+  image: string | null
+  types: Array<string | null> | null
+  maxCP: number | null
+  weight: { minimum: string | null; maximum: string | null } | null
+  height: { minimum: string | null; maximum: string | null } | null
+  attacks: {
+    fast: Array<{
+      damage: number | null
+      name: string | null
+      type: string | null
+    } | null> | null
+    special: Array<{
+      damage: number | null
+      name: string | null
+      type: string | null
+    } | null> | null
+  } | null
+  evolutionRequirements: { amount: number | null; name: string | null } | null
+  evolutions: Array<{
+    id: string
+    number: string | null
+    name: string | null
+    image: string | null
+  } | null> | null
+}
+
+export type PokedexPageQueryVariables = Exact<{
+  catalogSize: number
+  pokemonId: string
 }>
 
-export type PokemonsQuery = {
+export type PokedexPageQuery = {
   pokemons: Array<{
     id: string
     number: string | null
     name: string | null
-    classification: string | null
+    image: string | null
     types: Array<string | null> | null
+    maxCP: number | null
+  } | null> | null
+  pokemon: {
+    classification: string | null
     resistant: Array<string | null> | null
     weaknesses: Array<string | null> | null
     fleeRate: number | null
-    maxCP: number | null
     maxHP: number | null
+    id: string
+    number: string | null
+    name: string | null
     image: string | null
+    types: Array<string | null> | null
+    maxCP: number | null
     weight: { minimum: string | null; maximum: string | null } | null
     height: { minimum: string | null; maximum: string | null } | null
+    attacks: {
+      fast: Array<{
+        damage: number | null
+        name: string | null
+        type: string | null
+      } | null> | null
+      special: Array<{
+        damage: number | null
+        name: string | null
+        type: string | null
+      } | null> | null
+    } | null
+    evolutionRequirements: { amount: number | null; name: string | null } | null
+    evolutions: Array<{
+      id: string
+      number: string | null
+      name: string | null
+      image: string | null
+    } | null> | null
+  } | null
+}
+
+export type PokemonCatalogQueryVariables = Exact<{
+  first: number
+}>
+
+export type PokemonCatalogQuery = {
+  pokemons: Array<{
+    id: string
+    number: string | null
+    name: string | null
+    image: string | null
+    types: Array<string | null> | null
+    maxCP: number | null
   } | null> | null
 }
 
@@ -180,48 +243,177 @@ export class TypedDocumentString<TResult, TVariables>
     return this.value
   }
 }
-
-export const PokemonsDocument = new TypedDocumentString(`
-    query pokemons($first: Int!) {
-  pokemons(first: $first) {
+export const PokemonCatalogEntryFragmentDoc = new TypedDocumentString(
+  `
+    fragment PokemonCatalogEntry on Pokemon {
+  id
+  number
+  name
+  image
+  types
+  maxCP
+}
+    `,
+  { fragmentName: "PokemonCatalogEntry" },
+)
+export const PokemonDossierFragmentDoc = new TypedDocumentString(
+  `
+    fragment PokemonDossier on Pokemon {
+  ...PokemonCatalogEntry
+  weight {
+    minimum
+    maximum
+  }
+  height {
+    minimum
+    maximum
+  }
+  classification
+  resistant
+  weaknesses
+  fleeRate
+  maxHP
+  attacks {
+    fast {
+      damage
+      name
+      type
+    }
+    special {
+      damage
+      name
+      type
+    }
+  }
+  evolutionRequirements {
+    amount
+    name
+  }
+  evolutions {
     id
     number
     name
-    weight {
-      minimum
-      maximum
-    }
-    height {
-      minimum
-      maximum
-    }
-    classification
-    types
-    resistant
-    weaknesses
-    fleeRate
-    maxCP
-    maxHP
     image
   }
 }
-    `)
+    fragment PokemonCatalogEntry on Pokemon {
+  id
+  number
+  name
+  image
+  types
+  maxCP
+}`,
+  { fragmentName: "PokemonDossier" },
+)
+export const PokedexPageDocument = new TypedDocumentString(`
+    query PokedexPage($catalogSize: Int!, $pokemonId: String!) {
+  pokemons(first: $catalogSize) {
+    ...PokemonCatalogEntry
+  }
+  pokemon(id: $pokemonId) {
+    ...PokemonDossier
+  }
+}
+    fragment PokemonCatalogEntry on Pokemon {
+  id
+  number
+  name
+  image
+  types
+  maxCP
+}
+fragment PokemonDossier on Pokemon {
+  ...PokemonCatalogEntry
+  weight {
+    minimum
+    maximum
+  }
+  height {
+    minimum
+    maximum
+  }
+  classification
+  resistant
+  weaknesses
+  fleeRate
+  maxHP
+  attacks {
+    fast {
+      damage
+      name
+      type
+    }
+    special {
+      damage
+      name
+      type
+    }
+  }
+  evolutionRequirements {
+    amount
+    name
+  }
+  evolutions {
+    id
+    number
+    name
+    image
+  }
+}`)
 
-export const usePokemonsQuery = <TData = PokemonsQuery, TError = unknown>(
-  dataSource: { endpoint: string; fetchParams?: RequestInit },
-  variables: PokemonsQueryVariables,
-  options?: Omit<UseQueryOptions<PokemonsQuery, TError, TData>, "queryKey"> & {
-    queryKey?: UseQueryOptions<PokemonsQuery, TError, TData>["queryKey"]
+export const usePokedexPageQuery = <TData = PokedexPageQuery, TError = unknown>(
+  variables: PokedexPageQueryVariables,
+  options?: Omit<
+    UseQueryOptions<PokedexPageQuery, TError, TData>,
+    "queryKey"
+  > & {
+    queryKey?: UseQueryOptions<PokedexPageQuery, TError, TData>["queryKey"]
   },
 ) => {
-  return useQuery<PokemonsQuery, TError, TData>({
-    queryKey: ["pokemons", variables],
-    queryFn: fetcher<PokemonsQuery, PokemonsQueryVariables>(
-      dataSource.endpoint,
-      dataSource.fetchParams || {},
-      PokemonsDocument,
-      variables,
-    ),
+  return useQuery<PokedexPageQuery, TError, TData>({
+    queryKey: ["PokedexPage", variables],
+    queryFn: pokemonApiQueryFetcher<
+      PokedexPageQuery,
+      PokedexPageQueryVariables
+    >(PokedexPageDocument, variables),
+    ...options,
+  })
+}
+
+export const PokemonCatalogDocument = new TypedDocumentString(`
+    query PokemonCatalog($first: Int!) {
+  pokemons(first: $first) {
+    ...PokemonCatalogEntry
+  }
+}
+    fragment PokemonCatalogEntry on Pokemon {
+  id
+  number
+  name
+  image
+  types
+  maxCP
+}`)
+
+export const usePokemonCatalogQuery = <
+  TData = PokemonCatalogQuery,
+  TError = unknown,
+>(
+  variables: PokemonCatalogQueryVariables,
+  options?: Omit<
+    UseQueryOptions<PokemonCatalogQuery, TError, TData>,
+    "queryKey"
+  > & {
+    queryKey?: UseQueryOptions<PokemonCatalogQuery, TError, TData>["queryKey"]
+  },
+) => {
+  return useQuery<PokemonCatalogQuery, TError, TData>({
+    queryKey: ["PokemonCatalog", variables],
+    queryFn: pokemonApiQueryFetcher<
+      PokemonCatalogQuery,
+      PokemonCatalogQueryVariables
+    >(PokemonCatalogDocument, variables),
     ...options,
   })
 }

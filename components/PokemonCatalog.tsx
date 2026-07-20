@@ -1,56 +1,111 @@
-import Link from "next/link"
-import PokemonImage from "@/components/PokemonImage"
-import PokemonPagination from "@/components/PokemonPagination"
-import type { Pokemon } from "@/graphql/generated"
-import classNames from "@/utils/classNames"
+import { FormProvider, useForm, useWatch } from "react-hook-form"
+import PokemonCatalogControls from "@/components/PokemonCatalogControls"
+import PokemonCatalogList from "@/components/PokemonCatalogList"
+import {
+  usePokemonCatalogQuery,
+  type PokemonCatalogEntryFragment,
+} from "@/graphql/generated"
+import {
+  compactPokemonCatalogEntries,
+  DEFAULT_POKEMON_CATALOG_FILTERS,
+  getPokemonCatalogTypes,
+  getVisiblePokemonCatalogEntries,
+  MAX_POKEMON_NUMBER,
+  POKEMON_CATALOG_RETRY_COUNT,
+  POKEMON_CATALOG_RETRY_DELAY_MS,
+  POKEMON_CATALOG_STALE_TIME_MS,
+  type PokemonCatalogFilters,
+} from "@/utils/pokemonCatalog"
 
 export default function PokemonCatalog({
-  pokemons,
   currentPokemonNumber,
-  currentPageNumber,
+  initialPokemons,
 }: {
-  pokemons: Pokemon[]
   currentPokemonNumber: string
-  currentPageNumber: number
+  initialPokemons: ReadonlyArray<PokemonCatalogEntryFragment>
 }) {
-  return (
-    <div className="relative w-full bg-gray-800 text-sm md:overflow-y-auto">
-      <nav aria-label="Pokémon catalog">
-        <ul className="space-y-2 p-3 md:space-y-4 md:p-4">
-          {pokemons.map((pokemon) => {
-            const pokemonNumber = pokemon.number ?? ""
-            const pokemonName = pokemon.name ?? ""
-            const pokemonImageUrl = pokemon.image ?? ""
-            const isCurrentPokemon = pokemonNumber === currentPokemonNumber
+  const catalogForm = useForm<PokemonCatalogFilters>({
+    defaultValues: DEFAULT_POKEMON_CATALOG_FILTERS,
+  })
+  const filters: PokemonCatalogFilters = {
+    search: useWatch({
+      control: catalogForm.control,
+      defaultValue: DEFAULT_POKEMON_CATALOG_FILTERS.search,
+      name: "search",
+    }),
+    sort: useWatch({
+      control: catalogForm.control,
+      defaultValue: DEFAULT_POKEMON_CATALOG_FILTERS.sort,
+      name: "sort",
+    }),
+    type: useWatch({
+      control: catalogForm.control,
+      defaultValue: DEFAULT_POKEMON_CATALOG_FILTERS.type,
+      name: "type",
+    }),
+  }
+  const { data, isError, isFetching, refetch } = usePokemonCatalogQuery(
+    { first: MAX_POKEMON_NUMBER },
+    {
+      initialData: { pokemons: [...initialPokemons] },
+      initialDataUpdatedAt: 0,
+      retry: POKEMON_CATALOG_RETRY_COUNT,
+      retryDelay: POKEMON_CATALOG_RETRY_DELAY_MS,
+      staleTime: POKEMON_CATALOG_STALE_TIME_MS,
+    },
+  )
+  const pokemons = compactPokemonCatalogEntries({
+    pokemons: data?.pokemons ?? initialPokemons,
+  })
+  const pokemonTypes = getPokemonCatalogTypes({ pokemons })
+  const visiblePokemons = getVisiblePokemonCatalogEntries({
+    filters,
+    pokemons,
+  })
 
-            return (
-              <li key={pokemon.id}>
-                <Link
-                  href={`/${Number(pokemonNumber)}`}
-                  aria-current={isCurrentPokemon ? "page" : undefined}
-                  className={classNames(
-                    "group flex min-h-12 items-center justify-start gap-3 rounded-lg border-2 border-solid px-3 py-2 motion-safe:transition-[background-color,border-color,transform] motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:-translate-y-0.5 md:gap-4 md:px-4 md:py-3",
-                    isCurrentPokemon
-                      ? "border-yellow-400 bg-gray-700"
-                      : "border-transparent bg-gray-600 hover:bg-gray-700",
-                  )}
-                >
-                  <PokemonImage
-                    size="h-8 w-8"
-                    imageUrl={pokemonImageUrl}
-                    altText=""
-                  />
-                  <span className="shrink-0 font-bold text-yellow-400">
-                    {pokemonNumber}
-                  </span>
-                  <span className="min-w-0 truncate">{pokemonName}</span>
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
-      </nav>
-      <PokemonPagination currentPageNumber={currentPageNumber} />
-    </div>
+  const handleCatalogRetry = () => {
+    void refetch()
+  }
+
+  return (
+    <FormProvider {...catalogForm}>
+      <section
+        aria-label="Pokémon discovery"
+        className="relative order-2 flex w-full flex-col bg-gray-800 text-sm md:order-1 md:min-h-0"
+        aria-busy={isFetching}
+      >
+        <PokemonCatalogControls pokemonTypes={pokemonTypes} />
+        <div className="border-b border-gray-700 px-3 py-2 md:px-4">
+          {isError ? (
+            <div
+              role="alert"
+              className="flex flex-wrap items-center justify-between gap-2"
+            >
+              <p>
+                Couldn’t finish loading all {MAX_POKEMON_NUMBER} Pokémon.
+                Showing {visiblePokemons.length} matches from {pokemons.length}{" "}
+                ready Pokémon.
+              </p>
+              <button
+                type="button"
+                onClick={handleCatalogRetry}
+                className="min-h-11 rounded-md border-2 border-yellow-400 px-3 font-bold text-yellow-400 hover:bg-gray-700 motion-safe:transition-colors motion-safe:duration-150"
+              >
+                Retry
+              </button>
+            </div>
+          ) : (
+            <p role="status" aria-live="polite">
+              {pokemons.length} of {MAX_POKEMON_NUMBER} Pokémon ready ·{" "}
+              {visiblePokemons.length} shown.
+            </p>
+          )}
+        </div>
+        <PokemonCatalogList
+          currentPokemonNumber={currentPokemonNumber}
+          pokemons={visiblePokemons}
+        />
+      </section>
+    </FormProvider>
   )
 }
