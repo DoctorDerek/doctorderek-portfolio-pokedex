@@ -36,26 +36,66 @@ test.describe("mobile Pokédex", () => {
     ).toHaveAttribute("aria-current", "page")
   })
 
-  test("keeps pagination controls large enough for touch input", async ({
+  test("prioritizes the selected dossier before catalog discovery", async ({
     page,
   }) => {
     await page.goto("/1")
 
-    const nextPageLink = page.getByRole("link", { name: "Next" })
-    const secondPageLink = page.getByRole("link", { name: "2", exact: true })
+    const selectedPokemon = page.getByRole("region", {
+      name: "Bulbasaur #001",
+    })
+    const discovery = page.getByRole("region", {
+      name: "Pokémon discovery",
+    })
 
-    await expect(nextPageLink).toBeVisible()
-    await expect(secondPageLink).toBeVisible()
+    const selectedPokemonBounds = await selectedPokemon.evaluate((element) => {
+      const bounds = element.getBoundingClientRect()
+      return { bottom: bounds.bottom, top: bounds.top }
+    })
+    const discoveryBounds = await discovery.evaluate((element) => {
+      const bounds = element.getBoundingClientRect()
+      return { top: bounds.top }
+    })
 
-    const nextPageLinkHeight = await nextPageLink.evaluate(
-      (element) => element.getBoundingClientRect().height,
-    )
-    const secondPageLinkHeight = await secondPageLink.evaluate(
-      (element) => element.getBoundingClientRect().height,
-    )
+    expect(selectedPokemonBounds.top).toBeLessThan(discoveryBounds.top)
+    expect(selectedPokemonBounds.bottom).toBeCloseTo(discoveryBounds.top, 3)
+  })
 
-    expect(nextPageLinkHeight).toBeGreaterThanOrEqual(44)
-    expect(secondPageLinkHeight).toBeGreaterThanOrEqual(44)
+  test("keeps discovery controls touchable and filters immediately", async ({
+    page,
+  }) => {
+    await page.goto("/1")
+
+    const pokemonSearch = page.getByRole("searchbox", {
+      name: "Search Pokémon",
+    })
+    const pokemonType = page.getByRole("combobox", { name: "Type" })
+    const pokemonSort = page.getByRole("combobox", { name: "Sort" })
+    const resetFilters = page.getByRole("button", { name: "Reset filters" })
+
+    for (const control of [
+      pokemonSearch,
+      pokemonType,
+      pokemonSort,
+      resetFilters,
+    ]) {
+      await expect(control).toBeVisible()
+      expect(
+        await control.evaluate(
+          (element) => element.getBoundingClientRect().height,
+        ),
+      ).toBeGreaterThanOrEqual(44)
+    }
+
+    await pokemonSearch.fill("#002")
+
+    await expect(page.getByRole("link", { name: "002 Ivysaur" })).toBeVisible()
+    await expect(page.getByRole("link", { name: "001 Bulbasaur" })).toBeHidden()
+
+    await resetFilters.click()
+    await expect(
+      page.getByRole("link", { name: "001 Bulbasaur" }),
+    ).toBeVisible()
   })
 })
 
@@ -67,8 +107,8 @@ test.describe("desktop Pokédex", () => {
   }) => {
     await page.goto("/1")
 
-    const catalog = page.getByRole("navigation", {
-      name: "Pokémon catalog",
+    const catalog = page.getByRole("region", {
+      name: "Pokémon discovery",
       exact: true,
     })
     const selectedPokemon = page.getByRole("region", {
