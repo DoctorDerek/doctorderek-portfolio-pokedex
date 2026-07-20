@@ -8,10 +8,25 @@
   --spacing-224: 58rem;
 }
 
-:focus {
-  outline: none !important;
-  box-shadow: 0 0 0 0.0625rem #facc15 !important;
-  border-color: transparent !important;
+@keyframes dossier-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 0.125rem solid #facc15;
+  outline-offset: 0.1875rem;
   border-radius: 0.5rem;
 }
 

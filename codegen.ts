@@ -13,7 +13,7 @@ const config: CodegenConfig = {
       ],
       config: {
         fetcher: "fetch",
-        legacyMode: true,
+        reactQueryVersion: 5,
         useTypeImports: true,
       },
     },

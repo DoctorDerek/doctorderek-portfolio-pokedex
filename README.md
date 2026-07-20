@@ -1,6 +1,6 @@
 # Pokédex
 
-An unofficial, non-commercial parody and GraphQL portfolio demo that turns the original 151 Pokémon into a suspiciously bureaucratic little field guide. The current interface is desktop-oriented and intentionally preserves the project’s original compact catalog design.
+An unofficial, non-commercial parody and GraphQL portfolio demo that turns the original 151 Pokémon into a suspiciously bureaucratic little field guide. The interface stacks into a touch-friendly mobile dossier and expands into the project’s original compact catalog-and-details layout on larger screens.
 
 [Open the live demo](https://portfolio-pokedex.doctorderek.com/)
 
@@ -10,14 +10,16 @@ An unofficial, non-commercial parody and GraphQL portfolio demo that turns the o
 - Build-time GraphQL data fetching from the [community Pokémon GraphQL API](https://graphql-pokemon2.vercel.app/)
 - Ten-entry catalog pages with active-selection, previous, next, and numbered navigation
 - Pokémon statistics including classification, types, size, combat values, weaknesses, and resistances
+- Mobile-first responsive layouts, visible keyboard focus, and semantic navigation state
+- Motion-aware interaction feedback with reduced-motion safeguards
 - Strict TypeScript, generated GraphQL models, optimized remote images, and reproducible pnpm installs
 
 ## Stack
 
-- Next.js 16, React 18, and the Pages Router
+- Next.js 16, React 19, and the Pages Router
 - TypeScript 6 and Tailwind CSS 4
-- GraphQL, GraphQL Code Generator, and React Query 3
-- Vitest, Testing Library, Playwright, ESLint, and Prettier
+- GraphQL, GraphQL Code Generator, and TanStack Query 5
+- Vitest, Testing Library, MSW, Playwright, ESLint, and Prettier
 
 ## Local Development
 
@@ -39,18 +41,18 @@ pnpm exec tsc --noEmit
 pnpm lint
 pnpm test
 pnpm test:coverage
+pnpm exec playwright test
 pnpm build
 ```
 
-Vitest, Testing Library, and Playwright are configured, but automated UI and end-to-end suites have not landed yet. The Vitest commands currently use a deliberate no-tests compatibility baseline, so the project does not claim meaningful coverage until those suites exist.
+Vitest, Testing Library, and MSW cover the TanStack Query provider, generated GraphQL success and failure behavior, build-time query variables, catalog selection and paging state, and the selected Pokémon statistics without contacting the live API. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, motion preferences, and the desktop split layout without relying on test-only selectors.
 
 ## Roadmap
 
 - Expand the catalog beyond the original 151 Pokémon using a maintained data source
-- Modernize data fetching with TanStack Query and typed GraphQL documents
 - Move to the App Router after the data layer is stable
-- Deliver a responsive, parody-forward visual redesign with purposeful motion
-- Add Testing Trophy integration coverage, Playwright journeys, and measured Codecov reporting
+- Deepen the parody-forward visual design and dossier copy
+- Expand Testing Trophy coverage and measured Codecov reporting around future user journeys
 
 ## License and Parody Notice
 
