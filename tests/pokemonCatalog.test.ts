@@ -1,12 +1,16 @@
 import { describe, expect, it } from "vitest"
+import { POKEMON_CATALOG } from "@/data/pokemonCatalog"
 import {
   BULBASAUR_CATALOG_FIXTURE,
   CHARMANDER_CATALOG_FIXTURE,
   IVYSAUR_CATALOG_FIXTURE,
 } from "@/tests/fixtures/pokedex"
 import {
+  DEFAULT_POKEMON_CATALOG_FILTERS,
+  getContextualPokemonCatalogEntries,
   getPokemonCatalogTypes,
   getVisiblePokemonCatalogEntries,
+  hasActivePokemonCatalogDiscovery,
 } from "@/utils/pokemonCatalog"
 
 const POKEMONS = [
@@ -16,6 +20,68 @@ const POKEMONS = [
 ]
 
 describe("Pokémon catalog model", () => {
+  it("centers a 21-entry contextual window on the selected dossier", () => {
+    const contextualPokemons = getContextualPokemonCatalogEntries({
+      currentPokemonId: 500,
+      pokemons: POKEMON_CATALOG,
+    })
+
+    expect(contextualPokemons).toHaveLength(21)
+    expect(contextualPokemons.at(0)?.id).toBe(490)
+    expect(contextualPokemons.at(-1)?.id).toBe(510)
+  })
+
+  it.each([
+    { currentPokemonId: 1, firstPokemonId: 1, lastPokemonId: 21 },
+    { currentPokemonId: 1_025, firstPokemonId: 1_005, lastPokemonId: 1_025 },
+  ])(
+    "clamps route $currentPokemonId to a complete boundary window",
+    ({ currentPokemonId, firstPokemonId, lastPokemonId }) => {
+      const contextualPokemons = getContextualPokemonCatalogEntries({
+        currentPokemonId,
+        pokemons: POKEMON_CATALOG,
+      })
+
+      expect(contextualPokemons).toHaveLength(21)
+      expect(contextualPokemons.at(0)?.id).toBe(firstPokemonId)
+      expect(contextualPokemons.at(-1)?.id).toBe(lastPokemonId)
+    },
+  )
+
+  it("returns every entry when the catalog is smaller than one window", () => {
+    expect(
+      getContextualPokemonCatalogEntries({
+        currentPokemonId: 2,
+        pokemons: POKEMONS,
+      }),
+    ).toEqual(POKEMONS)
+  })
+
+  it.each([
+    { filters: DEFAULT_POKEMON_CATALOG_FILTERS, expected: false },
+    {
+      filters: { ...DEFAULT_POKEMON_CATALOG_FILTERS, search: "   " },
+      expected: false,
+    },
+    {
+      filters: { ...DEFAULT_POKEMON_CATALOG_FILTERS, search: "Pikachu" },
+      expected: true,
+    },
+    {
+      filters: { ...DEFAULT_POKEMON_CATALOG_FILTERS, type: "Electric" },
+      expected: true,
+    },
+    {
+      filters: { ...DEFAULT_POKEMON_CATALOG_FILTERS, sort: "name" as const },
+      expected: true,
+    },
+  ])(
+    "identifies whether discovery controls express intent",
+    ({ filters, expected }) => {
+      expect(hasActivePokemonCatalogDiscovery({ filters })).toBe(expected)
+    },
+  )
+
   it("derives unique Pokémon types in alphabetical order", () => {
     expect(getPokemonCatalogTypes({ pokemons: POKEMONS })).toEqual([
       "Fire",
