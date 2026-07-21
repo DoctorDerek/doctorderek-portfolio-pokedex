@@ -8,7 +8,7 @@ function renderPokemonCatalog() {
 }
 
 describe("PokemonCatalog", () => {
-  it("presents the complete prefetched catalog without loading states", () => {
+  it("presents a nearby default window without loading states", () => {
     renderPokemonCatalog()
 
     const pokemonNavigation = screen.getByRole("navigation", {
@@ -23,14 +23,45 @@ describe("PokemonCatalog", () => {
     expect(
       within(pokemonNavigation).getByRole("link", { name: "0002 Ivysaur" }),
     ).toHaveAttribute("href", "/2")
+    expect(within(pokemonNavigation).getAllByRole("link")).toHaveLength(21)
+    expect(
+      within(pokemonNavigation).getByRole("link", { name: "0021 Spearow" }),
+    ).toHaveAttribute("href", "/21")
+    expect(
+      within(pokemonNavigation).queryByRole("link", {
+        name: "1025 Pecharunt",
+      }),
+    ).not.toBeInTheDocument()
     expect(screen.getByRole("status")).toHaveTextContent(
-      `${MAX_POKEMON_NUMBER} Pokémon ready · ${MAX_POKEMON_NUMBER} shown.`,
+      `21 nearby Pokémon · ${MAX_POKEMON_NUMBER.toLocaleString("en-US")} ready.`,
     )
     expect(screen.queryByRole("alert")).not.toBeInTheDocument()
     expect(
       screen.queryByRole("navigation", { name: "Pokémon catalog pages" }),
     ).not.toBeInTheDocument()
   })
+
+  it.each([
+    { currentPokemonId: 500, firstHref: "/490", lastHref: "/510" },
+    { currentPokemonId: 1_025, firstHref: "/1005", lastHref: "/1025" },
+  ])(
+    "keeps route $currentPokemonId inside a stable contextual window",
+    ({ currentPokemonId, firstHref, lastHref }) => {
+      render(<PokemonCatalog currentPokemonId={currentPokemonId} />)
+
+      const pokemonNavigation = screen.getByRole("navigation", {
+        name: "Pokémon catalog",
+      })
+      const pokemonLinks = within(pokemonNavigation).getAllByRole("link")
+
+      expect(pokemonLinks).toHaveLength(21)
+      expect(pokemonLinks.at(0)).toHaveAttribute("href", firstHref)
+      expect(pokemonLinks.at(-1)).toHaveAttribute("href", lastHref)
+      expect(
+        within(pokemonNavigation).getByRole("link", { current: "page" }),
+      ).toHaveAttribute("href", `/${currentPokemonId}`)
+    },
+  )
 
   it("searches by name and number while filtering by Pokémon type", () => {
     renderPokemonCatalog()
@@ -116,8 +147,12 @@ describe("PokemonCatalog", () => {
     expect(pokemonSearch).toHaveValue("")
     expect(pokemonType).toHaveValue("all")
     expect(pokemonSort).toHaveValue("nationalNumber")
-    expect(
-      within(pokemonNavigation).getAllByRole("link").at(0),
-    ).toHaveAttribute("href", "/1")
+    const resetPokemonLinks = within(pokemonNavigation).getAllByRole("link")
+
+    expect(resetPokemonLinks).toHaveLength(21)
+    expect(resetPokemonLinks.at(0)).toHaveAttribute("href", "/1")
+    expect(screen.getByRole("status")).toHaveTextContent(
+      "21 nearby Pokémon · 1,025 ready.",
+    )
   })
 })

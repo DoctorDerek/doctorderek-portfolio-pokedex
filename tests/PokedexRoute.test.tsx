@@ -36,7 +36,10 @@ describe("App Router Pokédex route", () => {
       "aria-current",
       "page",
     )
-    expect(screen.getByRole("link", { name: "1025 Pecharunt" })).toBeVisible()
+    expect(screen.getByRole("link", { name: "0021 Spearow" })).toBeVisible()
+    expect(
+      screen.queryByRole("link", { name: "1025 Pecharunt" }),
+    ).not.toBeInTheDocument()
     expect(fetchSpy).not.toHaveBeenCalled()
 
     fetchSpy.mockRestore()

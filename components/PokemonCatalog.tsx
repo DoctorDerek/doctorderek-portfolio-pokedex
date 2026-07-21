@@ -6,10 +6,14 @@ import PokemonCatalogList from "@/components/PokemonCatalogList"
 import { MAX_POKEMON_NUMBER, POKEMON_CATALOG } from "@/data/pokemonCatalog"
 import {
   DEFAULT_POKEMON_CATALOG_FILTERS,
+  getContextualPokemonCatalogEntries,
   getPokemonCatalogTypes,
   getVisiblePokemonCatalogEntries,
+  hasActivePokemonCatalogDiscovery,
   type PokemonCatalogFilters,
 } from "@/utils/pokemonCatalog"
+
+const POKEMON_COUNT_FORMATTER = new Intl.NumberFormat("en-US")
 
 export default function PokemonCatalog({
   currentPokemonId,
@@ -37,10 +41,17 @@ export default function PokemonCatalog({
     }),
   }
   const pokemonTypes = getPokemonCatalogTypes({ pokemons: POKEMON_CATALOG })
-  const visiblePokemons = getVisiblePokemonCatalogEntries({
+  const matchingPokemons = getVisiblePokemonCatalogEntries({
     filters,
     pokemons: POKEMON_CATALOG,
   })
+  const hasActiveDiscovery = hasActivePokemonCatalogDiscovery({ filters })
+  const visiblePokemons = hasActiveDiscovery
+    ? matchingPokemons
+    : getContextualPokemonCatalogEntries({
+        currentPokemonId,
+        pokemons: matchingPokemons,
+      })
 
   return (
     <FormProvider {...catalogForm}>
@@ -51,7 +62,10 @@ export default function PokemonCatalog({
         <PokemonCatalogControls pokemonTypes={pokemonTypes} />
         <div className="border-b border-gray-700 px-3 py-2 md:px-4">
           <p role="status" aria-live="polite">
-            {MAX_POKEMON_NUMBER} Pokémon ready · {visiblePokemons.length} shown.
+            {hasActiveDiscovery
+              ? `${POKEMON_COUNT_FORMATTER.format(visiblePokemons.length)} matches`
+              : `${visiblePokemons.length} nearby Pokémon`}{" "}
+            · {POKEMON_COUNT_FORMATTER.format(MAX_POKEMON_NUMBER)} ready.
           </p>
         </div>
         <PokemonCatalogList

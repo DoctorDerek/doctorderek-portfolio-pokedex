@@ -14,9 +14,10 @@ describe("PokedexPageContent", () => {
       "aria-current",
       "page",
     )
+    expect(screen.getByRole("link", { name: "0021 Spearow" })).toBeVisible()
     expect(
-      screen.getByRole("link", { name: "1025 Pecharunt" }),
-    ).toBeInTheDocument()
+      screen.queryByRole("link", { name: "1025 Pecharunt" }),
+    ).not.toBeInTheDocument()
   })
 
   it("reports a missing selected Pokémon without rendering an empty shell", () => {
