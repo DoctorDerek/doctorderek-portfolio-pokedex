@@ -2,7 +2,6 @@ import type { PokemonCatalogEntry } from "@/types/pokemon"
 
 export { MAX_POKEMON_NUMBER } from "@/data/pokemonCatalog"
 
-export const INITIAL_POKEMON_CATALOG_SIZE = 20
 export const ALL_POKEMON_TYPES_VALUE = "all"
 
 export const POKEMON_CATALOG_SORT_OPTIONS = [

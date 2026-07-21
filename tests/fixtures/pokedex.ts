@@ -36,12 +36,6 @@ export const CHARMANDER_CATALOG_FIXTURE: PokemonCatalogEntry = {
   types: ["Fire"],
 }
 
-export const POKEMON_CATALOG_FIXTURES = [
-  BULBASAUR_CATALOG_FIXTURE,
-  IVYSAUR_CATALOG_FIXTURE,
-  CHARMANDER_CATALOG_FIXTURE,
-]
-
 export const BULBASAUR_DOSSIER_FIXTURE: PokemonDossier = {
   ...BULBASAUR_CATALOG_FIXTURE,
   abilities: [
