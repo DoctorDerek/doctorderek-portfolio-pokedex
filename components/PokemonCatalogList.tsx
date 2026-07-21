@@ -1,14 +1,14 @@
 import Link from "next/link"
 import PokemonImage from "@/components/PokemonImage"
-import type { PokemonCatalogEntryFragment } from "@/graphql/generated"
+import type { PokemonCatalogEntry } from "@/types/pokemon"
 import classNames from "@/utils/classNames"
 
 export default function PokemonCatalogList({
-  currentPokemonNumber,
+  currentPokemonId,
   pokemons,
 }: {
-  currentPokemonNumber: string
-  pokemons: ReadonlyArray<PokemonCatalogEntryFragment>
+  currentPokemonId: number
+  pokemons: ReadonlyArray<PokemonCatalogEntry>
 }) {
   return (
     <nav
@@ -22,15 +22,12 @@ export default function PokemonCatalogList({
       ) : (
         <ul className="space-y-2 p-3 md:space-y-4 md:p-4">
           {pokemons.map((pokemon) => {
-            const pokemonNumber = pokemon.number ?? ""
-            const pokemonName = pokemon.name ?? ""
-            const pokemonImageUrl = pokemon.image ?? ""
-            const isCurrentPokemon = pokemonNumber === currentPokemonNumber
+            const isCurrentPokemon = pokemon.id === currentPokemonId
 
             return (
               <li key={pokemon.id}>
                 <Link
-                  href={`/${Number(pokemonNumber)}`}
+                  href={`/${pokemon.id}`}
                   aria-current={isCurrentPokemon ? "page" : undefined}
                   className={classNames(
                     "group flex min-h-12 items-center justify-start gap-3 rounded-lg border-2 border-solid px-3 py-2 motion-safe:transition-[background-color,border-color,transform] motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:-translate-y-0.5 md:gap-4 md:px-4 md:py-3",
@@ -41,13 +38,13 @@ export default function PokemonCatalogList({
                 >
                   <PokemonImage
                     size="h-8 w-8"
-                    imageUrl={pokemonImageUrl}
+                    imageUrl={pokemon.imageUrl}
                     altText=""
                   />
                   <span className="shrink-0 font-bold text-yellow-400">
-                    {pokemonNumber}
+                    {pokemon.number}
                   </span>
-                  <span className="min-w-0 truncate">{pokemonName}</span>
+                  <span className="min-w-0 truncate">{pokemon.name}</span>
                 </Link>
               </li>
             )

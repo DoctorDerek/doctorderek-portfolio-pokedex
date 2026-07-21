@@ -1,61 +1,21 @@
 import { describe, expect, it } from "vitest"
-import type { PokemonCatalogEntryFragment } from "@/graphql/generated"
 import {
-  compactPokemonCatalogEntries,
+  BULBASAUR_CATALOG_FIXTURE,
+  CHARMANDER_CATALOG_FIXTURE,
+  IVYSAUR_CATALOG_FIXTURE,
+} from "@/tests/fixtures/pokedex"
+import {
   getPokemonCatalogTypes,
   getVisiblePokemonCatalogEntries,
-  includeSelectedPokemon,
 } from "@/utils/pokemonCatalog"
 
-const BULBASAUR: PokemonCatalogEntryFragment = {
-  id: "bulbasaur",
-  image: "bulbasaur.png",
-  maxCP: 951,
-  name: "Bulbasaur",
-  number: "001",
-  types: ["Grass", "Poison"],
-}
-
-const IVYSAUR: PokemonCatalogEntryFragment = {
-  id: "ivysaur",
-  image: "ivysaur.png",
-  maxCP: 1483,
-  name: "Ivysaur",
-  number: "002",
-  types: ["Grass", "Poison"],
-}
-
-const CHARMANDER: PokemonCatalogEntryFragment = {
-  id: "charmander",
-  image: "charmander.png",
-  maxCP: 841,
-  name: "Charmander",
-  number: "004",
-  types: ["Fire"],
-}
-
-const POKEMONS = [CHARMANDER, BULBASAUR, IVYSAUR]
+const POKEMONS = [
+  CHARMANDER_CATALOG_FIXTURE,
+  BULBASAUR_CATALOG_FIXTURE,
+  IVYSAUR_CATALOG_FIXTURE,
+]
 
 describe("Pokémon catalog model", () => {
-  it("compacts nullable API entries and includes a missing selection once", () => {
-    const compactedPokemons = compactPokemonCatalogEntries({
-      pokemons: [BULBASAUR, null],
-    })
-
-    expect(
-      includeSelectedPokemon({
-        pokemons: compactedPokemons,
-        selectedPokemon: IVYSAUR,
-      }),
-    ).toEqual([BULBASAUR, IVYSAUR])
-    expect(
-      includeSelectedPokemon({
-        pokemons: [BULBASAUR, IVYSAUR],
-        selectedPokemon: IVYSAUR,
-      }),
-    ).toEqual([BULBASAUR, IVYSAUR])
-  })
-
   it("derives unique Pokémon types in alphabetical order", () => {
     expect(getPokemonCatalogTypes({ pokemons: POKEMONS })).toEqual([
       "Fire",
@@ -65,9 +25,21 @@ describe("Pokémon catalog model", () => {
   })
 
   it.each([
-    { search: "saur", type: "all", expected: [BULBASAUR, IVYSAUR] },
-    { search: "#004", type: "all", expected: [CHARMANDER] },
-    { search: "", type: "Fire", expected: [CHARMANDER] },
+    {
+      search: "saur",
+      type: "all",
+      expected: [BULBASAUR_CATALOG_FIXTURE, IVYSAUR_CATALOG_FIXTURE],
+    },
+    {
+      search: "#0004",
+      type: "all",
+      expected: [CHARMANDER_CATALOG_FIXTURE],
+    },
+    {
+      search: "",
+      type: "Fire",
+      expected: [CHARMANDER_CATALOG_FIXTURE],
+    },
   ])("filters by search and type", ({ search, type, expected }) => {
     expect(
       getVisiblePokemonCatalogEntries({
@@ -80,12 +52,27 @@ describe("Pokémon catalog model", () => {
   it.each([
     {
       sort: "nationalNumber" as const,
-      expected: [BULBASAUR, IVYSAUR, CHARMANDER],
+      expected: [
+        BULBASAUR_CATALOG_FIXTURE,
+        IVYSAUR_CATALOG_FIXTURE,
+        CHARMANDER_CATALOG_FIXTURE,
+      ],
     },
-    { sort: "name" as const, expected: [BULBASAUR, CHARMANDER, IVYSAUR] },
     {
-      sort: "maximumCombatPower" as const,
-      expected: [IVYSAUR, BULBASAUR, CHARMANDER],
+      sort: "name" as const,
+      expected: [
+        BULBASAUR_CATALOG_FIXTURE,
+        CHARMANDER_CATALOG_FIXTURE,
+        IVYSAUR_CATALOG_FIXTURE,
+      ],
+    },
+    {
+      sort: "baseStatTotal" as const,
+      expected: [
+        IVYSAUR_CATALOG_FIXTURE,
+        BULBASAUR_CATALOG_FIXTURE,
+        CHARMANDER_CATALOG_FIXTURE,
+      ],
     },
   ])("sorts deterministically by $sort", ({ sort, expected }) => {
     expect(

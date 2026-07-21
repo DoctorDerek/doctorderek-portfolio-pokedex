@@ -68,12 +68,12 @@ describe("PokedexPageContent", () => {
     expect(
       screen.getByRole("region", { name: "Ivysaur #002" }),
     ).toBeInTheDocument()
-    expect(screen.getByRole("link", { name: "002 Ivysaur" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "0002 Ivysaur" })).toHaveAttribute(
       "aria-current",
       "page",
     )
     expect(
-      await screen.findByRole("link", { name: "004 Charmander" }),
+      await screen.findByRole("link", { name: "0004 Charmander" }),
     ).toBeInTheDocument()
   })
 
