@@ -1,4 +1,9 @@
 import type { PokedexSnapshotQuery } from "@/graphql/pokeapi.generated"
+import type {
+  PokedexArtifacts,
+  PokemonCatalogEntry,
+  PokemonDossier,
+} from "../types/pokemon.js"
 
 export const EXPECTED_POKEMON_COUNT = 1_025
 
@@ -16,48 +21,6 @@ const REQUIRED_BASE_STAT_NAMES = [
 ] as const
 
 type RequiredBaseStatName = (typeof REQUIRED_BASE_STAT_NAMES)[number]
-
-export interface PokemonCatalogArtifactEntry {
-  baseStatTotal: number
-  generation: string
-  id: number
-  imageUrl: string
-  name: string
-  number: string
-  slug: string
-  types: string[]
-}
-
-export interface PokemonDossierArtifact extends PokemonCatalogArtifactEntry {
-  abilities: {
-    isHidden: boolean
-    name: string
-  }[]
-  baseExperience: number | null
-  baseHappiness: number | null
-  baseStats: {
-    attack: number
-    defense: number
-    hp: number
-    specialAttack: number
-    specialDefense: number
-    speed: number
-  }
-  captureRate: number | null
-  category: string
-  color: string | null
-  habitat: string | null
-  heightInMeters: number | null
-  isLegendary: boolean
-  isMythical: boolean
-  shape: string | null
-  weightInKilograms: number | null
-}
-
-export interface PokedexArtifacts {
-  catalog: PokemonCatalogArtifactEntry[]
-  dossiers: PokemonDossierArtifact[]
-}
 
 export function createPokedexArtifacts(data: PokedexSnapshotQuery) {
   const aggregatePokemonCount = data.pokemonspecies_aggregate.aggregate?.count
@@ -79,7 +42,7 @@ export function createPokedexArtifacts(data: PokedexSnapshotQuery) {
   if (dossiers.some(({ id }, index) => id !== index + 1))
     throw new Error("PokéAPI did not return one continuous national Pokédex.")
 
-  const catalog = dossiers.map(
+  const catalog: PokemonCatalogEntry[] = dossiers.map(
     ({
       baseStatTotal,
       generation,
@@ -106,7 +69,7 @@ export function createPokedexArtifacts(data: PokedexSnapshotQuery) {
 
 function createPokemonDossier(
   pokemon: PokedexSnapshotQuery["pokemon"][number],
-): PokemonDossierArtifact {
+): PokemonDossier {
   const speciesId = pokemon.pokemon_species_id
   const species = pokemon.pokemonspecy
 
