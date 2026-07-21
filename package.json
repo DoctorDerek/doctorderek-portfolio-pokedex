@@ -10,6 +10,7 @@
     "format": "prettier --write .",
     "test": "vitest run --passWithNoTests",
     "test:coverage": "vitest run --coverage --passWithNoTests",
+    "generateData": "node scripts/generatePokedexData.mts",
     "generateTypes": "graphql-codegen"
   },
   "dependencies": {
