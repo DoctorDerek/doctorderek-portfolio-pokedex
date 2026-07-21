@@ -3,6 +3,7 @@ import type { PokemonCatalogEntry } from "@/types/pokemon"
 export { MAX_POKEMON_NUMBER } from "@/data/pokemonCatalog"
 
 export const ALL_POKEMON_TYPES_VALUE = "all"
+export const POKEMON_CATALOG_CONTEXT_RADIUS = 10
 
 export const POKEMON_CATALOG_SORT_OPTIONS = [
   "nationalNumber",
@@ -23,6 +24,44 @@ export const DEFAULT_POKEMON_CATALOG_FILTERS: PokemonCatalogFilters = {
   search: "",
   sort: "nationalNumber",
   type: ALL_POKEMON_TYPES_VALUE,
+}
+
+export function hasActivePokemonCatalogDiscovery({
+  filters,
+}: {
+  filters: PokemonCatalogFilters
+}) {
+  return (
+    filters.search.trim().length > 0 ||
+    filters.sort !== DEFAULT_POKEMON_CATALOG_FILTERS.sort ||
+    filters.type !== DEFAULT_POKEMON_CATALOG_FILTERS.type
+  )
+}
+
+export function getContextualPokemonCatalogEntries({
+  currentPokemonId,
+  pokemons,
+}: {
+  currentPokemonId: number
+  pokemons: ReadonlyArray<PokemonCatalogEntry>
+}) {
+  const contextualCatalogSize = POKEMON_CATALOG_CONTEXT_RADIUS * 2 + 1
+  const currentPokemonIndex = pokemons.findIndex(
+    ({ id }) => id === currentPokemonId,
+  )
+  const maximumWindowStartIndex = Math.max(
+    pokemons.length - contextualCatalogSize,
+    0,
+  )
+  const windowStartIndex = Math.min(
+    Math.max(currentPokemonIndex - POKEMON_CATALOG_CONTEXT_RADIUS, 0),
+    maximumWindowStartIndex,
+  )
+
+  return pokemons.slice(
+    windowStartIndex,
+    windowStartIndex + contextualCatalogSize,
+  )
 }
 
 export function getPokemonCatalogTypes({
