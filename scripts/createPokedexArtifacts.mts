@@ -25,14 +25,14 @@ export interface PokemonCatalogArtifactEntry {
   name: string
   number: string
   slug: string
-  types: Array<string>
+  types: string[]
 }
 
 export interface PokemonDossierArtifact extends PokemonCatalogArtifactEntry {
-  abilities: Array<{
+  abilities: {
     isHidden: boolean
     name: string
-  }>
+  }[]
   baseExperience: number | null
   baseHappiness: number | null
   baseStats: {
@@ -55,8 +55,8 @@ export interface PokemonDossierArtifact extends PokemonCatalogArtifactEntry {
 }
 
 export interface PokedexArtifacts {
-  catalog: Array<PokemonCatalogArtifactEntry>
-  dossiers: Array<PokemonDossierArtifact>
+  catalog: PokemonCatalogArtifactEntry[]
+  dossiers: PokemonDossierArtifact[]
 }
 
 export function createPokedexArtifacts(data: PokedexSnapshotQuery) {

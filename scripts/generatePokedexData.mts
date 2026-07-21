@@ -4,7 +4,7 @@ import type { PokedexSnapshotQuery } from "@/graphql/pokeapi.generated"
 import {
   createPokedexArtifacts,
   EXPECTED_POKEMON_COUNT,
-} from "./createPokedexArtifacts.ts"
+} from "./createPokedexArtifacts.mts"
 
 const POKEAPI_GRAPHQL_ENDPOINT = "https://graphql.pokeapi.co/v1beta2"
 const POKEAPI_GRAPHQL_DOCUMENT_URL = new URL(

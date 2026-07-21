@@ -3,7 +3,7 @@ import type { PokedexSnapshotQuery } from "@/graphql/pokeapi.generated"
 import {
   createPokedexArtifacts,
   EXPECTED_POKEMON_COUNT,
-} from "@/scripts/createPokedexArtifacts"
+} from "@/scripts/createPokedexArtifacts.mjs"
 
 function createPokemonSnapshotEntry(
   id: number,
