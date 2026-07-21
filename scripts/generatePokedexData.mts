@@ -1,5 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises"
 import { pathToFileURL } from "node:url"
+import { format } from "prettier"
 import type { PokedexSnapshotQuery } from "@/graphql/pokeapi.generated"
 import {
   createPokedexArtifacts,
@@ -75,17 +76,15 @@ async function fetchPokedexSnapshot() {
 async function generatePokedexData() {
   const snapshot = await fetchPokedexSnapshot()
   const { catalog, dossiers } = createPokedexArtifacts(snapshot)
+  const [catalogJson, dossiersJson] = await Promise.all([
+    format(JSON.stringify(catalog), { parser: "json" }),
+    format(JSON.stringify(dossiers), { parser: "json" }),
+  ])
 
   await mkdir(DATA_OUTPUT_DIRECTORY_URL, { recursive: true })
   await Promise.all([
-    writeFile(
-      POKEMON_CATALOG_OUTPUT_URL,
-      `${JSON.stringify(catalog, null, 2)}\n`,
-    ),
-    writeFile(
-      POKEMON_DOSSIERS_OUTPUT_URL,
-      `${JSON.stringify(dossiers, null, 2)}\n`,
-    ),
+    writeFile(POKEMON_CATALOG_OUTPUT_URL, catalogJson),
+    writeFile(POKEMON_DOSSIERS_OUTPUT_URL, dossiersJson),
   ])
 }
 
