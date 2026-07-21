@@ -11,6 +11,14 @@ const config: CodegenConfig = {
         useTypeImports: true,
       },
     },
+    "./graphql/pokemonSearch.generated.ts": {
+      schema: "https://graphql.pokeapi.co/v1beta2",
+      documents: "graphql/pokemonSearch.graphql",
+      plugins: ["typescript-operations"],
+      config: {
+        useTypeImports: true,
+      },
+    },
   },
   hooks: {
     afterOneFileWrite: ["prettier --write"],
