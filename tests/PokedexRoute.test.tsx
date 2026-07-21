@@ -1,25 +1,13 @@
 import { render, screen } from "@testing-library/react"
-import { graphql, HttpResponse } from "msw"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import PokedexPage, {
   dynamicParams,
   generateStaticParams,
 } from "@/app/[id]/page"
-import ApplicationProviders from "@/app/providers"
-import {
-  BULBASAUR_FIXTURE,
-  IVYSAUR_FIXTURE,
-  POKEMON_CATALOG_FIXTURES,
-} from "@/tests/fixtures/pokemon"
-import { pokemonApiServer } from "@/tests/mocks/pokemonApiServer"
-import { GRAPHQL_API_ENDPOINT } from "@/utils/fetchPokemonApi"
-import {
-  INITIAL_POKEMON_CATALOG_SIZE,
-  MAX_POKEMON_NUMBER,
-} from "@/utils/pokemonCatalog"
+import { MAX_POKEMON_NUMBER } from "@/data/pokemonCatalog"
 
 describe("App Router Pokédex route", () => {
-  it("owns every original Pokédex number as a unique static parameter", () => {
+  it("owns every canonical Pokédex number as a unique static parameter", () => {
     const staticParameters = generateStaticParams()
 
     expect(dynamicParams).toBe(false)
@@ -33,44 +21,24 @@ describe("App Router Pokédex route", () => {
     )
   })
 
-  it("resolves async route parameters into the selected GraphQL dossier", async () => {
-    pokemonApiServer.use(
-      graphql
-        .link(GRAPHQL_API_ENDPOINT)
-        .query("PokedexPage", ({ variables }) => {
-          expect(variables).toEqual({
-            catalogSize: INITIAL_POKEMON_CATALOG_SIZE,
-            pokemonId: "UG9rZW1vbjowMDI=",
-          })
-
-          return HttpResponse.json({
-            data: {
-              pokemon: IVYSAUR_FIXTURE,
-              pokemons: [BULBASAUR_FIXTURE, IVYSAUR_FIXTURE],
-            },
-          })
-        }),
-      graphql.link(GRAPHQL_API_ENDPOINT).query("PokemonCatalog", () =>
-        HttpResponse.json({
-          data: { pokemons: POKEMON_CATALOG_FIXTURES },
-        }),
-      ),
-    )
+  it("resolves route parameters from the local dossier without fetching", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch")
     const routeContent = await PokedexPage({
       params: Promise.resolve({ id: "2" }),
     })
 
-    render(<ApplicationProviders>{routeContent}</ApplicationProviders>)
+    render(routeContent)
 
     expect(
-      screen.getByRole("heading", { level: 2, name: "Ivysaur #002" }),
+      screen.getByRole("heading", { level: 2, name: "Ivysaur #0002" }),
     ).toBeVisible()
     expect(screen.getByRole("link", { name: "0002 Ivysaur" })).toHaveAttribute(
       "aria-current",
       "page",
     )
-    expect(
-      await screen.findByRole("link", { name: "0004 Charmander" }),
-    ).toBeVisible()
+    expect(screen.getByRole("link", { name: "1025 Pecharunt" })).toBeVisible()
+    expect(fetchSpy).not.toHaveBeenCalled()
+
+    fetchSpy.mockRestore()
   })
 })

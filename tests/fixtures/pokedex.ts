@@ -1,4 +1,4 @@
-import type { PokemonCatalogEntry } from "@/types/pokemon"
+import type { PokemonCatalogEntry, PokemonDossier } from "@/types/pokemon"
 
 export const BULBASAUR_CATALOG_FIXTURE: PokemonCatalogEntry = {
   baseStatTotal: 318,
@@ -41,3 +41,46 @@ export const POKEMON_CATALOG_FIXTURES = [
   IVYSAUR_CATALOG_FIXTURE,
   CHARMANDER_CATALOG_FIXTURE,
 ]
+
+export const BULBASAUR_DOSSIER_FIXTURE: PokemonDossier = {
+  ...BULBASAUR_CATALOG_FIXTURE,
+  abilities: [
+    { isHidden: false, name: "Overgrow" },
+    { isHidden: true, name: "Chlorophyll" },
+  ],
+  baseExperience: 64,
+  baseHappiness: 50,
+  baseStats: {
+    attack: 49,
+    defense: 49,
+    hp: 45,
+    specialAttack: 65,
+    specialDefense: 65,
+    speed: 45,
+  },
+  captureRate: 45,
+  category: "Seed Pokémon",
+  color: "Green",
+  habitat: "Grassland",
+  heightInMeters: 0.7,
+  isLegendary: false,
+  isMythical: false,
+  shape: "Quadruped",
+  weightInKilograms: 6.9,
+}
+
+export const IVYSAUR_DOSSIER_FIXTURE: PokemonDossier = {
+  ...BULBASAUR_DOSSIER_FIXTURE,
+  ...IVYSAUR_CATALOG_FIXTURE,
+  baseExperience: 142,
+  baseStats: {
+    attack: 62,
+    defense: 63,
+    hp: 60,
+    specialAttack: 80,
+    specialDefense: 80,
+    speed: 60,
+  },
+  heightInMeters: 1,
+  weightInKilograms: 13,
+}

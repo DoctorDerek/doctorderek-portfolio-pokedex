@@ -1,46 +1,27 @@
 import PokemonImage from "@/components/PokemonImage"
-import type { Pokemon } from "@/graphql/generated"
+import type { PokemonDossier } from "@/types/pokemon"
 import classNames from "@/utils/classNames"
 
-const ACCESSIBLE_ATTRIBUTE_TITLES: { [key in keyof Pokemon]: string } = {
-  attacks: "The attacks of this Pokémon",
-  classification: "The classification of this Pokémon",
-  evolutionRequirements: "The evolution requirements of this Pokémon",
-  evolutions: "The evolutions of this Pokémon",
-  fleeRate: "The flee rate of this Pokémon",
-  height: "The minimum and maximum height of this Pokémon",
-  maxCP: "The maximum Combat Power (CP) of this Pokémon",
-  maxHP: "The maximum Hit Points (HP) of this Pokémon",
+const ACCESSIBLE_ATTRIBUTE_TITLES = {
+  abilities: "The abilities of this Pokémon",
+  baseExperience: "The base experience awarded by this Pokémon",
+  baseHp: "The base Hit Points of this Pokémon",
+  baseSpeed: "The base Speed of this Pokémon",
+  baseStatTotal: "The total of this Pokémon’s six base stats",
+  category: "The category of this Pokémon",
+  generation: "The generation in which this Pokémon debuted",
+  height: "The canonical height of this Pokémon",
   name: "The name of this Pokémon",
-  number: "The identifier of this Pokémon",
-  resistant: "The types this Pokémon resists",
-  types: "The type(s) of this Pokémon",
-  weaknesses: "The types this Pokémon is weak to",
-  weight: "The minimum and maximum weight of this Pokémon",
-  id: "The unique identifier of this Pokémon in the API",
-}
+  number: "The National Pokédex identifier of this Pokémon",
+  types: "The type or types of this Pokémon",
+  weight: "The canonical weight of this Pokémon",
+} as const
 
-const PERCENTAGE_FORMATTER = new Intl.NumberFormat("en-US", {
-  style: "percent",
-  maximumFractionDigits: 2,
-})
-
-export default function PokemonDetailsPanel({ pokemon }: { pokemon: Pokemon }) {
-  const {
-    classification,
-    fleeRate,
-    height,
-    image,
-    maxCP,
-    maxHP,
-    name,
-    number,
-    resistant,
-    types,
-    weaknesses,
-    weight,
-  } = pokemon
-
+export default function PokemonDetailsPanel({
+  pokemon,
+}: {
+  pokemon: PokemonDossier
+}) {
   return (
     <section
       aria-labelledby="selected-pokemon-heading"
@@ -50,106 +31,97 @@ export default function PokemonDetailsPanel({ pokemon }: { pokemon: Pokemon }) {
         id="selected-pokemon-heading"
         className="flex justify-between border-b-2 border-solid border-b-gray-800 p-5 text-xl sm:p-6 sm:text-2xl md:p-8"
       >
-        {name && (
-          <span
-            className="tracking-wide"
-            title={ACCESSIBLE_ATTRIBUTE_TITLES.name}
-          >
-            {name}
-          </span>
-        )}
-        {number && (
-          <span
-            className="tracking-widest text-yellow-400"
-            title={ACCESSIBLE_ATTRIBUTE_TITLES.number}
-          >
-            #{number}
-          </span>
-        )}
+        <span
+          className="tracking-wide"
+          title={ACCESSIBLE_ATTRIBUTE_TITLES.name}
+        >
+          {pokemon.name}
+        </span>
+        <span
+          className="tracking-widest text-yellow-400"
+          title={ACCESSIBLE_ATTRIBUTE_TITLES.number}
+        >
+          #{pokemon.number}
+        </span>
       </h2>
       <div className="grid gap-3 p-4 md:h-104 md:content-between">
         <div className="grid grid-cols-2 items-stretch gap-3 sm:grid-cols-[1fr_auto_1fr]">
-          {classification && (
-            <PokemonAttribute
-              title="classification"
-              attribute="Classification"
-              value={`“${classification}”`}
-              className="col-start-1 row-start-2 sm:row-start-1"
+          <PokemonAttribute
+            title="category"
+            attribute="Category"
+            value={`“${pokemon.category}”`}
+            className="col-start-1 row-start-2 sm:row-start-1"
+          />
+          <div className="col-span-2 row-start-1 flex items-center justify-center sm:col-span-1 sm:col-start-2">
+            <PokemonImage
+              size="h-16 w-16"
+              imageUrl={pokemon.imageUrl}
+              altText={pokemon.name}
             />
-          )}
-          {image && (
-            <div className="col-span-2 row-start-1 flex items-center justify-center sm:col-span-1 sm:col-start-2">
-              <PokemonImage
-                size="h-16 w-16"
-                imageUrl={image}
-                altText={name ?? ""}
-              />
-            </div>
-          )}
-          {Array.isArray(types) && (
-            <PokemonAttribute
-              title="types"
-              attribute="Types"
-              value={types.join(", ")}
-              className="col-start-2 row-start-2 sm:col-start-3 sm:row-start-1"
-            />
-          )}
+          </div>
+          <PokemonAttribute
+            title="types"
+            attribute="Types"
+            value={pokemon.types.join(", ")}
+            className="col-start-2 row-start-2 sm:col-start-3 sm:row-start-1"
+          />
         </div>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {maxCP && (
-            <PokemonAttribute
-              title="maxCP"
-              attribute="Max CP"
-              value={String(maxCP)}
-            />
-          )}
-          {maxHP && (
-            <PokemonAttribute
-              title="maxHP"
-              attribute="Max HP"
-              value={String(maxHP)}
-            />
-          )}
-          {fleeRate && (
-            <PokemonAttribute
-              title="fleeRate"
-              attribute="Flee Rate"
-              value={PERCENTAGE_FORMATTER.format(fleeRate)}
-            />
-          )}
+          <PokemonAttribute
+            title="baseStatTotal"
+            attribute="Base Stat Total"
+            value={String(pokemon.baseStatTotal)}
+          />
+          <PokemonAttribute
+            title="baseHp"
+            attribute="Base HP"
+            value={String(pokemon.baseStats.hp)}
+          />
+          <PokemonAttribute
+            title="baseSpeed"
+            attribute="Base Speed"
+            value={String(pokemon.baseStats.speed)}
+          />
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          {height?.minimum && height.maximum && (
+          {pokemon.heightInMeters !== null && (
             <PokemonAttribute
               title="height"
               attribute="Height"
-              value={`Min: ${height.minimum}; Max: ${height.maximum}`}
+              value={`${pokemon.heightInMeters} m`}
             />
           )}
-          {weight?.minimum && weight.maximum && (
+          {pokemon.weightInKilograms !== null && (
             <PokemonAttribute
               title="weight"
               attribute="Weight"
-              value={`Min: ${weight.minimum}; Max: ${weight.maximum}`}
+              value={`${pokemon.weightInKilograms} kg`}
             />
           )}
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          {Array.isArray(weaknesses) && (
-            <PokemonAttribute
-              title="weaknesses"
-              attribute="Weaknesses"
-              value={weaknesses.join(", ")}
-            />
-          )}
-          {Array.isArray(resistant) && (
-            <PokemonAttribute
-              title="resistant"
-              attribute="Resistances"
-              value={resistant.join(", ")}
-            />
-          )}
+          <PokemonAttribute
+            title="generation"
+            attribute="Debut"
+            value={pokemon.generation}
+          />
+          <PokemonAttribute
+            title="abilities"
+            attribute="Abilities"
+            value={pokemon.abilities
+              .map(({ isHidden, name }) =>
+                isHidden ? `${name} (Hidden)` : name,
+              )
+              .join(", ")}
+          />
         </div>
+        {pokemon.baseExperience !== null && (
+          <PokemonAttribute
+            title="baseExperience"
+            attribute="Base Experience"
+            value={String(pokemon.baseExperience)}
+          />
+        )}
       </div>
     </section>
   )
