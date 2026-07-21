@@ -1,0 +1,66 @@
+# Approved documentation exception: this executable document is GraphQL Code Generator’s canonical human-readable operation source.
+query PokedexSnapshot($pokemonCount: Int!) {
+  pokemon(
+    limit: $pokemonCount
+    order_by: { pokemon_species_id: asc }
+    where: {
+      is_default: { _eq: true }
+      pokemon_species_id: { _is_null: false }
+    }
+  ) {
+    id
+    name
+    height
+    weight
+    base_experience
+    pokemon_species_id
+    pokemonabilities(order_by: { slot: asc }) {
+      is_hidden
+      ability {
+        name
+      }
+    }
+    pokemonstats(order_by: { stat_id: asc }) {
+      base_stat
+      stat {
+        name
+      }
+    }
+    pokemontypes(order_by: { slot: asc }) {
+      type {
+        name
+      }
+    }
+    pokemonspecy {
+      id
+      base_happiness
+      capture_rate
+      is_legendary
+      is_mythical
+      generation {
+        name
+      }
+      pokemoncolor {
+        name
+      }
+      pokemonhabitat {
+        name
+      }
+      pokemonshape {
+        name
+      }
+      pokemonspeciesnames(
+        limit: 1
+        where: { language: { name: { _eq: "en" } } }
+      ) {
+        genus
+        name
+      }
+    }
+  }
+  pokemonspecies_aggregate {
+    aggregate {
+      count
+    }
+  }
+}
