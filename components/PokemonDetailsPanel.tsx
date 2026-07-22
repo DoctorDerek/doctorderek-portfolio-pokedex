@@ -2,20 +2,42 @@ import PokemonImage from "@/components/PokemonImage"
 import type { PokemonDossier } from "@/types/pokemon"
 import classNames from "@/utils/classNames"
 
+type DirectAccessiblePokemonAttribute = keyof Pick<
+  PokemonDossier,
+  | "abilities"
+  | "baseExperience"
+  | "baseStatTotal"
+  | "category"
+  | "generation"
+  | "heightInMeters"
+  | "name"
+  | "number"
+  | "types"
+  | "weightInKilograms"
+>
+
+type AccessiblePokemonBaseStat = keyof Pick<
+  PokemonDossier["baseStats"],
+  "hp" | "speed"
+>
+
+type AccessiblePokemonAttribute =
+  DirectAccessiblePokemonAttribute | `baseStats.${AccessiblePokemonBaseStat}`
+
 const ACCESSIBLE_ATTRIBUTE_TITLES = {
   abilities: "The abilities of this Pokémon",
   baseExperience: "The base experience awarded by this Pokémon",
-  baseHp: "The base Hit Points of this Pokémon",
-  baseSpeed: "The base Speed of this Pokémon",
+  "baseStats.hp": "The base Hit Points of this Pokémon",
+  "baseStats.speed": "The base Speed of this Pokémon",
   baseStatTotal: "The total of this Pokémon’s six base stats",
   category: "The category of this Pokémon",
   generation: "The generation in which this Pokémon debuted",
-  height: "The canonical height of this Pokémon",
+  heightInMeters: "The canonical height of this Pokémon",
   name: "The name of this Pokémon",
   number: "The National Pokédex identifier of this Pokémon",
   types: "The type or types of this Pokémon",
-  weight: "The canonical weight of this Pokémon",
-} as const
+  weightInKilograms: "The canonical weight of this Pokémon",
+} as const satisfies Record<AccessiblePokemonAttribute, string>
 
 export default function PokemonDetailsPanel({
   pokemon,
@@ -73,12 +95,12 @@ export default function PokemonDetailsPanel({
             value={String(pokemon.baseStatTotal)}
           />
           <PokemonAttribute
-            title="baseHp"
+            title="baseStats.hp"
             attribute="Base HP"
             value={String(pokemon.baseStats.hp)}
           />
           <PokemonAttribute
-            title="baseSpeed"
+            title="baseStats.speed"
             attribute="Base Speed"
             value={String(pokemon.baseStats.speed)}
           />
@@ -86,14 +108,14 @@ export default function PokemonDetailsPanel({
         <div className="grid gap-3 sm:grid-cols-2">
           {pokemon.heightInMeters !== null && (
             <PokemonAttribute
-              title="height"
+              title="heightInMeters"
               attribute="Height"
               value={`${pokemon.heightInMeters} m`}
             />
           )}
           {pokemon.weightInKilograms !== null && (
             <PokemonAttribute
-              title="weight"
+              title="weightInKilograms"
               attribute="Weight"
               value={`${pokemon.weightInKilograms} kg`}
             />
