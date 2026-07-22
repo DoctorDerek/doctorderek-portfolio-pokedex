@@ -53,6 +53,15 @@ test.describe("GraphQL Pokémon research", () => {
       })
     })
     await page.goto("/1")
+    await expect(
+      page
+        .getByRole("navigation", { name: "Pokémon catalog" })
+        .locator('a[href="/25"]'),
+    ).toHaveCount(1)
+
+    const graphqlSearchRegion = page.getByRole("region", {
+      name: "GraphQL Search",
+    })
     const pokemonName = page.getByRole("searchbox", { name: "Pokémon name" })
     const graphqlSearch = page.getByRole("button", { name: "GraphQL Search" })
 
@@ -62,15 +71,16 @@ test.describe("GraphQL Pokémon research", () => {
 
     await graphqlSearch.click()
 
-    await expect(page.getByRole("link", { name: /Pikachu/ })).toHaveAttribute(
-      "href",
-      "/25",
-    )
+    await expect(
+      graphqlSearchRegion.getByRole("link", { name: /Pikachu/ }),
+    ).toHaveAttribute("href", "/25")
     expect(requestCount).toBe(1)
 
     await graphqlSearch.click()
 
-    await expect(page.getByRole("link", { name: /Pikachu/ })).toBeVisible()
+    await expect(
+      graphqlSearchRegion.getByRole("link", { name: /Pikachu/ }),
+    ).toBeVisible()
     expect(requestCount).toBe(1)
   })
 })
@@ -89,6 +99,11 @@ test.describe("mobile GraphQL Pokémon research", () => {
       })
     })
     await page.goto("/1")
+    await expect(
+      page
+        .getByRole("navigation", { name: "Pokémon catalog" })
+        .locator('a[href="/25"]'),
+    ).toHaveCount(1)
     await page
       .getByRole("navigation", { name: "Pokédex research workspace" })
       .getByRole("link", { name: "GraphQL Search" })

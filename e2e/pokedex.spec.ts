@@ -241,6 +241,12 @@ test.describe("mobile Pokédex", () => {
       name: "Local Pokédex",
       exact: true,
     })
+    await expect(
+      localDiscovery
+        .getByRole("navigation", { name: "Pokémon catalog" })
+        .locator('a[href="/25"]'),
+    ).toHaveCount(1)
+
     const pokemonSearch = localDiscovery.getByRole("searchbox", {
       name: "Search Pokémon",
     })
