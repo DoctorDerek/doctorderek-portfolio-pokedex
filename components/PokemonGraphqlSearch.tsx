@@ -6,6 +6,7 @@ import PokemonGraphqlSearchForm from "@/components/PokemonGraphqlSearchForm"
 import PokemonGraphqlSearchResults, {
   type PokemonGraphqlSearchResultsState,
 } from "@/components/PokemonGraphqlSearchResults"
+import { POKEDEX_WORKSPACE_SECTION_IDS } from "@/data/pokedexWorkspace"
 import { POKEMON_CATALOG } from "@/data/pokemonCatalog"
 import {
   useAdvancedPokemonSearchQuery,
@@ -83,8 +84,10 @@ export default function PokemonGraphqlSearch() {
 
   return (
     <section
+      id={POKEDEX_WORKSPACE_SECTION_IDS.graphqlSearch}
       aria-labelledby="graphql-search-heading"
-      className="w-full rounded-lg border-2 border-gray-700 bg-gray-900 p-4 text-white shadow-2xl sm:p-6"
+      tabIndex={-1}
+      className="w-full scroll-mt-20 rounded-lg border-2 border-gray-700 bg-gray-900 p-4 text-white shadow-2xl sm:p-6"
     >
       <div className="mb-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">

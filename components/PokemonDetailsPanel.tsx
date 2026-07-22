@@ -1,4 +1,5 @@
 import PokemonImage from "@/components/PokemonImage"
+import { POKEDEX_WORKSPACE_SECTION_IDS } from "@/data/pokedexWorkspace"
 import type { PokemonDossier } from "@/types/pokemon"
 import classNames from "@/utils/classNames"
 
@@ -46,8 +47,10 @@ export default function PokemonDetailsPanel({
 }) {
   return (
     <section
+      id={POKEDEX_WORKSPACE_SECTION_IDS.dossier}
       aria-labelledby="selected-pokemon-heading"
-      className="order-1 w-full bg-gray-700 motion-safe:animate-[dossier-reveal_240ms_ease-out] md:order-2"
+      tabIndex={-1}
+      className="order-1 w-full scroll-mt-20 bg-gray-700 motion-safe:animate-[dossier-reveal_240ms_ease-out] md:order-2"
     >
       <h2
         id="selected-pokemon-heading"
