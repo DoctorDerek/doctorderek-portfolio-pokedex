@@ -1,0 +1,92 @@
+# Approved documentation exception: this executable document is GraphQL Code Generator’s canonical runtime search contract.
+query AdvancedPokemonSearch(
+  $namePattern: String!
+  $typePattern: String!
+  $generationPattern: String!
+  $legendaryStatuses: [Boolean!]!
+  $mythicalStatuses: [Boolean!]!
+  $minimumBaseExperience: Int!
+  $limit: Int!
+  $orderByNumber: Boolean!
+  $orderByName: Boolean!
+  $orderByBaseExperience: Boolean!
+) {
+  byNumber: pokemon(
+    limit: $limit
+    order_by: [{ id: asc }]
+    where: {
+      id: { _lte: 1025 }
+      is_default: { _eq: true }
+      name: { _ilike: $namePattern }
+      base_experience: { _gte: $minimumBaseExperience }
+      pokemontypes: { type: { name: { _ilike: $typePattern } } }
+      pokemonspecy: {
+        generation: { name: { _ilike: $generationPattern } }
+        is_legendary: { _in: $legendaryStatuses }
+        is_mythical: { _in: $mythicalStatuses }
+      }
+    }
+  ) @include(if: $orderByNumber) {
+    ...PokemonSearchResult
+  }
+  byName: pokemon(
+    limit: $limit
+    order_by: [{ name: asc }, { id: asc }]
+    where: {
+      id: { _lte: 1025 }
+      is_default: { _eq: true }
+      name: { _ilike: $namePattern }
+      base_experience: { _gte: $minimumBaseExperience }
+      pokemontypes: { type: { name: { _ilike: $typePattern } } }
+      pokemonspecy: {
+        generation: { name: { _ilike: $generationPattern } }
+        is_legendary: { _in: $legendaryStatuses }
+        is_mythical: { _in: $mythicalStatuses }
+      }
+    }
+  ) @include(if: $orderByName) {
+    ...PokemonSearchResult
+  }
+  byBaseExperience: pokemon(
+    limit: $limit
+    order_by: [{ base_experience: desc_nulls_last }, { id: asc }]
+    where: {
+      id: { _lte: 1025 }
+      is_default: { _eq: true }
+      name: { _ilike: $namePattern }
+      base_experience: { _gte: $minimumBaseExperience }
+      pokemontypes: { type: { name: { _ilike: $typePattern } } }
+      pokemonspecy: {
+        generation: { name: { _ilike: $generationPattern } }
+        is_legendary: { _in: $legendaryStatuses }
+        is_mythical: { _in: $mythicalStatuses }
+      }
+    }
+  ) @include(if: $orderByBaseExperience) {
+    ...PokemonSearchResult
+  }
+}
+
+fragment PokemonSearchResult on pokemon {
+  base_experience
+  id
+  name
+  pokemonspecy {
+    generation {
+      name
+    }
+    is_legendary
+    is_mythical
+    pokemonspeciesnames(
+      limit: 1
+      where: { language: { name: { _eq: "en" } } }
+    ) {
+      name
+    }
+  }
+  pokemontypes(order_by: [{ slot: asc }]) {
+    type {
+      name
+    }
+  }
+}

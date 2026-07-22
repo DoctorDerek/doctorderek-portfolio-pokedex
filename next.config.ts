@@ -6,7 +6,9 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "img.pokemondb.net",
+        hostname: "raw.githubusercontent.com",
+        pathname:
+          "/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/**",
       },
     ],
   },

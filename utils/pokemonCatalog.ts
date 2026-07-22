@@ -1,16 +1,14 @@
-import type { PokemonCatalogEntryFragment } from "@/graphql/generated"
+import type { PokemonCatalogEntry } from "@/types/pokemon"
 
-export const INITIAL_POKEMON_CATALOG_SIZE = 20
-export const MAX_POKEMON_NUMBER = 151
-export const POKEMON_CATALOG_STALE_TIME_MS = 24 * 60 * 60 * 1_000
-export const POKEMON_CATALOG_RETRY_COUNT = 1
-export const POKEMON_CATALOG_RETRY_DELAY_MS = 500
+export { MAX_POKEMON_NUMBER } from "@/data/pokemonCatalog"
+
 export const ALL_POKEMON_TYPES_VALUE = "all"
+export const POKEMON_CATALOG_CONTEXT_RADIUS = 10
 
 export const POKEMON_CATALOG_SORT_OPTIONS = [
   "nationalNumber",
   "name",
-  "maximumCombatPower",
+  "baseStatTotal",
 ] as const
 
 export type PokemonCatalogSortOption =
@@ -28,40 +26,50 @@ export const DEFAULT_POKEMON_CATALOG_FILTERS: PokemonCatalogFilters = {
   type: ALL_POKEMON_TYPES_VALUE,
 }
 
-export function compactPokemonCatalogEntries({
-  pokemons,
+export function hasActivePokemonCatalogDiscovery({
+  filters,
 }: {
-  pokemons: ReadonlyArray<PokemonCatalogEntryFragment | null> | null
+  filters: PokemonCatalogFilters
 }) {
   return (
-    pokemons?.filter(
-      (pokemon): pokemon is PokemonCatalogEntryFragment => pokemon !== null,
-    ) ?? []
+    filters.search.trim().length > 0 ||
+    filters.sort !== DEFAULT_POKEMON_CATALOG_FILTERS.sort ||
+    filters.type !== DEFAULT_POKEMON_CATALOG_FILTERS.type
   )
 }
 
-export function includeSelectedPokemon({
+export function getContextualPokemonCatalogEntries({
+  currentPokemonId,
   pokemons,
-  selectedPokemon,
 }: {
-  pokemons: ReadonlyArray<PokemonCatalogEntryFragment>
-  selectedPokemon: PokemonCatalogEntryFragment
+  currentPokemonId: number
+  pokemons: ReadonlyArray<PokemonCatalogEntry>
 }) {
-  if (pokemons.some((pokemon) => pokemon.id === selectedPokemon.id))
-    return [...pokemons]
+  const contextualCatalogSize = POKEMON_CATALOG_CONTEXT_RADIUS * 2 + 1
+  const currentPokemonIndex = pokemons.findIndex(
+    ({ id }) => id === currentPokemonId,
+  )
+  const maximumWindowStartIndex = Math.max(
+    pokemons.length - contextualCatalogSize,
+    0,
+  )
+  const windowStartIndex = Math.min(
+    Math.max(currentPokemonIndex - POKEMON_CATALOG_CONTEXT_RADIUS, 0),
+    maximumWindowStartIndex,
+  )
 
-  return [...pokemons, selectedPokemon]
+  return pokemons.slice(
+    windowStartIndex,
+    windowStartIndex + contextualCatalogSize,
+  )
 }
 
 export function getPokemonCatalogTypes({
   pokemons,
 }: {
-  pokemons: ReadonlyArray<PokemonCatalogEntryFragment>
+  pokemons: ReadonlyArray<PokemonCatalogEntry>
 }) {
-  const pokemonTypes = pokemons.flatMap(
-    (pokemon) =>
-      pokemon.types?.filter((type): type is string => type !== null) ?? [],
-  )
+  const pokemonTypes = pokemons.flatMap(({ types }) => types)
 
   return [...new Set(pokemonTypes)].sort((firstType, secondType) =>
     firstType.localeCompare(secondType),
@@ -73,17 +81,17 @@ export function getVisiblePokemonCatalogEntries({
   pokemons,
 }: {
   filters: PokemonCatalogFilters
-  pokemons: ReadonlyArray<PokemonCatalogEntryFragment>
+  pokemons: ReadonlyArray<PokemonCatalogEntry>
 }) {
   const normalizedSearch = filters.search.trim().toLowerCase().replace(/^#/, "")
   const matchingPokemons = pokemons.filter((pokemon) => {
     const matchesSearch =
       normalizedSearch.length === 0 ||
-      pokemon.name?.toLowerCase().includes(normalizedSearch) ||
-      pokemon.number?.includes(normalizedSearch)
+      pokemon.name.toLowerCase().includes(normalizedSearch) ||
+      pokemon.number.includes(normalizedSearch)
     const matchesType =
       filters.type === ALL_POKEMON_TYPES_VALUE ||
-      pokemon.types?.includes(filters.type)
+      pokemon.types.includes(filters.type)
 
     return Boolean(matchesSearch && matchesType)
   })
@@ -91,46 +99,38 @@ export function getVisiblePokemonCatalogEntries({
   return matchingPokemons.toSorted((firstPokemon, secondPokemon) => {
     if (filters.sort === "name")
       return comparePokemonNames(firstPokemon, secondPokemon)
-    if (filters.sort === "maximumCombatPower")
-      return comparePokemonCombatPower(firstPokemon, secondPokemon)
+    if (filters.sort === "baseStatTotal")
+      return comparePokemonBaseStatTotals(firstPokemon, secondPokemon)
 
     return comparePokemonNumbers(firstPokemon, secondPokemon)
   })
 }
 
 function comparePokemonNames(
-  firstPokemon: PokemonCatalogEntryFragment,
-  secondPokemon: PokemonCatalogEntryFragment,
+  firstPokemon: PokemonCatalogEntry,
+  secondPokemon: PokemonCatalogEntry,
 ) {
-  const nameComparison = (firstPokemon.name ?? "").localeCompare(
-    secondPokemon.name ?? "",
-  )
+  const nameComparison = firstPokemon.name.localeCompare(secondPokemon.name)
 
   return nameComparison || comparePokemonNumbers(firstPokemon, secondPokemon)
 }
 
-function comparePokemonCombatPower(
-  firstPokemon: PokemonCatalogEntryFragment,
-  secondPokemon: PokemonCatalogEntryFragment,
+function comparePokemonBaseStatTotals(
+  firstPokemon: PokemonCatalogEntry,
+  secondPokemon: PokemonCatalogEntry,
 ) {
-  const combatPowerComparison =
-    (secondPokemon.maxCP ?? -1) - (firstPokemon.maxCP ?? -1)
+  const baseStatTotalComparison =
+    secondPokemon.baseStatTotal - firstPokemon.baseStatTotal
 
   return (
-    combatPowerComparison || comparePokemonNumbers(firstPokemon, secondPokemon)
+    baseStatTotalComparison ||
+    comparePokemonNumbers(firstPokemon, secondPokemon)
   )
 }
 
 function comparePokemonNumbers(
-  firstPokemon: PokemonCatalogEntryFragment,
-  secondPokemon: PokemonCatalogEntryFragment,
+  firstPokemon: PokemonCatalogEntry,
+  secondPokemon: PokemonCatalogEntry,
 ) {
-  const firstPokemonNumber = firstPokemon.number
-    ? Number(firstPokemon.number)
-    : Number.MAX_SAFE_INTEGER
-  const secondPokemonNumber = secondPokemon.number
-    ? Number(secondPokemon.number)
-    : Number.MAX_SAFE_INTEGER
-
-  return firstPokemonNumber - secondPokemonNumber
+  return firstPokemon.id - secondPokemon.id
 }

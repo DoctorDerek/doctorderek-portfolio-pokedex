@@ -13,16 +13,33 @@ test.describe("App Router Pokédex entry points", () => {
 
     await expect(page).toHaveURL(/\/1$/)
     await expect(
-      page.getByRole("heading", { level: 2, name: "Bulbasaur #001" }),
+      page.getByRole("heading", { level: 2, name: "Bulbasaur #0001" }),
     ).toBeVisible()
   })
 
   test("rejects dossier numbers outside the generated static catalog", async ({
     page,
   }) => {
-    const response = await page.goto("/152")
+    const response = await page.goto("/1026")
 
     expect(response?.status()).toBe(404)
+  })
+
+  test("centers the default catalog around the selected dossier", async ({
+    page,
+  }) => {
+    await page.goto("/500")
+
+    const catalog = page.getByRole("navigation", { name: "Pokémon catalog" })
+    const catalogLinks = catalog.getByRole("link")
+
+    await expect(catalogLinks).toHaveCount(21)
+    await expect(catalogLinks.first()).toHaveAttribute("href", "/490")
+    await expect(catalogLinks.last()).toHaveAttribute("href", "/510")
+    await expect(catalog.locator('a[aria-current="page"]')).toHaveAttribute(
+      "href",
+      "/500",
+    )
   })
 })
 
@@ -35,10 +52,10 @@ test.describe("mobile Pokédex", () => {
     await page.goto("/1")
 
     await expect(
-      page.getByRole("heading", { level: 2, name: "Bulbasaur #001" }),
+      page.getByRole("heading", { level: 2, name: "Bulbasaur #0001" }),
     ).toBeVisible()
     await expect(
-      page.getByRole("link", { name: "001 Bulbasaur" }),
+      page.getByRole("link", { name: "0001 Bulbasaur" }),
     ).toHaveAttribute("aria-current", "page")
 
     const pageWidths = await page.evaluate(() => ({
@@ -48,14 +65,14 @@ test.describe("mobile Pokédex", () => {
 
     expect(pageWidths.document).toBeLessThanOrEqual(pageWidths.viewport)
 
-    await page.getByRole("link", { name: "002 Ivysaur" }).click()
+    await page.getByRole("link", { name: "0002 Ivysaur" }).click()
 
     await expect(page).toHaveURL(/\/2$/)
     await expect(
-      page.getByRole("heading", { level: 2, name: "Ivysaur #002" }),
+      page.getByRole("heading", { level: 2, name: "Ivysaur #0002" }),
     ).toBeVisible()
     await expect(
-      page.getByRole("link", { name: "002 Ivysaur" }),
+      page.getByRole("link", { name: "0002 Ivysaur" }),
     ).toHaveAttribute("aria-current", "page")
   })
 
@@ -65,7 +82,7 @@ test.describe("mobile Pokédex", () => {
     await page.goto("/1")
 
     const selectedPokemon = page.getByRole("region", {
-      name: "Bulbasaur #001",
+      name: "Bulbasaur #0001",
     })
     const discovery = page.getByRole("region", {
       name: "Pokémon discovery",
@@ -116,15 +133,21 @@ test.describe("mobile Pokédex", () => {
       ).toBeGreaterThanOrEqual(44)
     }
 
-    await pokemonSearch.fill("#002")
+    await pokemonSearch.fill("#0002")
 
-    await expect(page.getByRole("link", { name: "002 Ivysaur" })).toBeVisible()
-    await expect(page.getByRole("link", { name: "001 Bulbasaur" })).toBeHidden()
+    await expect(page.getByRole("link", { name: "0002 Ivysaur" })).toBeVisible()
+    await expect(
+      page.getByRole("link", { name: "0001 Bulbasaur" }),
+    ).toBeHidden()
 
     await resetFilters.click()
     await expect(
-      page.getByRole("link", { name: "001 Bulbasaur" }),
+      page.getByRole("link", { name: "0001 Bulbasaur" }),
     ).toBeVisible()
+    await expect(page.getByRole("link", { name: "0021 Spearow" })).toBeVisible()
+    await expect(
+      page.getByRole("link", { name: "1025 Pecharunt" }),
+    ).toBeHidden()
   })
 })
 
@@ -141,7 +164,7 @@ test.describe("desktop Pokédex", () => {
       exact: true,
     })
     const selectedPokemon = page.getByRole("region", {
-      name: "Bulbasaur #001",
+      name: "Bulbasaur #0001",
     })
 
     await expect(catalog).toBeVisible()
@@ -176,10 +199,10 @@ test.describe("Pokédex motion feedback", () => {
     await page.goto("/1")
 
     const selectedPokemon = page.getByRole("region", {
-      name: "Bulbasaur #001",
+      name: "Bulbasaur #0001",
     })
     const currentPokemonLink = page.getByRole("link", {
-      name: "001 Bulbasaur",
+      name: "0001 Bulbasaur",
     })
 
     await expect(selectedPokemon).toBeVisible()
@@ -211,10 +234,10 @@ test.describe("reduced-motion Pokédex", () => {
     await page.goto("/1")
 
     const selectedPokemon = page.getByRole("region", {
-      name: "Bulbasaur #001",
+      name: "Bulbasaur #0001",
     })
     const currentPokemonLink = page.getByRole("link", {
-      name: "001 Bulbasaur",
+      name: "0001 Bulbasaur",
     })
 
     await expect(selectedPokemon).toBeVisible()

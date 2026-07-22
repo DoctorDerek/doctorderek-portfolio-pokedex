@@ -1,53 +1,58 @@
 import { render, screen, within } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 import PokemonDetailsPanel from "@/components/PokemonDetailsPanel"
-import { BULBASAUR_FIXTURE } from "@/tests/fixtures/pokemon"
+import { BULBASAUR_DOSSIER_FIXTURE } from "@/tests/fixtures/pokedex"
 
 describe("PokemonDetailsPanel", () => {
-  it("presents the selected Pokémon as a labeled statistics region", () => {
-    render(
-      <PokemonDetailsPanel pokemon={{ ...BULBASAUR_FIXTURE, image: null }} />,
-    )
+  it("presents canonical identity, base stats, and abilities", () => {
+    render(<PokemonDetailsPanel pokemon={BULBASAUR_DOSSIER_FIXTURE} />)
 
     const selectedPokemonRegion = screen.getByRole("region", {
-      name: "Bulbasaur #001",
+      name: "Bulbasaur #0001",
     })
 
     expect(
       within(selectedPokemonRegion).getByRole("heading", {
         level: 2,
-        name: "Bulbasaur #001",
+        name: "Bulbasaur #0001",
       }),
     ).toBeInTheDocument()
-    expect(
-      within(selectedPokemonRegion).getByText("Classification"),
-    ).toBeInTheDocument()
+    expect(within(selectedPokemonRegion).getByText("Category")).toBeVisible()
     expect(
       within(selectedPokemonRegion).getByText("“Seed Pokémon”"),
-    ).toBeInTheDocument()
-    expect(within(selectedPokemonRegion).getAllByRole("term")).toHaveLength(9)
-    expect(
-      within(selectedPokemonRegion).getAllByRole("definition"),
-    ).toHaveLength(9)
+    ).toBeVisible()
     expect(
       within(selectedPokemonRegion).getByText("Grass, Poison"),
-    ).toBeInTheDocument()
+    ).toBeVisible()
     expect(
-      within(selectedPokemonRegion).getByText("Fire, Ice, Flying, Psychic"),
-    ).toBeInTheDocument()
+      within(selectedPokemonRegion).getByText("Overgrow, Chlorophyll (Hidden)"),
+    ).toBeVisible()
+    expect(within(selectedPokemonRegion).getAllByRole("term")).toHaveLength(10)
+    expect(
+      within(selectedPokemonRegion).getAllByRole("definition"),
+    ).toHaveLength(10)
   })
 
-  it("formats fractional flee rates without floating-point artifacts", () => {
+  it("omits unavailable physical and experience measurements", () => {
     render(
       <PokemonDetailsPanel
-        pokemon={{ ...BULBASAUR_FIXTURE, fleeRate: 0.07, image: null }}
+        pokemon={{
+          ...BULBASAUR_DOSSIER_FIXTURE,
+          baseExperience: null,
+          heightInMeters: null,
+          weightInKilograms: null,
+        }}
       />,
     )
 
-    const fleeRateStatistic = screen.getByTitle("The flee rate of this Pokémon")
-
-    expect(within(fleeRateStatistic).getByRole("definition")).toHaveTextContent(
-      "7%",
-    )
+    expect(
+      screen.queryByTitle("The canonical height of this Pokémon"),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByTitle("The canonical weight of this Pokémon"),
+    ).not.toBeInTheDocument()
+    expect(
+      screen.queryByTitle("The base experience awarded by this Pokémon"),
+    ).not.toBeInTheDocument()
   })
 })

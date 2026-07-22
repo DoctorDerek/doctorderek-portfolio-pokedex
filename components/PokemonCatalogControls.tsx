@@ -74,7 +74,7 @@ export default function PokemonCatalogControls({
           >
             <option value="nationalNumber">National number</option>
             <option value="name">Name A–Z</option>
-            <option value="maximumCombatPower">Max CP: high–low</option>
+            <option value="baseStatTotal">Base stats: high–low</option>
           </select>
         </div>
       </div>

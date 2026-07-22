@@ -2,19 +2,21 @@ import type { CodegenConfig } from "@graphql-codegen/cli"
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: "https://graphql-pokemon2.vercel.app/",
-  documents: "graphql/**/*.graphql",
   generates: {
-    "./graphql/generated.ts": {
-      plugins: [
-        "typescript",
-        "typescript-operations",
-        "typescript-react-query",
-      ],
+    "./graphql/pokeapi.generated.ts": {
+      schema: "https://graphql.pokeapi.co/v1beta2",
+      documents: "graphql/pokeapi.graphql",
+      plugins: ["typescript-operations"],
       config: {
-        fetcher: "@/utils/fetchPokemonApi#pokemonApiQueryFetcher",
-        reactQueryVersion: 5,
-        useTypeImports: false,
+        useTypeImports: true,
+      },
+    },
+    "./graphql/pokemonSearch.generated.ts": {
+      schema: "https://graphql.pokeapi.co/v1beta2",
+      documents: "graphql/pokemonSearch.graphql",
+      plugins: ["typescript-operations"],
+      config: {
+        useTypeImports: true,
       },
     },
   },
