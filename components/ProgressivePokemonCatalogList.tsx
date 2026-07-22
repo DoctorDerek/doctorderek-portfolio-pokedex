@@ -30,27 +30,27 @@ export default function ProgressivePokemonCatalogList({
     enabled: true,
     pokemons,
   })
-  const handleBeforeSentinelIntersection = useCallback(() => {
+  const handleSentinelIntersection = useCallback(() => {
     const navigation = navigationReference.current
     const firstVisiblePokemon = visiblePokemons[0]
 
     if (!navigation || !firstVisiblePokemon) return
 
-    const anchor = navigation.querySelector<HTMLElement>(
-      "[data-pokemon-id='" + firstVisiblePokemon.id + "']",
-    )
+    if (canExpandBefore) {
+      const anchor = navigation.querySelector<HTMLElement>(
+        "[data-pokemon-id='" + firstVisiblePokemon.id + "']",
+      )
 
-    if (!anchor) return
+      if (!anchor) return
 
-    pendingPrependAnchorReference.current = {
-      offsetTop: anchor.offsetTop,
-      pokemonId: firstVisiblePokemon.id,
+      pendingPrependAnchorReference.current = {
+        offsetTop: anchor.offsetTop,
+        pokemonId: firstVisiblePokemon.id,
+      }
     }
-    expandVisibleRange("before")
-  }, [expandVisibleRange, visiblePokemons])
-  const handleAfterSentinelIntersection = useCallback(() => {
-    expandVisibleRange("after")
-  }, [expandVisibleRange])
+
+    expandVisibleRange("both")
+  }, [canExpandBefore, expandVisibleRange, visiblePokemons])
 
   useEffect(() => {
     const navigation = navigationReference.current
@@ -61,13 +61,8 @@ export default function ProgressivePokemonCatalogList({
 
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue
-          if (entry.target === beforeSentinel && canExpandBefore)
-            handleBeforeSentinelIntersection()
-          if (entry.target === afterSentinel && canExpandAfter)
-            handleAfterSentinelIntersection()
-        }
+        if (entries.some(({ isIntersecting }) => isIntersecting))
+          handleSentinelIntersection()
       },
       {
         root: navigation,
@@ -75,18 +70,15 @@ export default function ProgressivePokemonCatalogList({
       },
     )
 
-    if (beforeSentinel && canExpandBefore) observer.observe(beforeSentinel)
-    if (afterSentinel && canExpandAfter) observer.observe(afterSentinel)
+    if (beforeSentinel && (canExpandBefore || canExpandAfter))
+      observer.observe(beforeSentinel)
+    if (afterSentinel && (canExpandBefore || canExpandAfter))
+      observer.observe(afterSentinel)
 
     return () => {
       observer.disconnect()
     }
-  }, [
-    canExpandAfter,
-    canExpandBefore,
-    handleAfterSentinelIntersection,
-    handleBeforeSentinelIntersection,
-  ])
+  }, [canExpandAfter, canExpandBefore, handleSentinelIntersection])
 
   useLayoutEffect(() => {
     const navigation = navigationReference.current
