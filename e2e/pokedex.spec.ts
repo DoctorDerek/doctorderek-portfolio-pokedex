@@ -25,7 +25,7 @@ test.describe("App Router Pokédex entry points", () => {
     expect(response?.status()).toBe(404)
   })
 
-  test("centers the default catalog around the selected dossier", async ({
+  test("keeps the selected dossier inside its prepared local context", async ({
     page,
   }) => {
     await page.goto("/500")
@@ -33,13 +33,49 @@ test.describe("App Router Pokédex entry points", () => {
     const catalog = page.getByRole("navigation", { name: "Pokémon catalog" })
     const catalogLinks = catalog.getByRole("link")
 
-    await expect(catalogLinks).toHaveCount(21)
-    await expect(catalogLinks.first()).toHaveAttribute("href", "/490")
-    await expect(catalogLinks.last()).toHaveAttribute("href", "/510")
+    expect(await catalogLinks.count()).toBeGreaterThanOrEqual(21)
+    await expect(catalog.locator('a[href="/490"]')).toHaveCount(1)
+    await expect(catalog.locator('a[href="/510"]')).toHaveCount(1)
     await expect(catalog.locator('a[aria-current="page"]')).toHaveAttribute(
       "href",
       "/500",
     )
+  })
+
+  test("prepares more local entries before either scroll boundary", async ({
+    page,
+  }) => {
+    await page.goto("/500")
+
+    const catalog = page.getByRole("navigation", { name: "Pokémon catalog" })
+
+    await expect(catalog.locator('a[href="/480"]')).toHaveCount(1)
+    await expect(catalog.locator('a[href="/520"]')).toHaveCount(1)
+    await expect(catalog.getByRole("link")).toHaveCount(41)
+
+    const applicationOrigin = new URL(page.url()).origin
+    const applicationDataRequests: string[] = []
+
+    page.on("request", (request) => {
+      if (
+        request.url().startsWith(applicationOrigin) &&
+        ["document", "fetch", "xhr"].includes(request.resourceType())
+      )
+        applicationDataRequests.push(request.url())
+    })
+
+    await catalog.evaluate((element) => {
+      element.scrollTop = element.scrollHeight
+    })
+    await expect(catalog.locator('a[href="/530"]')).toHaveCount(1)
+    await expect(catalog.getByRole("link")).toHaveCount(61)
+
+    await catalog.evaluate((element) => {
+      element.scrollTop = 0
+    })
+    await expect(catalog.locator('a[href="/470"]')).toHaveCount(1)
+    await expect(catalog.getByRole("link")).toHaveCount(81)
+    expect(applicationDataRequests).toEqual([])
   })
 })
 
