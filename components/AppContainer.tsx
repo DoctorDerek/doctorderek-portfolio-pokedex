@@ -31,7 +31,7 @@ export default function AppContainer({
           @DoctorDerek
         </a>
       </header>
-      <main className="flex w-full flex-1 items-start justify-center px-3 pb-3 sm:px-6 md:items-center md:pb-6">
+      <main className="flex w-full flex-1 items-start justify-center px-3 pb-3 sm:px-6 md:pb-6">
         {children}
       </main>
     </div>
