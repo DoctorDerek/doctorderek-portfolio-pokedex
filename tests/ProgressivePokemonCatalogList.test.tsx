@@ -1,4 +1,5 @@
 import { act, render, screen, within } from "@testing-library/react"
+import { renderToStaticMarkup } from "react-dom/server"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import ProgressivePokemonCatalogList from "@/components/ProgressivePokemonCatalogList"
 import { POKEMON_CATALOG } from "@/data/pokemonCatalog"
@@ -29,6 +30,26 @@ describe("ProgressivePokemonCatalogList", () => {
 
   afterEach(() => {
     restoreIntersectionObserverMock()
+  })
+
+  it("server-renders only the selected 21-entry context", () => {
+    const serverMarkup = renderToStaticMarkup(
+      <ProgressivePokemonCatalogList
+        currentPokemonId={500}
+        pokemons={POKEMON_CATALOG}
+      />,
+    )
+    const serverDocument = new DOMParser().parseFromString(
+      serverMarkup,
+      "text/html",
+    )
+    const serverPokemonLinks = serverDocument.querySelectorAll(
+      "[data-pokemon-id] a",
+    )
+
+    expect(serverPokemonLinks).toHaveLength(21)
+    expect(serverPokemonLinks.item(0)).toHaveAttribute("href", "/490")
+    expect(serverPokemonLinks.item(20)).toHaveAttribute("href", "/510")
   })
 
   it("repeatedly prepares more local entries in both directions", () => {
