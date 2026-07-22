@@ -183,4 +183,76 @@ describe("PokemonGraphqlSearch", () => {
     ).toHaveAttribute("href", "/1")
     expect(requestCount).toBe(2)
   })
+
+  it("validates the form before sending every advanced field in one request", async () => {
+    let requestCount = 0
+
+    pokemonApiMockServer.use(
+      http.post(POKEMON_GRAPHQL_ENDPOINT, async ({ request }) => {
+        requestCount += 1
+
+        const { variables } = (await request.json()) as PokemonSearchRequestBody
+
+        expect(variables).toEqual({
+          generationPattern: "%generation-ix%",
+          legendaryStatuses: [false],
+          limit: 100,
+          maximumPokemonId: 1_025,
+          minimumBaseExperience: 120,
+          mythicalStatuses: [true],
+          namePattern: "%mr-mime%",
+          orderByBaseExperience: true,
+          orderByName: false,
+          orderByNumber: false,
+          typePattern: "%psychic%",
+        })
+
+        return HttpResponse.json({ data: { byBaseExperience: [] } })
+      }),
+    )
+    renderPokemonGraphqlSearch()
+    const minimumBaseExperience = screen.getByRole("spinbutton", {
+      name: "Minimum base experience",
+    })
+
+    fireEvent.change(minimumBaseExperience, { target: { value: "-1" } })
+    fireEvent.click(screen.getByRole("button", { name: "GraphQL Search" }))
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Enter 0 or more.",
+    )
+    expect(requestCount).toBe(0)
+
+    fireEvent.change(screen.getByRole("searchbox", { name: "Pokémon name" }), {
+      target: { value: "Mr. Mime" },
+    })
+    fireEvent.change(screen.getByRole("combobox", { name: "Type" }), {
+      target: { value: "Psychic" },
+    })
+    fireEvent.change(
+      screen.getByRole("combobox", { name: "Debut generation" }),
+      { target: { value: "generation-ix" } },
+    )
+    fireEvent.change(screen.getByRole("combobox", { name: "Legendary" }), {
+      target: { value: "no" },
+    })
+    fireEvent.change(screen.getByRole("combobox", { name: "Mythical" }), {
+      target: { value: "yes" },
+    })
+    fireEvent.change(minimumBaseExperience, { target: { value: "120" } })
+    fireEvent.change(screen.getByRole("combobox", { name: "Server sort" }), {
+      target: { value: "baseExperience" },
+    })
+    fireEvent.change(screen.getByRole("combobox", { name: "Result limit" }), {
+      target: { value: "100" },
+    })
+    fireEvent.click(screen.getByRole("button", { name: "GraphQL Search" }))
+
+    expect(
+      await screen.findByText(
+        "No Pokémon matched this GraphQL research query.",
+      ),
+    ).toBeVisible()
+    expect(requestCount).toBe(1)
+  })
 })
