@@ -141,4 +141,46 @@ describe("PokemonGraphqlSearch", () => {
     expect(await screen.findByRole("link", { name: /Pikachu/ })).toBeVisible()
     expect(requestCount).toBe(2)
   })
+
+  it("does not retry automatically and recovers when the same query is resubmitted", async () => {
+    let requestCount = 0
+
+    pokemonApiMockServer.use(
+      http.post(POKEMON_GRAPHQL_ENDPOINT, () => {
+        requestCount += 1
+
+        if (requestCount === 1)
+          return HttpResponse.json({
+            errors: [{ message: "Research index temporarily unavailable." }],
+          })
+
+        return HttpResponse.json({
+          data: {
+            byNumber: [
+              createPokemonSearchResult({
+                baseExperience: 64,
+                id: 1,
+                name: "Bulbasaur",
+              }),
+            ],
+          },
+        })
+      }),
+    )
+    renderPokemonGraphqlSearch()
+
+    fireEvent.click(screen.getByRole("button", { name: "GraphQL Search" }))
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Research index temporarily unavailable.",
+    )
+    expect(requestCount).toBe(1)
+
+    fireEvent.click(screen.getByRole("button", { name: "GraphQL Search" }))
+
+    expect(
+      await screen.findByRole("link", { name: /Bulbasaur/ }),
+    ).toHaveAttribute("href", "/1")
+    expect(requestCount).toBe(2)
+  })
 })
