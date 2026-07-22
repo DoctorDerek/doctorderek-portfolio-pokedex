@@ -41,6 +41,7 @@ export default function PokemonGraphqlSearchForm({
       role="search"
       aria-label="GraphQL Pokémon research search"
       className="space-y-4"
+      noValidate
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="grid gap-3 sm:grid-cols-2">
