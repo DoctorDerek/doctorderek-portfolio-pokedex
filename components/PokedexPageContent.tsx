@@ -17,8 +17,8 @@ export default function PokedexPageContent({
     <AppContainer bgColor="bg-gray-600">
       <div className="flex w-full max-w-4xl flex-col gap-6">
         <div className="grid w-full overflow-hidden rounded-lg shadow-2xl md:h-128 md:grid-cols-[minmax(18rem,2fr)_3fr]">
-          <PokemonCatalog currentPokemonId={Number(id)} />
           <PokemonDetailsPanel key={pokemon.id} pokemon={pokemon} />
+          <PokemonCatalog currentPokemonId={Number(id)} />
         </div>
         <PokemonGraphqlSearch />
       </div>
