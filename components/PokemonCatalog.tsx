@@ -64,13 +64,15 @@ export default function PokemonCatalog({
           <p role="status" aria-live="polite">
             {hasActiveDiscovery
               ? `${POKEMON_COUNT_FORMATTER.format(visiblePokemons.length)} matches`
-              : `${visiblePokemons.length} nearby Pokémon`}{" "}
-            · {POKEMON_COUNT_FORMATTER.format(MAX_POKEMON_NUMBER)} ready.
+              : `${visiblePokemons.length} nearby initially`}{" "}
+            · {POKEMON_COUNT_FORMATTER.format(MAX_POKEMON_NUMBER)} ready
+            locally.
           </p>
         </div>
         <PokemonCatalogList
           currentPokemonId={currentPokemonId}
           pokemons={visiblePokemons}
+          progressivelyReveal={!hasActiveDiscovery}
         />
       </section>
     </FormProvider>
