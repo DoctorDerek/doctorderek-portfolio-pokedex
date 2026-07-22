@@ -1,9 +1,16 @@
-import { useCallback, useEffect, useLayoutEffect, useRef } from "react"
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  type UIEvent,
+} from "react"
 import PokemonCatalogEntries from "@/components/PokemonCatalogEntries"
 import useProgressivePokemonCatalog from "@/hooks/useProgressivePokemonCatalog"
 import type { PokemonCatalogEntry } from "@/types/pokemon"
 
-const POKEMON_CATALOG_PRELOAD_ROOT_MARGIN = "1600px 0px"
+const POKEMON_CATALOG_PRELOAD_DISTANCE_PIXELS = 800
+const POKEMON_CATALOG_WINDOW_PRELOAD_DISTANCE_PIXELS = 1_200
 
 export default function ProgressivePokemonCatalogList({
   currentPokemonId,
@@ -20,6 +27,9 @@ export default function ProgressivePokemonCatalogList({
     pokemonId: number
   } | null>(null)
   const hasPositionedCurrentPokemonReference = useRef(false)
+  const hasPreparedInitialBufferReference = useRef(false)
+  const isExpansionPendingReference = useRef(false)
+  const isRestoringScrollPositionReference = useRef(false)
   const {
     canExpandAfter,
     canExpandBefore,
@@ -30,11 +40,17 @@ export default function ProgressivePokemonCatalogList({
     enabled: true,
     pokemons,
   })
-  const handleSentinelIntersection = useCallback(() => {
+  const handleBoundaryApproach = useCallback(() => {
     const navigation = navigationReference.current
     const firstVisiblePokemon = visiblePokemons[0]
 
-    if (!navigation || !firstVisiblePokemon) return
+    if (
+      !navigation ||
+      !firstVisiblePokemon ||
+      isExpansionPendingReference.current ||
+      (!canExpandBefore && !canExpandAfter)
+    )
+      return
 
     if (canExpandBefore) {
       const anchor = navigation.querySelector<HTMLElement>(
@@ -49,40 +65,76 @@ export default function ProgressivePokemonCatalogList({
       }
     }
 
+    isExpansionPendingReference.current = true
     expandVisibleRange("both")
-  }, [canExpandBefore, expandVisibleRange, visiblePokemons])
+  }, [canExpandAfter, canExpandBefore, expandVisibleRange, visiblePokemons])
+  const handleCatalogScroll = (event: UIEvent<HTMLElement>) => {
+    if (isRestoringScrollPositionReference.current) return
+
+    const navigation = event.currentTarget
+    const remainingScrollDistance =
+      navigation.scrollHeight - navigation.clientHeight - navigation.scrollTop
+
+    if (
+      navigation.scrollTop <= POKEMON_CATALOG_PRELOAD_DISTANCE_PIXELS ||
+      remainingScrollDistance <= POKEMON_CATALOG_PRELOAD_DISTANCE_PIXELS
+    )
+      handleBoundaryApproach()
+  }
 
   useEffect(() => {
-    const navigation = navigationReference.current
-    const beforeSentinel = beforeSentinelReference.current
-    const afterSentinel = afterSentinelReference.current
+    if (hasPreparedInitialBufferReference.current) return
 
-    if (!navigation) return
+    const animationFrame = window.requestAnimationFrame(() => {
+      if (hasPreparedInitialBufferReference.current) return
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries.some(({ isIntersecting }) => isIntersecting))
-          handleSentinelIntersection()
-      },
-      {
-        root: navigation,
-        rootMargin: POKEMON_CATALOG_PRELOAD_ROOT_MARGIN,
-      },
-    )
-
-    if (beforeSentinel && (canExpandBefore || canExpandAfter))
-      observer.observe(beforeSentinel)
-    if (afterSentinel && (canExpandBefore || canExpandAfter))
-      observer.observe(afterSentinel)
+      hasPreparedInitialBufferReference.current = true
+      handleBoundaryApproach()
+    })
 
     return () => {
-      observer.disconnect()
+      window.cancelAnimationFrame(animationFrame)
     }
-  }, [canExpandAfter, canExpandBefore, handleSentinelIntersection])
+  }, [handleBoundaryApproach])
+
+  useEffect(() => {
+    const handleWindowScroll = () => {
+      const navigation = navigationReference.current
+      const beforeSentinel = beforeSentinelReference.current
+      const afterSentinel = afterSentinelReference.current
+
+      if (
+        !navigation ||
+        !beforeSentinel ||
+        !afterSentinel ||
+        navigation.scrollHeight > navigation.clientHeight
+      )
+        return
+
+      const beforeBounds = beforeSentinel.getBoundingClientRect()
+      const afterBounds = afterSentinel.getBoundingClientRect()
+
+      if (
+        beforeBounds.bottom >=
+          -POKEMON_CATALOG_WINDOW_PRELOAD_DISTANCE_PIXELS ||
+        afterBounds.top <=
+          window.innerHeight + POKEMON_CATALOG_WINDOW_PRELOAD_DISTANCE_PIXELS
+      )
+        handleBoundaryApproach()
+    }
+
+    window.addEventListener("scroll", handleWindowScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener("scroll", handleWindowScroll)
+    }
+  }, [handleBoundaryApproach])
 
   useLayoutEffect(() => {
     const navigation = navigationReference.current
     const pendingAnchor = pendingPrependAnchorReference.current
+
+    isExpansionPendingReference.current = false
 
     if (!navigation || !pendingAnchor) return
 
@@ -90,8 +142,18 @@ export default function ProgressivePokemonCatalogList({
       "[data-pokemon-id='" + pendingAnchor.pokemonId + "']",
     )
 
-    if (anchor)
-      navigation.scrollTop += anchor.offsetTop - pendingAnchor.offsetTop
+    if (anchor) {
+      const restoredScrollTop =
+        navigation.scrollTop + anchor.offsetTop - pendingAnchor.offsetTop
+
+      if (restoredScrollTop !== navigation.scrollTop) {
+        isRestoringScrollPositionReference.current = true
+        navigation.scrollTop = restoredScrollTop
+        window.requestAnimationFrame(() => {
+          isRestoringScrollPositionReference.current = false
+        })
+      }
+    }
 
     pendingPrependAnchorReference.current = null
   }, [visiblePokemons.length])
@@ -107,9 +169,18 @@ export default function ProgressivePokemonCatalogList({
 
     if (!currentPokemon) return
 
-    navigation.scrollTop =
+    const centeredScrollTop =
       currentPokemon.offsetTop -
       (navigation.clientHeight - currentPokemon.offsetHeight) / 2
+
+    if (centeredScrollTop !== navigation.scrollTop) {
+      isRestoringScrollPositionReference.current = true
+      navigation.scrollTop = centeredScrollTop
+      window.requestAnimationFrame(() => {
+        isRestoringScrollPositionReference.current = false
+      })
+    }
+
     hasPositionedCurrentPokemonReference.current = true
   }, [currentPokemonId, visiblePokemons.length])
 
@@ -117,14 +188,23 @@ export default function ProgressivePokemonCatalogList({
     <nav
       ref={navigationReference}
       aria-label="Pokémon catalog"
+      onScroll={handleCatalogScroll}
       className="md:min-h-0 md:flex-1 md:overflow-y-auto"
     >
-      <div ref={beforeSentinelReference} aria-hidden="true" />
+      <div
+        ref={beforeSentinelReference}
+        aria-hidden="true"
+        className="h-px w-full"
+      />
       <PokemonCatalogEntries
         currentPokemonId={currentPokemonId}
         pokemons={visiblePokemons}
       />
-      <div ref={afterSentinelReference} aria-hidden="true" />
+      <div
+        ref={afterSentinelReference}
+        aria-hidden="true"
+        className="h-px w-full"
+      />
     </nav>
   )
 }

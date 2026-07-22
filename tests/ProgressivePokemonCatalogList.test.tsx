@@ -1,13 +1,8 @@
-import { act, render, screen, within } from "@testing-library/react"
+import { fireEvent, render, screen, within } from "@testing-library/react"
 import { renderToStaticMarkup } from "react-dom/server"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import ProgressivePokemonCatalogList from "@/components/ProgressivePokemonCatalogList"
 import { POKEMON_CATALOG } from "@/data/pokemonCatalog"
-import {
-  installIntersectionObserverMock,
-  restoreIntersectionObserverMock,
-  triggerLatestIntersectionObserver,
-} from "@/tests/mocks/intersectionObserver"
 
 vi.mock("@/components/PokemonImage", () => ({
   default: () => <span aria-hidden="true" />,
@@ -23,13 +18,27 @@ function getRenderedPokemonHrefs() {
     .map((link) => link.getAttribute("href"))
 }
 
+function approachCatalogBoundary(scrollTop = 0) {
+  const navigation = screen.getByRole("navigation", {
+    name: "Pokémon catalog",
+  })
+
+  Object.defineProperties(navigation, {
+    clientHeight: { configurable: true, value: 200 },
+    scrollHeight: { configurable: true, value: 2_000 },
+  })
+  navigation.scrollTop = scrollTop
+  fireEvent.scroll(navigation)
+}
+
 describe("ProgressivePokemonCatalogList", () => {
   beforeEach(() => {
-    installIntersectionObserverMock()
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation(() => 1)
+    vi.spyOn(window, "cancelAnimationFrame").mockImplementation(() => {})
   })
 
   afterEach(() => {
-    restoreIntersectionObserverMock()
+    vi.restoreAllMocks()
   })
 
   it("server-renders only the selected 21-entry context", () => {
@@ -66,17 +75,13 @@ describe("ProgressivePokemonCatalogList", () => {
     expect(getRenderedPokemonHrefs().at(0)).toBe("/490")
     expect(getRenderedPokemonHrefs().at(-1)).toBe("/510")
 
-    act(() => {
-      triggerLatestIntersectionObserver()
-    })
+    approachCatalogBoundary()
 
     expect(getRenderedPokemonHrefs()).toHaveLength(41)
     expect(getRenderedPokemonHrefs().at(0)).toBe("/480")
     expect(getRenderedPokemonHrefs().at(-1)).toBe("/520")
 
-    act(() => {
-      triggerLatestIntersectionObserver()
-    })
+    approachCatalogBoundary()
 
     expect(getRenderedPokemonHrefs()).toHaveLength(61)
     expect(getRenderedPokemonHrefs().at(0)).toBe("/470")
@@ -107,9 +112,7 @@ describe("ProgressivePokemonCatalogList", () => {
         />,
       )
 
-      act(() => {
-        triggerLatestIntersectionObserver()
-      })
+      approachCatalogBoundary()
 
       expect(getRenderedPokemonHrefs()).toHaveLength(31)
       expect(getRenderedPokemonHrefs().at(0)).toBe(expectedFirstHref)
@@ -142,11 +145,7 @@ describe("ProgressivePokemonCatalogList", () => {
           ? 740
           : 100,
     })
-    navigation.scrollTop = 50
-
-    act(() => {
-      triggerLatestIntersectionObserver()
-    })
+    approachCatalogBoundary(50)
 
     expect(navigation.scrollTop).toBe(690)
   })
