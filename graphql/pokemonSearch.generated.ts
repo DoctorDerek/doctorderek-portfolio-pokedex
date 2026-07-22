@@ -13,6 +13,7 @@ export type AdvancedPokemonSearchQueryVariables = Exact<{
   legendaryStatuses: Array<boolean> | boolean
   mythicalStatuses: Array<boolean> | boolean
   minimumBaseExperience: number
+  maximumPokemonId: number
   limit: number
   orderByNumber: boolean
   orderByName: boolean
