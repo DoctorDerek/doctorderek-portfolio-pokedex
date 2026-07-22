@@ -112,12 +112,18 @@ test.describe("mobile Pokédex", () => {
   }) => {
     await page.goto("/1")
 
-    const pokemonSearch = page.getByRole("searchbox", {
+    const localDiscovery = page.getByRole("region", {
+      name: "Pokémon discovery",
+      exact: true,
+    })
+    const pokemonSearch = localDiscovery.getByRole("searchbox", {
       name: "Search Pokémon",
     })
-    const pokemonType = page.getByRole("combobox", { name: "Type" })
-    const pokemonSort = page.getByRole("combobox", { name: "Sort" })
-    const resetFilters = page.getByRole("button", { name: "Reset filters" })
+    const pokemonType = localDiscovery.getByRole("combobox", { name: "Type" })
+    const pokemonSort = localDiscovery.getByRole("combobox", { name: "Sort" })
+    const resetFilters = localDiscovery.getByRole("button", {
+      name: "Reset filters",
+    })
 
     for (const control of [
       pokemonSearch,
