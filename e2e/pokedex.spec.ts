@@ -82,6 +82,95 @@ test.describe("App Router Pokédex entry points", () => {
 test.describe("mobile Pokédex", () => {
   test.use({ viewport: MOBILE_VIEWPORT })
 
+  test("offers touch-safe direct navigation among research regions", async ({
+    page,
+  }) => {
+    await page.goto("/740")
+
+    const workspaceNavigation = page.getByRole("navigation", {
+      name: "Pokédex research workspace",
+    })
+    const destinations = [
+      { id: "graphql-search", label: "GraphQL Search" },
+      { id: "local-pokedex", label: "Local Pokédex" },
+      { id: "pokemon-dossier", label: "Dossier" },
+    ] as const
+
+    for (const { id, label } of destinations) {
+      const destinationLink = workspaceNavigation.getByRole("link", {
+        name: label,
+      })
+
+      await expect(destinationLink).toHaveAttribute("href", `#${id}`)
+      expect(
+        await destinationLink.evaluate(
+          (element) => element.getBoundingClientRect().height,
+        ),
+      ).toBeGreaterThanOrEqual(44)
+
+      await destinationLink.click()
+
+      await expect(page).toHaveURL(new RegExp(`#${id}$`))
+      await expect(page.locator(`#${id}`)).toBeFocused()
+    }
+  })
+
+  test("contains long dossier content in natural document scrolling", async ({
+    page,
+  }) => {
+    await page.goto("/740")
+
+    const selectedPokemon = page.getByRole("region", {
+      name: "Crabominable #0740",
+    })
+    const localPokedex = page.getByRole("region", {
+      name: "Local Pokédex",
+    })
+    const graphqlSearch = page.getByRole("region", {
+      name: "GraphQL Search",
+    })
+    const workspaceNavigation = page.getByRole("navigation", {
+      name: "Pokédex research workspace",
+    })
+
+    await expect(
+      selectedPokemon.getByText("Hyper Cutter, Iron Fist, Anger Point"),
+    ).toBeVisible()
+
+    for (const region of [
+      workspaceNavigation,
+      selectedPokemon,
+      localPokedex,
+      graphqlSearch,
+    ]) {
+      const bounds = await region.evaluate((element) => {
+        const rectangle = element.getBoundingClientRect()
+        return { left: rectangle.left, right: rectangle.right }
+      })
+
+      expect(bounds.left).toBeGreaterThanOrEqual(0)
+      expect(bounds.right).toBeLessThanOrEqual(MOBILE_VIEWPORT.width)
+    }
+
+    const pageMeasurements = await page.evaluate(() => ({
+      documentHeight: document.documentElement.scrollHeight,
+      documentWidth: document.documentElement.scrollWidth,
+      viewportHeight: document.documentElement.clientHeight,
+      viewportWidth: document.documentElement.clientWidth,
+    }))
+    const catalogOverflow = await page
+      .getByRole("navigation", { name: "Pokémon catalog" })
+      .evaluate((element) => getComputedStyle(element).overflowY)
+
+    expect(pageMeasurements.documentHeight).toBeGreaterThan(
+      pageMeasurements.viewportHeight,
+    )
+    expect(pageMeasurements.documentWidth).toBeLessThanOrEqual(
+      pageMeasurements.viewportWidth,
+    )
+    expect(catalogOverflow).toBe("visible")
+  })
+
   test("contains the interface while navigating between Pokémon", async ({
     page,
   }) => {
@@ -121,7 +210,7 @@ test.describe("mobile Pokédex", () => {
       name: "Bulbasaur #0001",
     })
     const discovery = page.getByRole("region", {
-      name: "Pokémon discovery",
+      name: "Local Pokédex",
     })
 
     await selectedPokemon.evaluate((element) =>
@@ -149,7 +238,7 @@ test.describe("mobile Pokédex", () => {
     await page.goto("/1")
 
     const localDiscovery = page.getByRole("region", {
-      name: "Pokémon discovery",
+      name: "Local Pokédex",
       exact: true,
     })
     const pokemonSearch = localDiscovery.getByRole("searchbox", {
@@ -202,7 +291,7 @@ test.describe("desktop Pokédex", () => {
     await page.goto("/1")
 
     const catalog = page.getByRole("region", {
-      name: "Pokémon discovery",
+      name: "Local Pokédex",
       exact: true,
     })
     const selectedPokemon = page.getByRole("region", {
