@@ -6,6 +6,26 @@ interface GraphqlSearchRequestBody {
   variables: AdvancedPokemonSearchQueryVariables
 }
 
+const MOBILE_VIEWPORT = { width: 320, height: 800 }
+const PIKACHU_GRAPHQL_RESPONSE = {
+  data: {
+    byNumber: [
+      {
+        base_experience: 112,
+        id: 25,
+        name: "pikachu",
+        pokemonspecy: {
+          generation: { name: "generation-i" },
+          is_legendary: false,
+          is_mythical: false,
+          pokemonspeciesnames: [{ name: "Pikachu" }],
+        },
+        pokemontypes: [{ type: { name: "electric" } }],
+      },
+    ],
+  },
+}
+
 test.describe("GraphQL Pokémon research", () => {
   test("submits one bounded request and reuses the identical result", async ({
     page,
@@ -27,24 +47,7 @@ test.describe("GraphQL Pokémon research", () => {
       })
 
       await route.fulfill({
-        body: JSON.stringify({
-          data: {
-            byNumber: [
-              {
-                base_experience: 112,
-                id: 25,
-                name: "pikachu",
-                pokemonspecy: {
-                  generation: { name: "generation-i" },
-                  is_legendary: false,
-                  is_mythical: false,
-                  pokemonspeciesnames: [{ name: "Pikachu" }],
-                },
-                pokemontypes: [{ type: { name: "electric" } }],
-              },
-            ],
-          },
-        }),
+        body: JSON.stringify(PIKACHU_GRAPHQL_RESPONSE),
         contentType: "application/json",
         status: 200,
       })
@@ -69,5 +72,63 @@ test.describe("GraphQL Pokémon research", () => {
 
     await expect(page.getByRole("link", { name: /Pikachu/ })).toBeVisible()
     expect(requestCount).toBe(1)
+  })
+})
+
+test.describe("mobile GraphQL Pokémon research", () => {
+  test.use({ viewport: MOBILE_VIEWPORT })
+
+  test("keeps research controls and results contained and touchable", async ({
+    page,
+  }) => {
+    await page.route(POKEMON_GRAPHQL_ENDPOINT, async (route) => {
+      await route.fulfill({
+        body: JSON.stringify(PIKACHU_GRAPHQL_RESPONSE),
+        contentType: "application/json",
+        status: 200,
+      })
+    })
+    await page.goto("/1")
+    await page
+      .getByRole("navigation", { name: "Pokédex research workspace" })
+      .getByRole("link", { name: "GraphQL Search" })
+      .click()
+
+    const graphqlSearchRegion = page.getByRole("region", {
+      name: "GraphQL Search",
+    })
+    const pokemonName = graphqlSearchRegion.getByRole("searchbox", {
+      name: "Pokémon name",
+    })
+    const searchButton = graphqlSearchRegion.getByRole("button", {
+      name: "GraphQL Search",
+    })
+
+    for (const control of [pokemonName, searchButton]) {
+      expect(
+        await control.evaluate(
+          (element) => element.getBoundingClientRect().height,
+        ),
+      ).toBeGreaterThanOrEqual(44)
+    }
+
+    await pokemonName.fill("Pikachu")
+    await searchButton.click()
+
+    const result = graphqlSearchRegion.getByRole("link", { name: /Pikachu/ })
+
+    await expect(result).toBeVisible()
+    const resultBounds = await result.evaluate((element) => {
+      const rectangle = element.getBoundingClientRect()
+      return { left: rectangle.left, right: rectangle.right }
+    })
+    const pageWidths = await page.evaluate(() => ({
+      document: document.documentElement.scrollWidth,
+      viewport: document.documentElement.clientWidth,
+    }))
+
+    expect(resultBounds.left).toBeGreaterThanOrEqual(0)
+    expect(resultBounds.right).toBeLessThanOrEqual(MOBILE_VIEWPORT.width)
+    expect(pageWidths.document).toBeLessThanOrEqual(pageWidths.viewport)
   })
 })
