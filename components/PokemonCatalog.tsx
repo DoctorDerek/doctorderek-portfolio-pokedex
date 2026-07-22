@@ -71,7 +71,7 @@ export default function PokemonCatalog({
         </div>
         <PokemonCatalogList
           currentPokemonId={currentPokemonId}
-          pokemons={visiblePokemons}
+          pokemons={hasActiveDiscovery ? visiblePokemons : matchingPokemons}
           progressivelyReveal={!hasActiveDiscovery}
         />
       </section>
