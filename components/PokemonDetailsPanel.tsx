@@ -25,20 +25,21 @@ type AccessiblePokemonBaseStat = keyof Pick<
 type AccessiblePokemonAttribute =
   DirectAccessiblePokemonAttribute | `baseStats.${AccessiblePokemonBaseStat}`
 
-const ACCESSIBLE_ATTRIBUTE_TITLES = {
-  abilities: "The abilities of this Pokémon",
-  baseExperience: "The base experience awarded by this Pokémon",
-  "baseStats.hp": "The base Hit Points of this Pokémon",
-  "baseStats.speed": "The base Speed of this Pokémon",
-  baseStatTotal: "The total of this Pokémon’s six base stats",
-  category: "The category of this Pokémon",
-  generation: "The generation in which this Pokémon debuted",
-  heightInMeters: "The canonical height of this Pokémon",
-  name: "The name of this Pokémon",
-  number: "The National Pokédex identifier of this Pokémon",
-  types: "The type or types of this Pokémon",
-  weightInKilograms: "The canonical weight of this Pokémon",
-} as const satisfies Record<AccessiblePokemonAttribute, string>
+const ACCESSIBLE_ATTRIBUTE_TITLES: Record<AccessiblePokemonAttribute, string> =
+  {
+    abilities: "The abilities of this Pokémon",
+    baseExperience: "The base experience awarded by this Pokémon",
+    "baseStats.hp": "The base Hit Points of this Pokémon",
+    "baseStats.speed": "The base Speed of this Pokémon",
+    baseStatTotal: "The total of this Pokémon’s six base stats",
+    category: "The category of this Pokémon",
+    generation: "The generation in which this Pokémon debuted",
+    heightInMeters: "The canonical height of this Pokémon",
+    name: "The name of this Pokémon",
+    number: "The National Pokédex identifier of this Pokémon",
+    types: "The type or types of this Pokémon",
+    weightInKilograms: "The canonical weight of this Pokémon",
+  } as const
 
 export default function PokemonDetailsPanel({
   pokemon,
