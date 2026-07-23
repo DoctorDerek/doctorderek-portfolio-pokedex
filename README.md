@@ -2,15 +2,15 @@
 
 [![Production](https://img.shields.io/website?url=https%3A%2F%2Fportfolio-pokedex.doctorderek.com%2F&up_message=live&down_message=offline&label=production&logo=vercel&logoColor=white)](https://portfolio-pokedex.doctorderek.com/) [![Codecov](https://codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex/graph/badge.svg)](https://app.codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex) [![Test and lint](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/test-and-lint.yml/badge.svg)](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/test-and-lint.yml) [![Playwright](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/playwright.yml/badge.svg)](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/playwright.yml)
 
-An unofficial, non-commercial parody and GraphQL portfolio demo that turns the original 151 Pokémon into a suspiciously bureaucratic little field guide. The interface stacks into a touch-friendly mobile dossier and expands into the project’s original compact catalog-and-details layout on larger screens.
+An unofficial, non-commercial parody and GraphQL portfolio demo that turns the original 1025 Pokémon into a suspiciously bureaucratic little field guide. The interface stacks into a touch-friendly mobile dossier and expands into the project’s compact catalog-and-details layout on larger screens.
 
 [Open the live demo](https://portfolio-pokedex.doctorderek.com/)
 
 ## What It Demonstrates
 
-- 151 statically generated Pokémon detail routes using the Next.js Pages Router
+- 1,025 statically generated Pokémon detail routes using the Next.js App Router
 - Build-time GraphQL data fetching from the [community Pokémon GraphQL API](https://graphql-pokemon2.vercel.app/)
-- Ten-entry catalog pages with active-selection, previous, next, and numbered navigation
+- Contextual catalog windows with active-selection semantics and progressive neighborhood expansion on scroll
 - Pokémon statistics including classification, types, size, combat values, weaknesses, and resistances
 - Mobile-first responsive layouts, visible keyboard focus, and semantic navigation state
 - Motion-aware interaction feedback with reduced-motion safeguards
@@ -18,7 +18,7 @@ An unofficial, non-commercial parody and GraphQL portfolio demo that turns the o
 
 ## Stack
 
-- Next.js 16, React 19, and the Pages Router
+- Next.js 16, React 19, and the App Router
 - TypeScript 6 and Tailwind CSS 4
 - GraphQL, GraphQL Code Generator, and TanStack Query 5
 - Vitest, Testing Library, MSW, Playwright, ESLint, and Prettier
@@ -51,8 +51,7 @@ Vitest, Testing Library, and MSW cover the TanStack Query provider, generated Gr
 
 ## Roadmap
 
-- Expand the catalog beyond the original 151 Pokémon using a maintained data source
-- Move to the App Router after the data layer is stable
+- Maintain full 1,025+ catalog coverage and keep generated data sources healthy
 - Deepen the parody-forward visual design and dossier copy
 - Expand Testing Trophy coverage and measured Codecov reporting around future user journeys
 
