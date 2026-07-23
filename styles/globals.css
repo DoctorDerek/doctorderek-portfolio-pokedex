@@ -1,11 +1,82 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --spacing-160: 42rem;
   --spacing-176: 46rem;
   --spacing-192: 50rem;
   --spacing-208: 54rem;
   --spacing-224: 58rem;
+}
+
+@theme inline {
+  --color-canvas: var(--theme-canvas);
+  --color-surface: var(--theme-surface);
+  --color-surface-elevated: var(--theme-surface-elevated);
+  --color-panel: var(--theme-panel);
+  --color-panel-strong: var(--theme-panel-strong);
+  --color-ink: var(--theme-ink);
+  --color-muted: var(--theme-muted);
+  --color-outline: var(--theme-outline);
+  --color-brand: var(--theme-brand);
+  --color-brand-strong: var(--theme-brand-strong);
+  --color-accent: var(--theme-accent);
+  --color-accent-soft: var(--theme-accent-soft);
+  --color-focus: var(--theme-focus);
+  --color-danger: var(--theme-danger);
+  --color-danger-surface: var(--theme-danger-surface);
+  --color-artwork: var(--theme-artwork);
+  --color-disabled: var(--theme-disabled);
+  --color-glass: var(--theme-glass);
+  --shadow-elevated: var(--theme-shadow-elevated);
+  --shadow-panel: var(--theme-shadow-panel);
+}
+
+:root {
+  --theme-canvas: #f7f1e7;
+  --theme-surface: #fffaf2;
+  --theme-surface-elevated: #fffdf8;
+  --theme-panel: #efe2d4;
+  --theme-panel-strong: #e4d2c0;
+  --theme-ink: #241f1b;
+  --theme-muted: #62584f;
+  --theme-outline: #8d7868;
+  --theme-brand: #b42332;
+  --theme-brand-strong: #8f1724;
+  --theme-accent: #8a5a00;
+  --theme-accent-soft: #f5e2a5;
+  --theme-focus: #8a5a00;
+  --theme-danger: #a61b2b;
+  --theme-danger-surface: #fde8ea;
+  --theme-artwork: #fffdf8;
+  --theme-disabled: #756b63;
+  --theme-glass: rgb(255 250 242 / 0.9);
+  --theme-shadow-elevated: 0 1.25rem 3rem rgb(70 45 25 / 0.16);
+  --theme-shadow-panel: 0 0.75rem 1.75rem rgb(70 45 25 / 0.14);
+}
+
+.dark {
+  --theme-canvas: #121416;
+  --theme-surface: #1d2024;
+  --theme-surface-elevated: #252a30;
+  --theme-panel: #2b3138;
+  --theme-panel-strong: #353c44;
+  --theme-ink: #f8f2e8;
+  --theme-muted: #c5b9ae;
+  --theme-outline: #7b7169;
+  --theme-brand: #ff6374;
+  --theme-brand-strong: #ff8a96;
+  --theme-accent: #f4c95d;
+  --theme-accent-soft: #4a3c14;
+  --theme-focus: #ffd76b;
+  --theme-danger: #ff9eaa;
+  --theme-danger-surface: #4b1f28;
+  --theme-artwork: #fffdf8;
+  --theme-disabled: #8b827a;
+  --theme-glass: rgb(29 32 36 / 0.9);
+  --theme-shadow-elevated: 0 1.25rem 3rem rgb(0 0 0 / 0.36);
+  --theme-shadow-panel: 0 0.75rem 1.75rem rgb(0 0 0 / 0.3);
 }
 
 @keyframes dossier-reveal {
@@ -32,5 +103,7 @@
 
 html,
 body {
+  background-color: var(--theme-canvas);
+  color: var(--theme-ink);
   font-family: Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
