@@ -11,6 +11,8 @@ import {
 const SEARCH_CONTROL_CLASS_NAME =
   "min-h-11 w-full rounded-md border-2 border-gray-600 bg-gray-950 px-3 text-white"
 const MAXIMUM_BASE_EXPERIENCE_FILTER = 1_000
+const FOCUS_STATE_CLASS_NAME =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
 
 export default function PokemonGraphqlSearchForm({
   generations,
@@ -58,7 +60,7 @@ export default function PokemonGraphqlSearchForm({
             type="search"
             autoComplete="off"
             placeholder="e.g. “Mr. Mime”"
-            className={SEARCH_CONTROL_CLASS_NAME}
+            className={`${SEARCH_CONTROL_CLASS_NAME} ${FOCUS_STATE_CLASS_NAME}`}
           />
         </div>
 
@@ -72,7 +74,7 @@ export default function PokemonGraphqlSearchForm({
           <select
             {...register("type")}
             id="graphql-pokemon-type"
-            className={SEARCH_CONTROL_CLASS_NAME}
+            className={`${SEARCH_CONTROL_CLASS_NAME} ${FOCUS_STATE_CLASS_NAME}`}
           >
             <option value={ALL_POKEMON_SEARCH_VALUES}>All types</option>
             {pokemonTypes.map((pokemonType) => (
@@ -93,7 +95,7 @@ export default function PokemonGraphqlSearchForm({
           <select
             {...register("generation")}
             id="graphql-pokemon-generation"
-            className={SEARCH_CONTROL_CLASS_NAME}
+            className={`${SEARCH_CONTROL_CLASS_NAME} ${FOCUS_STATE_CLASS_NAME}`}
           >
             <option value={ALL_POKEMON_SEARCH_VALUES}>All generations</option>
             {generations.map(({ label, value }) => (
@@ -114,7 +116,7 @@ export default function PokemonGraphqlSearchForm({
           <select
             {...register("isLegendary")}
             id="graphql-pokemon-legendary"
-            className={SEARCH_CONTROL_CLASS_NAME}
+            className={`${SEARCH_CONTROL_CLASS_NAME} ${FOCUS_STATE_CLASS_NAME}`}
           >
             <option value="all">Either</option>
             <option value="yes">Yes</option>
@@ -132,7 +134,7 @@ export default function PokemonGraphqlSearchForm({
           <select
             {...register("isMythical")}
             id="graphql-pokemon-mythical"
-            className={SEARCH_CONTROL_CLASS_NAME}
+            className={`${SEARCH_CONTROL_CLASS_NAME} ${FOCUS_STATE_CLASS_NAME}`}
           >
             <option value="all">Either</option>
             <option value="yes">Yes</option>
@@ -167,7 +169,7 @@ export default function PokemonGraphqlSearchForm({
                 : undefined
             }
             aria-invalid={Boolean(errors.minimumBaseExperience)}
-            className={SEARCH_CONTROL_CLASS_NAME}
+            className={`${SEARCH_CONTROL_CLASS_NAME} ${FOCUS_STATE_CLASS_NAME}`}
           />
           {errors.minimumBaseExperience ? (
             <p
@@ -190,7 +192,7 @@ export default function PokemonGraphqlSearchForm({
           <select
             {...register("sort")}
             id="graphql-pokemon-sort"
-            className={SEARCH_CONTROL_CLASS_NAME}
+            className={`${SEARCH_CONTROL_CLASS_NAME} ${FOCUS_STATE_CLASS_NAME}`}
           >
             <option value="nationalNumber">National number</option>
             <option value="name">Name A–Z</option>
@@ -208,7 +210,7 @@ export default function PokemonGraphqlSearchForm({
           <select
             {...register("limit", { valueAsNumber: true })}
             id="graphql-pokemon-limit"
-            className={SEARCH_CONTROL_CLASS_NAME}
+            className={`${SEARCH_CONTROL_CLASS_NAME} ${FOCUS_STATE_CLASS_NAME}`}
           >
             {POKEMON_SEARCH_LIMIT_OPTIONS.map((limit) => (
               <option key={limit} value={limit}>
@@ -223,14 +225,14 @@ export default function PokemonGraphqlSearchForm({
         <button
           type="submit"
           disabled={isSearching}
-          className="min-h-11 rounded-md bg-yellow-400 px-4 font-bold text-gray-950 hover:bg-yellow-300 disabled:cursor-wait disabled:bg-gray-500 motion-safe:transition-colors motion-safe:duration-150"
+          className={`min-h-11 rounded-md bg-yellow-400 px-4 font-bold text-gray-950 hover:bg-yellow-300 disabled:cursor-wait disabled:bg-gray-500 motion-safe:transition-colors motion-safe:duration-150 ${FOCUS_STATE_CLASS_NAME}`}
         >
           {isSearching ? "Searching GraphQL…" : "GraphQL Search"}
         </button>
         <button
           type="button"
           onClick={handleResearchReset}
-          className="min-h-11 rounded-md border-2 border-gray-600 px-4 font-bold hover:border-yellow-400 hover:bg-gray-700 hover:text-yellow-400 motion-safe:transition-colors motion-safe:duration-150"
+          className={`min-h-11 rounded-md border-2 border-gray-600 px-4 font-bold hover:border-yellow-400 hover:bg-gray-700 hover:text-yellow-400 motion-safe:transition-colors motion-safe:duration-150 ${FOCUS_STATE_CLASS_NAME}`}
         >
           Reset research
         </button>

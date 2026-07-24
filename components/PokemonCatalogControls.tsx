@@ -8,6 +8,8 @@ import {
 
 const CONTROL_CLASS_NAME =
   "min-h-11 w-full rounded-md border-2 border-gray-600 bg-gray-900 px-3 text-white"
+const FOCUS_STATE_CLASS_NAME =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
 
 export default function PokemonCatalogControls({
   pokemonTypes,
@@ -40,7 +42,7 @@ export default function PokemonCatalogControls({
           type="search"
           autoComplete="off"
           placeholder="e.g. “Pikachu” or “#025”"
-          className={CONTROL_CLASS_NAME}
+          className={`${CONTROL_CLASS_NAME} ${FOCUS_STATE_CLASS_NAME}`}
         />
       </div>
 
@@ -52,7 +54,7 @@ export default function PokemonCatalogControls({
           <select
             {...register("type")}
             id="pokemon-type"
-            className={CONTROL_CLASS_NAME}
+            className={`${CONTROL_CLASS_NAME} ${FOCUS_STATE_CLASS_NAME}`}
           >
             <option value={ALL_POKEMON_TYPES_VALUE}>All types</option>
             {pokemonTypes.map((pokemonType) => (
@@ -70,7 +72,7 @@ export default function PokemonCatalogControls({
           <select
             {...register("sort")}
             id="pokemon-sort"
-            className={CONTROL_CLASS_NAME}
+            className={`${CONTROL_CLASS_NAME} ${FOCUS_STATE_CLASS_NAME}`}
           >
             <option value="nationalNumber">National number</option>
             <option value="name">Name A–Z</option>
@@ -82,7 +84,7 @@ export default function PokemonCatalogControls({
       <button
         type="button"
         onClick={handleCatalogFiltersReset}
-        className="min-h-11 rounded-md border-2 border-gray-600 px-3 font-bold hover:border-yellow-400 hover:bg-gray-700 hover:text-yellow-400 motion-safe:transition-colors motion-safe:duration-150"
+        className={`min-h-11 rounded-md border-2 border-gray-600 px-3 font-bold hover:border-yellow-400 hover:bg-gray-700 hover:text-yellow-400 motion-safe:transition-colors motion-safe:duration-150 ${FOCUS_STATE_CLASS_NAME}`}
       >
         Reset filters
       </button>
