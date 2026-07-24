@@ -229,7 +229,7 @@ function PokemonAttribute({
       )}
       title={ACCESSIBLE_ATTRIBUTE_TITLES[title]}
     >
-      <dt className="font-semi-bold underline">{attribute}</dt>
+      <dt className="font-semibold underline">{attribute}</dt>
       <dd className="break-words">{value}</dd>
     </dl>
   )
