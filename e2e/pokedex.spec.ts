@@ -431,6 +431,7 @@ test.describe("reduced-motion Pokédex", () => {
 
     await expect(selectedPokemon).toBeVisible()
     await expect(currentPokemonLink).toBeVisible()
+    await expect(page.getByRole("button", { name: /motion/i })).toHaveCount(0)
     expect(
       await page.evaluate(
         () => matchMedia("(prefers-reduced-motion: reduce)").matches,
