@@ -18,8 +18,8 @@ afterAll(() => {
 
 /**
  * ONE-TIME EXCEPTION TO NO CODE COMMENT RULE:
- * Required mock for Happy-DOM/JSDOM to prevent crashes when components
- * (e.g., using next-themes, Motion, MUI) evaluate media queries.
+ * Required mock for Happy-DOM/JSDOM to prevent crashes when next-themes
+ * evaluates media queries.
  */
 Object.defineProperty(window, "matchMedia", {
   writable: true,
