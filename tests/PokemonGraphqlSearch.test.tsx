@@ -142,7 +142,39 @@ describe("PokemonGraphqlSearch", () => {
     expect(requestCount).toBe(2)
   })
 
-  it("does not retry automatically and recovers when the same query is resubmitted", async () => {
+  it("retries once on transient HTTP failure and succeeds automatically", async () => {
+    let requestCount = 0
+
+    pokemonApiMockServer.use(
+      http.post(POKEMON_GRAPHQL_ENDPOINT, () => {
+        requestCount += 1
+
+        if (requestCount === 1) return new HttpResponse(null, { status: 503 })
+
+        return HttpResponse.json({
+          data: {
+            byNumber: [
+              createPokemonSearchResult({
+                baseExperience: 64,
+                id: 1,
+                name: "Bulbasaur",
+              }),
+            ],
+          },
+        })
+      }),
+    )
+    renderPokemonGraphqlSearch()
+
+    fireEvent.click(screen.getByRole("button", { name: "GraphQL Search" }))
+
+    expect(
+      await screen.findByRole("link", { name: /Bulbasaur/ }),
+    ).toHaveAttribute("href", "/1")
+    expect(requestCount).toBe(2)
+  })
+
+  it("does not retry automatically on API errors and recovers when the same query is resubmitted", async () => {
     let requestCount = 0
 
     pokemonApiMockServer.use(
@@ -182,6 +214,36 @@ describe("PokemonGraphqlSearch", () => {
       await screen.findByRole("link", { name: /Bulbasaur/ }),
     ).toHaveAttribute("href", "/1")
     expect(requestCount).toBe(2)
+  })
+
+  it("does not treat bad requests as retryable", async () => {
+    let requestCount = 0
+
+    pokemonApiMockServer.use(
+      http.post(POKEMON_GRAPHQL_ENDPOINT, () => {
+        requestCount += 1
+
+        return new HttpResponse(null, { status: 429 })
+      }),
+    )
+    renderPokemonGraphqlSearch()
+
+    fireEvent.click(screen.getByRole("button", { name: "GraphQL Search" }))
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "The GraphQL service returned HTTP 429.",
+    )
+    expect(requestCount).toBe(1)
+
+    fireEvent.change(screen.getByRole("searchbox", { name: "Pokémon name" }), {
+      target: { value: "Pikachu" },
+    })
+    fireEvent.click(screen.getByRole("button", { name: "GraphQL Search" }))
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "The GraphQL service returned HTTP 429.",
+    )
+    await waitFor(() => expect(requestCount).toBe(2))
   })
 
   it("validates the form before sending every advanced field in one request", async () => {

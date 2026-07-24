@@ -1,8 +1,10 @@
 import { http, HttpResponse } from "msw"
 import { describe, expect, it } from "vitest"
 import {
+  isRetryablePokemonSearchError,
   POKEMON_GRAPHQL_ENDPOINT,
   pokemonSearchFetcher,
+  pokemonSearchFetcherWithTransientRetry,
 } from "@/data/pokemonSearch"
 import { pokemonApiMockServer } from "@/tests/mocks/server"
 
@@ -55,6 +57,120 @@ describe("pokemonSearchFetcher", () => {
         TEST_VARIABLES,
       )(),
     ).rejects.toThrow("The GraphQL service returned HTTP 503.")
+  })
+
+  it("classifies transient HTTP failures as retryable", () => {
+    expect(
+      isRetryablePokemonSearchError(
+        new Error("The GraphQL service returned HTTP 500."),
+      ),
+    ).toBe(true)
+    expect(
+      isRetryablePokemonSearchError(
+        new Error("The GraphQL service returned HTTP 503."),
+      ),
+    ).toBe(true)
+    expect(
+      isRetryablePokemonSearchError(
+        new Error("The GraphQL service returned HTTP 429."),
+      ),
+    ).toBe(false)
+  })
+
+  it("does not retry non-http or non-transient errors", () => {
+    expect(
+      isRetryablePokemonSearchError(
+        new Error("The GraphQL service returned an invalid response."),
+      ),
+    ).toBe(false)
+    expect(
+      isRetryablePokemonSearchError(new Error("Temporary network outage")),
+    ).toBe(false)
+    expect(isRetryablePokemonSearchError(null)).toBe(false)
+  })
+
+  it("retries once for transient HTTP failures", async () => {
+    let requestCount = 0
+
+    pokemonApiMockServer.use(
+      http.post(POKEMON_GRAPHQL_ENDPOINT, () => {
+        requestCount += 1
+
+        if (requestCount === 1) return new HttpResponse(null, { status: 503 })
+
+        return HttpResponse.json({ data: { pokemon: [{ id: 25 }] } })
+      }),
+    )
+
+    await expect(
+      pokemonSearchFetcherWithTransientRetry<
+        TestPokemonSearchData,
+        typeof TEST_VARIABLES
+      >(TEST_DOCUMENT, TEST_VARIABLES),
+    ).resolves.toEqual({ pokemon: [{ id: 25 }] })
+    expect(requestCount).toBe(2)
+  })
+
+  it("does not retry non-transient HTTP responses", async () => {
+    let requestCount = 0
+
+    pokemonApiMockServer.use(
+      http.post(POKEMON_GRAPHQL_ENDPOINT, () => {
+        requestCount += 1
+
+        return new HttpResponse(null, { status: 400 })
+      }),
+    )
+
+    await expect(
+      pokemonSearchFetcherWithTransientRetry<
+        TestPokemonSearchData,
+        typeof TEST_VARIABLES
+      >(TEST_DOCUMENT, TEST_VARIABLES),
+    ).rejects.toThrow("The GraphQL service returned HTTP 400.")
+    expect(requestCount).toBe(1)
+  })
+
+  it("retries transient HTTP failures when using the default fetcher", async () => {
+    let requestCount = 0
+
+    pokemonApiMockServer.use(
+      http.post(POKEMON_GRAPHQL_ENDPOINT, () => {
+        requestCount += 1
+
+        if (requestCount === 1) return new HttpResponse(null, { status: 500 })
+
+        return HttpResponse.json({ data: { pokemon: [{ id: 25 }] } })
+      }),
+    )
+
+    await expect(
+      pokemonSearchFetcher<TestPokemonSearchData, typeof TEST_VARIABLES>(
+        TEST_DOCUMENT,
+        TEST_VARIABLES,
+      )(),
+    ).resolves.toEqual({ pokemon: [{ id: 25 }] })
+    expect(requestCount).toBe(2)
+  })
+
+  it("does not retry non-transient HTTP failures when using the default fetcher", async () => {
+    let requestCount = 0
+
+    pokemonApiMockServer.use(
+      http.post(POKEMON_GRAPHQL_ENDPOINT, () => {
+        requestCount += 1
+
+        return new HttpResponse(null, { status: 400 })
+      }),
+    )
+
+    await expect(
+      pokemonSearchFetcher<TestPokemonSearchData, typeof TEST_VARIABLES>(
+        TEST_DOCUMENT,
+        TEST_VARIABLES,
+      )(),
+    ).rejects.toThrow("The GraphQL service returned HTTP 400.")
+    expect(requestCount).toBe(1)
   })
 
   it("rejects GraphQL errors instead of returning partial data", async () => {

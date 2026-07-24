@@ -1,5 +1,9 @@
 export const POKEMON_GRAPHQL_ENDPOINT = "https://graphql.pokeapi.co/v1beta2"
 
+const HTTP_ERROR_PREFIX = "The GraphQL service returned HTTP "
+const TRANSIENT_HTTP_ERROR_MINIMUM = 500
+const TRANSIENT_HTTP_ERROR_MAXIMUM = 599
+
 interface GraphqlErrorResponse {
   message: string
 }
@@ -40,20 +44,57 @@ function readGraphqlResponseData<TData>(responseBody: unknown) {
   return responseBody.data as TData
 }
 
+async function executePokemonSearchFetcher<TData, TVariables>(
+  query: GraphqlDocumentString,
+  variables: TVariables,
+) {
+  const response = await fetch(POKEMON_GRAPHQL_ENDPOINT, {
+    body: JSON.stringify({ query: String(query), variables }),
+    headers: { "Content-Type": "application/json" },
+    method: "POST",
+  })
+
+  if (!response.ok) {
+    throw new Error(`The GraphQL service returned HTTP ${response.status}.`)
+  }
+
+  return readGraphqlResponseData<TData>(await response.json())
+}
+
 export function pokemonSearchFetcher<TData, TVariables>(
   query: GraphqlDocumentString,
   variables: TVariables,
 ) {
-  return async () => {
-    const response = await fetch(POKEMON_GRAPHQL_ENDPOINT, {
-      body: JSON.stringify({ query: String(query), variables }),
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-    })
+  return () =>
+    pokemonSearchFetcherWithTransientRetry<TData, TVariables>(query, variables)
+}
 
-    if (!response.ok)
-      throw new Error(`The GraphQL service returned HTTP ${response.status}.`)
+export function isRetryablePokemonSearchError(error: unknown): boolean {
+  if (!(error instanceof Error)) return false
 
-    return readGraphqlResponseData<TData>(await response.json())
+  if (!error.message.startsWith(HTTP_ERROR_PREFIX)) return false
+
+  const statusCode = Number(error.message.replace(HTTP_ERROR_PREFIX, ""))
+
+  return (
+    Number.isInteger(statusCode) &&
+    statusCode >= TRANSIENT_HTTP_ERROR_MINIMUM &&
+    statusCode <= TRANSIENT_HTTP_ERROR_MAXIMUM
+  )
+}
+
+export async function pokemonSearchFetcherWithTransientRetry<TData, TVariables>(
+  query: GraphqlDocumentString,
+  variables: TVariables,
+): Promise<TData> {
+  const attempt = () =>
+    executePokemonSearchFetcher<TData, TVariables>(query, variables)
+
+  try {
+    return await attempt()
+  } catch (error) {
+    if (!isRetryablePokemonSearchError(error)) throw error
   }
+
+  return attempt()
 }
