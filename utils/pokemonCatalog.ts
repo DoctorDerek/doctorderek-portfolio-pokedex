@@ -4,7 +4,7 @@ export { MAX_POKEMON_NUMBER } from "@/data/pokemonCatalog"
 
 export const ALL_POKEMON_TYPES_VALUE = "all"
 export const POKEMON_CATALOG_CONTEXT_RADIUS = 10
-export const POKEMON_CATALOG_EXPANSION_SIZE = 10
+export const POKEMON_CATALOG_EXPANSION_SIZE = 20
 
 export const POKEMON_CATALOG_SORT_OPTIONS = [
   "nationalNumber",

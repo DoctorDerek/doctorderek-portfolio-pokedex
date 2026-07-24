@@ -77,15 +77,15 @@ describe("ProgressivePokemonCatalogList", () => {
 
     approachCatalogBoundary()
 
-    expect(getRenderedPokemonHrefs()).toHaveLength(41)
-    expect(getRenderedPokemonHrefs().at(0)).toBe("/480")
-    expect(getRenderedPokemonHrefs().at(-1)).toBe("/520")
-
-    approachCatalogBoundary()
-
     expect(getRenderedPokemonHrefs()).toHaveLength(61)
     expect(getRenderedPokemonHrefs().at(0)).toBe("/470")
     expect(getRenderedPokemonHrefs().at(-1)).toBe("/530")
+
+    approachCatalogBoundary()
+
+    expect(getRenderedPokemonHrefs()).toHaveLength(101)
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/450")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/550")
     expect(fetchSpy).not.toHaveBeenCalled()
 
     fetchSpy.mockRestore()
@@ -95,11 +95,11 @@ describe("ProgressivePokemonCatalogList", () => {
     {
       currentPokemonId: 1,
       expectedFirstHref: "/1",
-      expectedLastHref: "/31",
+      expectedLastHref: "/41",
     },
     {
       currentPokemonId: 1_025,
-      expectedFirstHref: "/995",
+      expectedFirstHref: "/985",
       expectedLastHref: "/1025",
     },
   ])(
@@ -114,7 +114,7 @@ describe("ProgressivePokemonCatalogList", () => {
 
       approachCatalogBoundary()
 
-      expect(getRenderedPokemonHrefs()).toHaveLength(31)
+      expect(getRenderedPokemonHrefs()).toHaveLength(41)
       expect(getRenderedPokemonHrefs().at(0)).toBe(expectedFirstHref)
       expect(getRenderedPokemonHrefs().at(-1)).toBe(expectedLastHref)
     },

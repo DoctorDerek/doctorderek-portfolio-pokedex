@@ -75,14 +75,14 @@ describe("Pokémon catalog model", () => {
       range: expandedRange,
     })
 
-    expect(expandedPokemons).toHaveLength(41)
-    expect(expandedPokemons.at(0)?.id).toBe(480)
-    expect(expandedPokemons.at(-1)?.id).toBe(520)
+    expect(expandedPokemons).toHaveLength(61)
+    expect(expandedPokemons.at(0)?.id).toBe(470)
+    expect(expandedPokemons.at(-1)?.id).toBe(530)
   })
 
   it.each([
-    { currentPokemonId: 1, firstPokemonId: 1, lastPokemonId: 31 },
-    { currentPokemonId: 1_025, firstPokemonId: 995, lastPokemonId: 1_025 },
+    { currentPokemonId: 1, firstPokemonId: 1, lastPokemonId: 41 },
+    { currentPokemonId: 1_025, firstPokemonId: 985, lastPokemonId: 1_025 },
   ])(
     "clamps expanded route $currentPokemonId to its dataset boundary",
     ({ currentPokemonId, firstPokemonId, lastPokemonId }) => {
@@ -100,7 +100,7 @@ describe("Pokémon catalog model", () => {
         range: expandedRange,
       })
 
-      expect(expandedPokemons).toHaveLength(31)
+      expect(expandedPokemons).toHaveLength(41)
       expect(expandedPokemons.at(0)?.id).toBe(firstPokemonId)
       expect(expandedPokemons.at(-1)?.id).toBe(lastPokemonId)
     },
