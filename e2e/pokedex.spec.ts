@@ -213,6 +213,46 @@ test.describe("mobile Pokédex", () => {
     ).toHaveAttribute("aria-current", "page")
   })
 
+  test("hydrates more catalog entries when scrolling up and down repeatedly", async ({
+    page,
+  }) => {
+    await page.goto("/500")
+
+    const catalog = page.getByRole("navigation", { name: "Pokémon catalog" })
+    const links = catalog.getByRole("link")
+    const initialVisibleCount = await links.count()
+
+    const applicationOrigin = new URL(page.url()).origin
+    const applicationDataRequests: string[] = []
+
+    page.on("request", (request) => {
+      if (
+        request.url().startsWith(applicationOrigin) &&
+        ["document", "fetch", "xhr"].includes(request.resourceType())
+      )
+        applicationDataRequests.push(request.url())
+    })
+
+    expect(initialVisibleCount).toBeGreaterThanOrEqual(21)
+
+    await page.mouse.wheel(0, 900)
+    await expect
+      .poll(async () => links.count())
+      .toBeGreaterThan(initialVisibleCount)
+    await expect(catalog.locator('a[href="/550"]')).toHaveCount(1)
+
+    const downExpandedCount = await links.count()
+    expect(downExpandedCount).toBeGreaterThan(initialVisibleCount)
+
+    await page.mouse.wheel(0, -900)
+    await expect
+      .poll(async () => links.count())
+      .toBeGreaterThan(downExpandedCount)
+    await expect(catalog.locator('a[href="/450"]')).toHaveCount(1)
+
+    expect(applicationDataRequests).toEqual([])
+  })
+
   test("prioritizes the selected dossier before catalog discovery", async ({
     page,
   }) => {
