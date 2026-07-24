@@ -9,8 +9,8 @@ An unofficial, non-commercial parody and GraphQL portfolio demo that turns the o
 ## What It Demonstrates
 
 - 1,025 statically generated Pokémon detail routes using the Next.js App Router
-- Build-time GraphQL data fetching from the [community Pokémon GraphQL API](https://graphql-pokemon2.vercel.app/)
-- Contextual catalog windows with active-selection semantics and progressive neighborhood expansion on scroll
+- On-demand GraphQL search against the public [PokéAPI GraphQL endpoint](https://graphql.pokeapi.co/)
+- Contextual catalog windows with active-selection semantics and progressive local expansion on scroll
 - Pokémon statistics including classification, types, size, combat values, weaknesses, and resistances
 - Mobile-first responsive layouts, visible keyboard focus, and semantic navigation state
 - Motion-aware interaction feedback with reduced-motion safeguards
