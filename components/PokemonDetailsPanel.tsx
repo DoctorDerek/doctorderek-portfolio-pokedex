@@ -1,8 +1,8 @@
+import PokemonBaseStats from "@/components/PokemonBaseStats"
 import PokemonImage from "@/components/PokemonImage"
 import { POKEDEX_WORKSPACE_SECTION_IDS } from "@/data/pokedexWorkspace"
 import type { PokemonDossier } from "@/types/pokemon"
 import classNames from "@/utils/classNames"
-import PokemonBaseStats from "@/components/PokemonBaseStats"
 
 type DirectAccessiblePokemonAttribute = keyof Pick<
   PokemonDossier,

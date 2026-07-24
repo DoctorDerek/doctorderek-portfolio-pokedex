@@ -30,15 +30,21 @@ describe("PokemonDetailsPanel", () => {
     expect(within(selectedPokemonRegion).getByText("HP")).toBeVisible()
     expect(within(selectedPokemonRegion).getByText("Attack")).toBeVisible()
     expect(within(selectedPokemonRegion).getByText("Defense")).toBeVisible()
-    expect(within(selectedPokemonRegion).getByText("Special Attack")).toBeVisible()
+    expect(
+      within(selectedPokemonRegion).getByText("Special Attack"),
+    ).toBeVisible()
     expect(
       within(selectedPokemonRegion).getByText("Special Defense"),
     ).toBeVisible()
     expect(within(selectedPokemonRegion).getByText("Speed")).toBeVisible()
     expect(within(selectedPokemonRegion).getByText("Legendary")).toBeVisible()
     expect(within(selectedPokemonRegion).getByText("Mythical")).toBeVisible()
-    expect(within(selectedPokemonRegion).getByText("Capture Rate")).toBeVisible()
-    expect(within(selectedPokemonRegion).getByText("Base Happiness")).toBeVisible()
+    expect(
+      within(selectedPokemonRegion).getByText("Capture Rate"),
+    ).toBeVisible()
+    expect(
+      within(selectedPokemonRegion).getByText("Base Happiness"),
+    ).toBeVisible()
     expect(within(selectedPokemonRegion).getByText("Habitat")).toBeVisible()
     expect(within(selectedPokemonRegion).getByText("Shape")).toBeVisible()
     expect(within(selectedPokemonRegion).getByText("Color")).toBeVisible()

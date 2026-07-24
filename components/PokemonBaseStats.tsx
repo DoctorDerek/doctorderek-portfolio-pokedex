@@ -51,7 +51,10 @@ export default function PokemonBaseStats({
     <div className="grid gap-2">
       {BASE_STAT_LABELS.map((entry) => {
         const value = baseStats[entry.key]
-        const percent = Math.max(0, Math.min((value / MAX_BASE_STAT) * 100, 100))
+        const percent = Math.max(
+          0,
+          Math.min((value / MAX_BASE_STAT) * 100, 100),
+        )
 
         return (
           <dl
