@@ -50,6 +50,11 @@ export default function AppContainer({
         <div className="justify-self-center sm:justify-self-end">
           <ThemeControlSlot />
         </div>
+        <p className="col-span-full text-sm leading-tight text-muted sm:col-span-3">
+          Unofficial National Pokédex research registry: non-commercial portfolio
+          exploration of GraphQL, progressive catalog behavior, and accessible
+          interaction.
+        </p>
       </header>
       <main className="flex w-full flex-1 items-start justify-center px-3 pb-3 sm:px-6 md:pb-6">
         {children}

@@ -2,6 +2,7 @@ import PokemonImage from "@/components/PokemonImage"
 import { POKEDEX_WORKSPACE_SECTION_IDS } from "@/data/pokedexWorkspace"
 import type { PokemonDossier } from "@/types/pokemon"
 import classNames from "@/utils/classNames"
+import PokemonBaseStats from "@/components/PokemonBaseStats"
 
 type DirectAccessiblePokemonAttribute = keyof Pick<
   PokemonDossier,
@@ -19,7 +20,7 @@ type DirectAccessiblePokemonAttribute = keyof Pick<
 
 type AccessiblePokemonBaseStat = keyof Pick<
   PokemonDossier["baseStats"],
-  "hp" | "speed"
+  "hp" | "attack" | "defense" | "specialAttack" | "specialDefense" | "speed"
 >
 
 type AccessiblePokemonAttribute =
@@ -29,8 +30,19 @@ const ACCESSIBLE_ATTRIBUTE_TITLES: Record<AccessiblePokemonAttribute, string> =
   {
     abilities: "The abilities of this Pokémon",
     baseExperience: "The base experience awarded by this Pokémon",
+    baseHappiness: "The baseline happiness tendency for this Pokémon",
     "baseStats.hp": "The base Hit Points of this Pokémon",
+    "baseStats.attack": "The base Attack of this Pokémon",
+    "baseStats.defense": "The base Defense of this Pokémon",
+    "baseStats.specialAttack": "The base Special Attack of this Pokémon",
+    "baseStats.specialDefense": "The base Special Defense of this Pokémon",
     "baseStats.speed": "The base Speed of this Pokémon",
+    captureRate: "The catch success likelihood for this Pokémon",
+    color: "The color category used for this Pokémon",
+    habitat: "The habitat where this Pokémon is typically found",
+    isLegendary: "Whether this Pokémon is officially marked as legendary",
+    isMythical: "Whether this Pokémon is officially marked as mythical",
+    shape: "The dominant structural shape of this Pokémon",
     baseStatTotal: "The total of this Pokémon’s six base stats",
     category: "The category of this Pokémon",
     generation: "The generation in which this Pokémon debuted",
@@ -99,16 +111,17 @@ export default function PokemonDetailsPanel({
             value={String(pokemon.baseStatTotal)}
           />
           <PokemonAttribute
-            title="baseStats.hp"
-            attribute="Base HP"
-            value={String(pokemon.baseStats.hp)}
+            title="isLegendary"
+            attribute="Legendary"
+            value={pokemon.isLegendary ? "Yes" : "No"}
           />
           <PokemonAttribute
-            title="baseStats.speed"
-            attribute="Base Speed"
-            value={String(pokemon.baseStats.speed)}
+            title="isMythical"
+            attribute="Mythical"
+            value={pokemon.isMythical ? "Yes" : "No"}
           />
         </div>
+        <PokemonBaseStats baseStats={pokemon.baseStats} />
         <div className="grid gap-3 sm:grid-cols-2">
           {pokemon.heightInMeters !== null && (
             <PokemonAttribute
@@ -122,6 +135,43 @@ export default function PokemonDetailsPanel({
               title="weightInKilograms"
               attribute="Weight"
               value={`${pokemon.weightInKilograms} kg`}
+            />
+          )}
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {pokemon.baseHappiness !== null && (
+            <PokemonAttribute
+              title="baseHappiness"
+              attribute="Base Happiness"
+              value={String(pokemon.baseHappiness)}
+            />
+          )}
+          {pokemon.captureRate !== null && (
+            <PokemonAttribute
+              title="captureRate"
+              attribute="Capture Rate"
+              value={String(pokemon.captureRate)}
+            />
+          )}
+          {pokemon.habitat !== null && (
+            <PokemonAttribute
+              title="habitat"
+              attribute="Habitat"
+              value={pokemon.habitat}
+            />
+          )}
+          {pokemon.shape !== null && (
+            <PokemonAttribute
+              title="shape"
+              attribute="Shape"
+              value={pokemon.shape}
+            />
+          )}
+          {pokemon.color !== null && (
+            <PokemonAttribute
+              title="color"
+              attribute="Color"
+              value={pokemon.color}
             />
           )}
         </div>
