@@ -9,13 +9,20 @@ type DirectAccessiblePokemonAttribute = keyof Pick<
   | "abilities"
   | "baseExperience"
   | "baseStatTotal"
+  | "baseHappiness"
   | "category"
+  | "captureRate"
   | "generation"
+  | "habitat"
   | "heightInMeters"
+  | "isLegendary"
+  | "isMythical"
+  | "shape"
+  | "color"
   | "name"
   | "number"
-  | "types"
   | "weightInKilograms"
+  | "types"
 >
 
 type AccessiblePokemonBaseStat = keyof Pick<

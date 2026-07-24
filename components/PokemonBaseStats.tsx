@@ -74,8 +74,8 @@ export default function PokemonBaseStats({
                 <span
                   role="presentation"
                   className={classNames(
-                    "absolute inset-y-0 left-0 rounded-full bg-yellow-300",
-                    percent < 25 ? "bg-yellow-500" : undefined,
+                    "absolute inset-y-0 left-0 rounded-full",
+                    percent < 25 ? "bg-yellow-500" : "bg-yellow-300",
                   )}
                   style={{ width: `${percent}%` }}
                 />
