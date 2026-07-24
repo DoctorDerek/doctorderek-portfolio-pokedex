@@ -10,6 +10,7 @@ import useProgressivePokemonCatalog from "@/hooks/useProgressivePokemonCatalog"
 import type { PokemonCatalogEntry } from "@/types/pokemon"
 
 const POKEMON_CATALOG_PRELOAD_DISTANCE_PIXELS = 800
+const POKEMON_CATALOG_PRELOAD_EXPANSIONS_PER_GESTURE = 2
 const POKEMON_CATALOG_WINDOW_PRELOAD_DISTANCE_PIXELS = 1_200
 
 export default function ProgressivePokemonCatalogList({
@@ -43,6 +44,7 @@ export default function ProgressivePokemonCatalogList({
   const handleBoundaryApproach = useCallback(() => {
     const navigation = navigationReference.current
     const firstVisiblePokemon = visiblePokemons[0]
+    const expansionDirections: Array<"before" | "after" | "both"> = []
 
     if (
       !navigation ||
@@ -52,7 +54,36 @@ export default function ProgressivePokemonCatalogList({
     )
       return
 
-    if (canExpandBefore) {
+    const remainingScrollDistance =
+      navigation.scrollHeight - navigation.clientHeight - navigation.scrollTop
+    const isNearTop =
+      navigation.scrollTop <= POKEMON_CATALOG_PRELOAD_DISTANCE_PIXELS
+    const isNearBottom =
+      remainingScrollDistance <= POKEMON_CATALOG_PRELOAD_DISTANCE_PIXELS
+
+    if (!isNearTop && !isNearBottom) return
+
+    if (isNearTop && canExpandBefore) expansionDirections.push("before")
+    if (isNearBottom && canExpandAfter) expansionDirections.push("after")
+
+    if (
+      isNearTop &&
+      isNearBottom &&
+      canExpandBefore &&
+      canExpandAfter &&
+      !expansionDirections.includes("both")
+    )
+      expansionDirections.push("both")
+
+    const expansionDirection = expansionDirections.includes("both")
+      ? "both"
+      : expansionDirections.length > 0
+        ? expansionDirections[0]
+        : canExpandBefore
+          ? "before"
+          : "after"
+
+    if (expansionDirection === "before" || expansionDirection === "both") {
       const anchor = navigation.querySelector<HTMLElement>(
         "[data-pokemon-id='" + firstVisiblePokemon.id + "']",
       )
@@ -66,7 +97,10 @@ export default function ProgressivePokemonCatalogList({
     }
 
     isExpansionPendingReference.current = true
-    expandVisibleRange("both")
+    expandVisibleRange(
+      expansionDirection,
+      POKEMON_CATALOG_PRELOAD_EXPANSIONS_PER_GESTURE,
+    )
   }, [canExpandAfter, canExpandBefore, expandVisibleRange, visiblePokemons])
   const handleCatalogScroll = (event: UIEvent<HTMLElement>) => {
     if (isRestoringScrollPositionReference.current) return

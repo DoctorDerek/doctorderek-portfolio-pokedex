@@ -73,8 +73,20 @@ test.describe("App Router Pokédex entry points", () => {
     await catalog.evaluate((element) => {
       element.scrollTop = 0
     })
-    await expect(catalog.locator('a[href="/470"]')).toHaveCount(1)
-    await expect(catalog.getByRole("link")).toHaveCount(81)
+    await expect(catalog.locator('a[href="/410"]')).toHaveCount(1)
+    await expect(catalog.getByRole("link")).toHaveCount(141)
+
+    await catalog.evaluate((element) => {
+      element.scrollTop = element.scrollHeight
+    })
+    await expect(catalog.locator('a[href="/590"]')).toHaveCount(1)
+    await expect(catalog.getByRole("link")).toHaveCount(181)
+
+    await catalog.evaluate((element) => {
+      element.scrollTop = 0
+    })
+    await expect(catalog.locator('a[href="/370"]')).toHaveCount(1)
+    await expect(catalog.getByRole("link")).toHaveCount(221)
     expect(applicationDataRequests).toEqual([])
   })
 })

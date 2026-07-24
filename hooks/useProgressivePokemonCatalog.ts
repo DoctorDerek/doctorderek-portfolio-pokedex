@@ -5,6 +5,7 @@ import {
   getContextualPokemonCatalogRange,
   getPokemonCatalogEntriesInRange,
   type PokemonCatalogExpansionDirection,
+  type PokemonCatalogRange,
 } from "@/utils/pokemonCatalog"
 
 export default function useProgressivePokemonCatalog({
@@ -20,15 +21,24 @@ export default function useProgressivePokemonCatalog({
     getContextualPokemonCatalogRange({ currentPokemonId, pokemons }),
   )
   const expandVisibleRange = useCallback(
-    (direction: PokemonCatalogExpansionDirection) => {
+    (direction: PokemonCatalogExpansionDirection, expansionMultiplier = 1) => {
       if (!enabled) return
 
+      const safeExpansionMultiplier = Math.max(
+        1,
+        Math.floor(expansionMultiplier),
+      )
+
       setVisibleRange((currentRange) =>
-        expandPokemonCatalogRange({
-          direction,
-          pokemonCount: pokemons.length,
-          range: currentRange,
-        }),
+        Array.from<PokemonCatalogRange>({
+          length: safeExpansionMultiplier,
+        }).reduce((range) => {
+          return expandPokemonCatalogRange({
+            direction,
+            pokemonCount: pokemons.length,
+            range,
+          })
+        }, currentRange),
       )
     },
     [enabled, pokemons.length],
