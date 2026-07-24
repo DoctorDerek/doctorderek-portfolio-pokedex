@@ -56,7 +56,9 @@ describe("PokemonDetailsPanel", () => {
         pokemon={{
           ...BULBASAUR_DOSSIER_FIXTURE,
           baseExperience: null,
+          baseHappiness: null,
           heightInMeters: null,
+          captureRate: null,
           weightInKilograms: null,
         }}
       />,
