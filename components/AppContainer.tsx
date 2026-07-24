@@ -1,23 +1,10 @@
-import dynamic from "next/dynamic"
 import Link from "next/link"
 import type { ReactNode } from "react"
+import ThemeControlSlot from "@/components/ThemeControlSlot"
 import classNames from "@/utils/classNames"
 
 const HEADER_LINK_CLASS_NAME =
   "rounded-sm font-semibold text-yellow-300 underline-offset-4 hover:text-yellow-200 hover:underline motion-safe:transition-colors motion-safe:duration-150"
-
-const ThemeControlSlot = dynamic(
-  () => import("@/components/ThemeControlSlot"),
-  {
-    ssr: false,
-    loading: () => (
-      <div
-        aria-hidden="true"
-        className="border-outline bg-surface-elevated/60 h-14 w-64 rounded-lg border"
-      />
-    ),
-  },
-)
 
 export default function AppContainer({
   children,
