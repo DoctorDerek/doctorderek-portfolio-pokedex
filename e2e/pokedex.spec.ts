@@ -45,25 +45,22 @@ test.describe("App Router Pokédex entry points", () => {
   test("prepares more local entries before either scroll boundary", async ({
     page,
   }) => {
+    const applicationDataRequests: string[] = []
+
+    page.on("request", (request) => {
+      if (["document", "fetch", "xhr"].includes(request.resourceType()))
+        applicationDataRequests.push(request.url())
+    })
+
     await page.goto("/500")
 
     const catalog = page.getByRole("navigation", { name: "Pokémon catalog" })
+    const applicationOrigin = new URL(page.url()).origin
 
     await expect(catalog.locator('a[href="/470"]')).toHaveCount(1)
     await expect(catalog.locator('a[href="/530"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(61)
 
-    const applicationOrigin = new URL(page.url()).origin
-    const applicationDataRequests: string[] = []
-
-    page.on("request", (request) => {
-      if (
-        request.url().startsWith(applicationOrigin) &&
-        ["document", "fetch", "xhr"].includes(request.resourceType())
-      )
-        applicationDataRequests.push(request.url())
-    })
-    await page.waitForLoadState("networkidle")
     applicationDataRequests.length = 0
 
     await catalog.evaluate((element) => {
@@ -89,7 +86,11 @@ test.describe("App Router Pokédex entry points", () => {
     })
     await expect(catalog.locator('a[href="/390"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(221)
-    expect(applicationDataRequests).toEqual([])
+    expect(
+      applicationDataRequests.filter((requestUrl) =>
+        requestUrl.startsWith(applicationOrigin),
+      ),
+    ).toEqual([])
   })
 })
 
@@ -218,26 +219,23 @@ test.describe("mobile Pokédex", () => {
   test("hydrates more catalog entries when scrolling up and down repeatedly", async ({
     page,
   }) => {
+    const applicationDataRequests: string[] = []
+
+    page.on("request", (request) => {
+      if (["document", "fetch", "xhr"].includes(request.resourceType()))
+        applicationDataRequests.push(request.url())
+    })
+
     await page.goto("/500")
 
     const catalog = page.getByRole("navigation", { name: "Pokémon catalog" })
+    const applicationOrigin = new URL(page.url()).origin
     const links = catalog.getByRole("link")
     await expect(catalog.locator('a[href="/470"]')).toHaveCount(1)
     await expect(catalog.locator('a[href="/530"]')).toHaveCount(1)
     await expect(links).toHaveCount(61)
     const initialVisibleCount = await links.count()
 
-    const applicationOrigin = new URL(page.url()).origin
-    const applicationDataRequests: string[] = []
-
-    page.on("request", (request) => {
-      if (
-        request.url().startsWith(applicationOrigin) &&
-        ["document", "fetch", "xhr"].includes(request.resourceType())
-      )
-        applicationDataRequests.push(request.url())
-    })
-    await page.waitForLoadState("networkidle")
     applicationDataRequests.length = 0
 
     expect(initialVisibleCount).toBeGreaterThanOrEqual(21)
@@ -257,7 +255,11 @@ test.describe("mobile Pokédex", () => {
       .toBeGreaterThan(downExpandedCount)
     await expect(catalog.locator('a[href="/450"]')).toHaveCount(1)
 
-    expect(applicationDataRequests).toEqual([])
+    expect(
+      applicationDataRequests.filter((requestUrl) =>
+        requestUrl.startsWith(applicationOrigin),
+      ),
+    ).toEqual([])
   })
 
   test("prioritizes the selected dossier before catalog discovery", async ({
