@@ -63,6 +63,8 @@ test.describe("App Router Pokédex entry points", () => {
       )
         applicationDataRequests.push(request.url())
     })
+    await page.waitForLoadState("networkidle")
+    applicationDataRequests.length = 0
 
     await catalog.evaluate((element) => {
       element.scrollTop = element.scrollHeight
@@ -73,7 +75,7 @@ test.describe("App Router Pokédex entry points", () => {
     await catalog.evaluate((element) => {
       element.scrollTop = 0
     })
-    await expect(catalog.locator('a[href="/410"]')).toHaveCount(1)
+    await expect(catalog.locator('a[href="/430"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(141)
 
     await catalog.evaluate((element) => {
@@ -85,7 +87,7 @@ test.describe("App Router Pokédex entry points", () => {
     await catalog.evaluate((element) => {
       element.scrollTop = 0
     })
-    await expect(catalog.locator('a[href="/370"]')).toHaveCount(1)
+    await expect(catalog.locator('a[href="/390"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(221)
     expect(applicationDataRequests).toEqual([])
   })
@@ -220,6 +222,9 @@ test.describe("mobile Pokédex", () => {
 
     const catalog = page.getByRole("navigation", { name: "Pokémon catalog" })
     const links = catalog.getByRole("link")
+    await expect(catalog.locator('a[href="/470"]')).toHaveCount(1)
+    await expect(catalog.locator('a[href="/530"]')).toHaveCount(1)
+    await expect(links).toHaveCount(61)
     const initialVisibleCount = await links.count()
 
     const applicationOrigin = new URL(page.url()).origin
@@ -232,6 +237,8 @@ test.describe("mobile Pokédex", () => {
       )
         applicationDataRequests.push(request.url())
     })
+    await page.waitForLoadState("networkidle")
+    applicationDataRequests.length = 0
 
     expect(initialVisibleCount).toBeGreaterThanOrEqual(21)
 
