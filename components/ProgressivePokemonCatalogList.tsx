@@ -8,8 +8,10 @@ import {
 import PokemonCatalogEntries from "@/components/PokemonCatalogEntries"
 import useProgressivePokemonCatalog from "@/hooks/useProgressivePokemonCatalog"
 import type { PokemonCatalogEntry } from "@/types/pokemon"
+import type { PokemonCatalogExpansionDirection } from "@/utils/pokemonCatalog"
 
 const POKEMON_CATALOG_PRELOAD_DISTANCE_PIXELS = 800
+const POKEMON_CATALOG_INITIAL_EXPANSION_MULTIPLIER = 1
 const POKEMON_CATALOG_PRELOAD_EXPANSIONS_PER_GESTURE = 2
 const POKEMON_CATALOG_WINDOW_PRELOAD_DISTANCE_PIXELS = 1_200
 
@@ -29,6 +31,7 @@ export default function ProgressivePokemonCatalogList({
   } | null>(null)
   const hasPositionedCurrentPokemonReference = useRef(false)
   const hasPreparedInitialBufferReference = useRef(false)
+  const isInitialBufferPreparationReference = useRef(true)
   const isExpansionPendingReference = useRef(false)
   const isRestoringScrollPositionReference = useRef(false)
   const {
@@ -41,14 +44,47 @@ export default function ProgressivePokemonCatalogList({
     enabled: true,
     pokemons,
   })
+  const expandCatalogRange = useCallback(
+    (
+      direction: PokemonCatalogExpansionDirection,
+      expansionMultiplier: number,
+    ) => {
+      const navigation = navigationReference.current
+      const firstVisiblePokemon = visiblePokemons[0]
+
+      if (
+        !navigation ||
+        !firstVisiblePokemon ||
+        isExpansionPendingReference.current
+      )
+        return false
+
+      if (direction === "before" || direction === "both") {
+        const anchor = navigation.querySelector<HTMLElement>(
+          "[data-pokemon-id='" + firstVisiblePokemon.id + "']",
+        )
+
+        if (!anchor) return false
+
+        pendingPrependAnchorReference.current = {
+          offsetTop: anchor.offsetTop,
+          pokemonId: firstVisiblePokemon.id,
+        }
+      }
+
+      isExpansionPendingReference.current = true
+      expandVisibleRange(direction, expansionMultiplier)
+      return true
+    },
+    [expandVisibleRange, visiblePokemons],
+  )
   const handleBoundaryApproach = useCallback(() => {
     const navigation = navigationReference.current
-    const firstVisiblePokemon = visiblePokemons[0]
     const expansionDirections: Array<"before" | "after" | "both"> = []
 
     if (
       !navigation ||
-      !firstVisiblePokemon ||
+      isInitialBufferPreparationReference.current ||
       isExpansionPendingReference.current ||
       (!canExpandBefore && !canExpandAfter)
     )
@@ -83,25 +119,11 @@ export default function ProgressivePokemonCatalogList({
           ? "before"
           : "after"
 
-    if (expansionDirection === "before" || expansionDirection === "both") {
-      const anchor = navigation.querySelector<HTMLElement>(
-        "[data-pokemon-id='" + firstVisiblePokemon.id + "']",
-      )
-
-      if (!anchor) return
-
-      pendingPrependAnchorReference.current = {
-        offsetTop: anchor.offsetTop,
-        pokemonId: firstVisiblePokemon.id,
-      }
-    }
-
-    isExpansionPendingReference.current = true
-    expandVisibleRange(
+    expandCatalogRange(
       expansionDirection,
       POKEMON_CATALOG_PRELOAD_EXPANSIONS_PER_GESTURE,
     )
-  }, [canExpandAfter, canExpandBefore, expandVisibleRange, visiblePokemons])
+  }, [canExpandAfter, canExpandBefore, expandCatalogRange])
   const handleCatalogScroll = (event: UIEvent<HTMLElement>) => {
     if (isRestoringScrollPositionReference.current) return
 
@@ -122,14 +144,21 @@ export default function ProgressivePokemonCatalogList({
     const animationFrame = window.requestAnimationFrame(() => {
       if (hasPreparedInitialBufferReference.current) return
 
-      hasPreparedInitialBufferReference.current = true
-      handleBoundaryApproach()
+      const hasExpandedInitialBuffer = expandCatalogRange(
+        "both",
+        POKEMON_CATALOG_INITIAL_EXPANSION_MULTIPLIER,
+      )
+
+      if (hasExpandedInitialBuffer) {
+        isInitialBufferPreparationReference.current = true
+        hasPreparedInitialBufferReference.current = true
+      }
     })
 
     return () => {
       window.cancelAnimationFrame(animationFrame)
     }
-  }, [handleBoundaryApproach])
+  }, [expandCatalogRange])
 
   useEffect(() => {
     const handleWindowScroll = () => {
@@ -169,6 +198,9 @@ export default function ProgressivePokemonCatalogList({
     const pendingAnchor = pendingPrependAnchorReference.current
 
     isExpansionPendingReference.current = false
+
+    if (isInitialBufferPreparationReference.current)
+      isInitialBufferPreparationReference.current = false
 
     if (!navigation || !pendingAnchor) return
 
