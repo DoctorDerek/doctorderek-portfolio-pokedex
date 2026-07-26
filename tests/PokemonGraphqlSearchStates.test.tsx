@@ -50,7 +50,9 @@ describe("PokemonGraphqlSearch state fallbacks", () => {
     fireEvent.click(screen.getByRole("button", { name: "GraphQL Search" }))
 
     expect(
-      await screen.findByText("No Pokémon matched this GraphQL research query."),
+      await screen.findByText(
+        "No Pokémon matched this GraphQL research query.",
+      ),
     ).toBeVisible()
   })
 })

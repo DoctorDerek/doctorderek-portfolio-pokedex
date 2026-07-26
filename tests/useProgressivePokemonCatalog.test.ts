@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
-import useProgressivePokemonCatalog from "@/hooks/useProgressivePokemonCatalog"
 import { POKEMON_CATALOG } from "@/data/pokemonCatalog"
+import useProgressivePokemonCatalog from "@/hooks/useProgressivePokemonCatalog"
 
 describe("useProgressivePokemonCatalog", () => {
   it("returns the full catalog and ignores expansion when disabled", () => {

@@ -42,7 +42,9 @@ function mockAnimationFrameQueue() {
   return animationFrameCallbacks
 }
 
-function flushAnimationFrame(animationFrameCallbacks: Array<FrameRequestCallback>) {
+function flushAnimationFrame(
+  animationFrameCallbacks: Array<FrameRequestCallback>,
+) {
   const callback = animationFrameCallbacks.shift()
 
   if (!callback) throw new Error("The expected animation frame is unavailable.")
