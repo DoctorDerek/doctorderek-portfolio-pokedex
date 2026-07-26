@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest"
-import type { PokemonSearchResultFragment } from "@/graphql/pokemonSearch.generated"
+import {
+  useAdvancedPokemonSearchQuery,
+  type PokemonSearchResultFragment,
+} from "@/graphql/pokemonSearch.generated"
 import {
   DEFAULT_POKEMON_GRAPHQL_SEARCH_FILTERS,
   getPokemonSearchGenerationOptions,
@@ -92,6 +95,17 @@ describe("Pokémon GraphQL search variables", () => {
       { label: "Generation VII", value: "generation-vii" },
       { label: "Generation VIII", value: "generation-viii" },
       { label: "Generation IX", value: "generation-ix" },
+    ])
+  })
+
+  it("exposes the generated query key for cache inspection", () => {
+    const variables = normalizePokemonSearchVariables(
+      DEFAULT_POKEMON_GRAPHQL_SEARCH_FILTERS,
+    )
+
+    expect(useAdvancedPokemonSearchQuery.getKey(variables)).toEqual([
+      "AdvancedPokemonSearch",
+      variables,
     ])
   })
 })
