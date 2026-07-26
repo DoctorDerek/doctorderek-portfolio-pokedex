@@ -2,7 +2,7 @@
 
 [![Production](https://img.shields.io/website?url=https%3A%2F%2Fportfolio-pokedex.doctorderek.com%2F&up_message=live&down_message=offline&label=production&logo=vercel&logoColor=white)](https://portfolio-pokedex.doctorderek.com/) [![Codecov](https://codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex/graph/badge.svg)](https://app.codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex) [![Test and lint](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/test-and-lint.yml/badge.svg)](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/test-and-lint.yml) [![Playwright](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/playwright.yml/badge.svg)](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/playwright.yml)
 
-An unofficial, non-commercial parody and GraphQL portfolio demo that turns the original 1025 Pokémon into a suspiciously bureaucratic little field guide. The interface stacks into a touch-friendly mobile dossier and expands into the project’s compact catalog-and-details layout on larger screens.
+An unofficial, non-commercial parody and GraphQL portfolio demo that turns a 1,025-entry Pokémon snapshot into a suspiciously bureaucratic little field guide. The interface presents a touch-friendly mobile dossier and expands into the project’s compact catalog-and-details layout on larger screens.
 
 [Open the live demo](https://portfolio-pokedex.doctorderek.com/)
 
@@ -47,11 +47,11 @@ pnpm exec playwright test
 pnpm build
 ```
 
-Vitest, Testing Library, and MSW cover the TanStack Query provider, generated GraphQL success and failure behavior, build-time query variables, catalog selection and paging state, and the selected Pokémon statistics without contacting the live API. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, motion preferences, and the desktop split layout without relying on test-only selectors.
+Vitest, Testing Library, and MSW cover the TanStack Query provider, generated GraphQL success and failure behavior, build-time query variables, catalog selection and progressive range state, and the selected Pokémon statistics without contacting the live API. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, motion preferences, and the desktop split layout without relying on test-only selectors.
 
 ## Roadmap
 
-- Maintain full 1,025+ catalog coverage and keep generated data sources healthy
+- Keep the generated 1,025-dossier snapshot deterministic and healthy
 - Deepen the parody-forward visual design and dossier copy
 - Expand Testing Trophy coverage and measured Codecov reporting around future user journeys
 
