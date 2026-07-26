@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react"
+import { act, fireEvent, render, screen, within } from "@testing-library/react"
 import { renderToStaticMarkup } from "react-dom/server"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import ProgressivePokemonCatalogList from "@/components/ProgressivePokemonCatalogList"
@@ -89,6 +89,108 @@ describe("ProgressivePokemonCatalogList", () => {
     expect(fetchSpy).not.toHaveBeenCalled()
 
     fetchSpy.mockRestore()
+  })
+
+  it("prepares the initial bidirectional buffer after the browser frame", () => {
+    const animationFrameCallbacks: Array<FrameRequestCallback> = []
+
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      animationFrameCallbacks.push(callback)
+      return animationFrameCallbacks.length
+    })
+
+    render(
+      <ProgressivePokemonCatalogList
+        currentPokemonId={500}
+        pokemons={POKEMON_CATALOG}
+      />,
+    )
+
+    expect(getRenderedPokemonHrefs()).toHaveLength(21)
+
+    const initialBufferCallback = animationFrameCallbacks.shift()
+    expect(initialBufferCallback).toBeDefined()
+
+    act(() => {
+      initialBufferCallback?.(0)
+    })
+
+    expect(getRenderedPokemonHrefs()).toHaveLength(61)
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/470")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/530")
+  })
+
+  it("expands only toward the bottom when the lower boundary is approached", () => {
+    const animationFrameCallbacks: Array<FrameRequestCallback> = []
+
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      animationFrameCallbacks.push(callback)
+      return animationFrameCallbacks.length
+    })
+
+    render(
+      <ProgressivePokemonCatalogList
+        currentPokemonId={500}
+        pokemons={POKEMON_CATALOG}
+      />,
+    )
+
+    const initialBufferCallback = animationFrameCallbacks.shift()
+    act(() => {
+      initialBufferCallback?.(0)
+    })
+
+    approachCatalogBoundary(1_800)
+
+    expect(getRenderedPokemonHrefs()).toHaveLength(101)
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/470")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/570")
+  })
+
+  it("uses the window sentinel observer when the catalog has no internal overflow", () => {
+    const animationFrameCallbacks: Array<FrameRequestCallback> = []
+
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => {
+      animationFrameCallbacks.push(callback)
+      return animationFrameCallbacks.length
+    })
+
+    render(
+      <ProgressivePokemonCatalogList
+        currentPokemonId={500}
+        pokemons={POKEMON_CATALOG}
+      />,
+    )
+
+    const navigation = screen.getByRole("navigation", {
+      name: "Pokémon catalog",
+    })
+    const beforeSentinel = navigation.firstElementChild
+    const afterSentinel = navigation.lastElementChild
+
+    if (!(beforeSentinel instanceof HTMLElement))
+      throw new Error("The before sentinel is unavailable.")
+    if (!(afterSentinel instanceof HTMLElement))
+      throw new Error("The after sentinel is unavailable.")
+
+    Object.defineProperties(navigation, {
+      clientHeight: { configurable: true, value: 200 },
+      scrollHeight: { configurable: true, value: 200 },
+    })
+    vi.spyOn(beforeSentinel, "getBoundingClientRect").mockReturnValue({
+      bottom: 0,
+    } as DOMRect)
+    vi.spyOn(afterSentinel, "getBoundingClientRect").mockReturnValue({
+      top: 0,
+    } as DOMRect)
+
+    const initialBufferCallback = animationFrameCallbacks.shift()
+    act(() => {
+      initialBufferCallback?.(0)
+    })
+    fireEvent.scroll(window)
+
+    expect(getRenderedPokemonHrefs()).toHaveLength(141)
   })
 
   it.each([
