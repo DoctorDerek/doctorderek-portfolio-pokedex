@@ -104,6 +104,23 @@ describe("Pokédex data artifact generation", () => {
     expect(catalog[0]).not.toHaveProperty("abilities")
   })
 
+  it("preserves null dimensions and ignores non-canonical stat records", () => {
+    const snapshot = createPokedexSnapshot()
+    snapshot.pokemon[0].height = null
+    snapshot.pokemon[0].weight = null
+    snapshot.pokemon[0].pokemonstats.push({
+      base_stat: 999,
+      stat: { name: "accuracy" },
+    })
+
+    const { dossiers } = createPokedexArtifacts(snapshot)
+
+    expect(dossiers[0]).toMatchObject({
+      heightInMeters: null,
+      weightInKilograms: null,
+    })
+  })
+
   it("rejects an aggregate count that does not match the snapshot contract", () => {
     const snapshot = createPokedexSnapshot()
     snapshot.pokemonspecies_aggregate.aggregate = {
