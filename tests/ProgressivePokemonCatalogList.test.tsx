@@ -422,7 +422,7 @@ describe("ProgressivePokemonCatalogList", () => {
     const originalQuerySelector = HTMLElement.prototype.querySelector
     const querySelectorSpy = vi
       .spyOn(HTMLElement.prototype, "querySelector")
-      .mockImplementation(function (selector) {
+      .mockImplementation(function (this: HTMLElement, selector) {
         if (
           this.getAttribute("aria-label") === "Pokémon catalog" &&
           selector === "[data-pokemon-id='1']"
