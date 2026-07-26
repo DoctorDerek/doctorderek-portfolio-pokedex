@@ -43,6 +43,21 @@ describe("pokemonSearchFetcher", () => {
     ).resolves.toEqual({ pokemon: [{ id: 25 }] })
   })
 
+  it("accepts an explicitly empty GraphQL errors envelope", async () => {
+    pokemonApiMockServer.use(
+      http.post(POKEMON_GRAPHQL_ENDPOINT, () =>
+        HttpResponse.json({ errors: [], data: { pokemon: [{ id: 25 }] } }),
+      ),
+    )
+
+    await expect(
+      pokemonSearchFetcher<TestPokemonSearchData, typeof TEST_VARIABLES>(
+        TEST_DOCUMENT,
+        TEST_VARIABLES,
+      )(),
+    ).resolves.toEqual({ pokemon: [{ id: 25 }] })
+  })
+
   it("rejects unsuccessful HTTP responses", async () => {
     pokemonApiMockServer.use(
       http.post(
