@@ -80,4 +80,31 @@ describe("PokemonDetailsPanel", () => {
       screen.queryByTitle("The catch success likelihood for this Pokémon"),
     ).not.toBeInTheDocument()
   })
+
+  it("labels affirmative legendary and mythical classifications", () => {
+    render(
+      <PokemonDetailsPanel
+        pokemon={{
+          ...BULBASAUR_DOSSIER_FIXTURE,
+          isLegendary: true,
+          isMythical: true,
+        }}
+      />,
+    )
+
+    expect(
+      within(
+        screen.getByTitle(
+          "Whether this Pokémon is officially marked as legendary",
+        ),
+      ).getByText("Yes"),
+    ).toBeVisible()
+    expect(
+      within(
+        screen.getByTitle(
+          "Whether this Pokémon is officially marked as mythical",
+        ),
+      ).getByText("Yes"),
+    ).toBeVisible()
+  })
 })
