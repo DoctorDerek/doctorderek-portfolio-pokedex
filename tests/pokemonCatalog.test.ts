@@ -219,4 +219,18 @@ describe("Pokémon catalog model", () => {
       }),
     ).toEqual(expected)
   })
+
+  it("breaks equal-name ties with the national number", () => {
+    const sameNamePokemons = [
+      { ...CHARMANDER_CATALOG_FIXTURE, name: "Tie" },
+      { ...BULBASAUR_CATALOG_FIXTURE, name: "Tie" },
+    ]
+
+    expect(
+      getVisiblePokemonCatalogEntries({
+        filters: { search: "", sort: "name", type: "all" },
+        pokemons: sameNamePokemons,
+      }).map(({ id }) => id),
+    ).toEqual([1, 4])
+  })
 })
