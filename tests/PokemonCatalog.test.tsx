@@ -155,4 +155,16 @@ describe("PokemonCatalog", () => {
       "21 nearby initially · 1,025 ready locally.",
     )
   })
+
+  it("keeps catalog form submission local", () => {
+    renderPokemonCatalog()
+
+    expect(() =>
+      fireEvent.submit(
+        screen.getByRole("search", {
+          name: "Pokémon catalog discovery",
+        }),
+      ),
+    ).not.toThrow()
+  })
 })
