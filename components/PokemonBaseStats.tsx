@@ -60,7 +60,7 @@ export default function PokemonBaseStats({
           <dl
             key={entry.key}
             title={entry.title}
-            className="rounded-md border-2 border-solid border-gray-400 p-2 text-sm"
+            className="rounded-md border-2 border-solid border-outline p-2 text-sm"
           >
             <dt className="mb-1 flex items-center justify-between gap-2 font-semibold">
               <span>{entry.label}</span>
@@ -68,14 +68,14 @@ export default function PokemonBaseStats({
             </dt>
             <dd>
               <div
-                className="relative h-2 rounded-full bg-black/20"
+                className="relative h-2 rounded-full bg-outline/40"
                 aria-hidden="true"
               >
                 <span
                   role="presentation"
                   className={classNames(
                     "absolute inset-y-0 left-0 rounded-full",
-                    percent < 25 ? "bg-yellow-500" : "bg-yellow-300",
+                    percent < 25 ? "bg-danger" : "bg-success",
                   )}
                   style={{ width: `${percent}%` }}
                 />
