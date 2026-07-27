@@ -17,7 +17,7 @@ export default function PokemonGraphqlSearchResults({
 }) {
   if (state.status === "idle")
     return (
-      <p className="rounded-lg border border-dashed border-gray-600 p-4 text-gray-300">
+      <p className="rounded-lg border border-dashed border-outline p-4 text-muted">
         Configure the research fields, then run GraphQL Search. Editing these
         fields does not make network requests.
       </p>
@@ -28,7 +28,7 @@ export default function PokemonGraphqlSearchResults({
       <p
         role="status"
         aria-live="polite"
-        className="rounded-lg border border-gray-600 p-4 text-gray-200 motion-safe:animate-pulse"
+        className="rounded-lg border border-outline bg-panel p-4 text-muted motion-safe:animate-pulse"
       >
         Querying the PokéAPI research index…
       </p>
@@ -38,7 +38,7 @@ export default function PokemonGraphqlSearchResults({
     return (
       <div
         role="alert"
-        className="rounded-lg border-2 border-red-400 bg-red-950/40 p-4 text-red-100"
+        className="rounded-lg border-2 border-danger bg-danger-surface p-4"
       >
         <p className="font-bold">GraphQL Search couldn’t complete.</p>
         <p className="mt-1">{state.message}</p>
@@ -50,7 +50,7 @@ export default function PokemonGraphqlSearchResults({
 
   if (state.pokemons.length === 0)
     return (
-      <p role="status" className="rounded-lg border border-gray-600 p-4">
+      <p role="status" className="rounded-lg border border-outline p-4 text-muted">
         No Pokémon matched this GraphQL research query.
       </p>
     )
@@ -61,7 +61,7 @@ export default function PokemonGraphqlSearchResults({
         <h3 id="graphql-search-results-heading" className="text-lg font-bold">
           Research results
         </h3>
-        <p role="status" aria-live="polite" className="text-sm text-gray-300">
+        <p role="status" aria-live="polite" className="text-sm text-muted">
           {state.pokemons.length.toLocaleString("en-US")} found
         </p>
       </div>
@@ -87,35 +87,35 @@ export default function PokemonGraphqlSearchResults({
               <Link
                 href={`/${pokemon.id}`}
                 prefetch={false}
-                className="group block h-full rounded-lg border-2 border-gray-600 bg-gray-800 p-4 hover:border-yellow-400 hover:bg-gray-700 motion-safe:transition-[background-color,border-color,transform] motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:-translate-y-0.5"
+                className="group block h-full rounded-lg border-2 border-outline bg-panel p-4 hover:border-brand hover:bg-panel-strong motion-safe:transition-[background-color,border-color,transform] motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:-translate-y-0.5"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="font-bold text-yellow-400">
+                    <p className="font-bold text-brand">
                       #{String(pokemon.id).padStart(4, "0")}
                     </p>
-                    <h4 className="text-lg font-bold group-hover:text-yellow-300">
+                    <h4 className="text-lg font-bold group-hover:text-brand-strong">
                       {pokemonName}
                     </h4>
                   </div>
-                  <p className="text-right text-sm text-gray-300">
+                  <p className="text-right text-sm text-muted">
                     Base XP
-                    <strong className="block text-base text-white">
+                    <strong className="block text-base text-ink">
                       {pokemon.base_experience ?? "—"}
                     </strong>
                   </p>
                 </div>
-                <dl className="mt-3 space-y-1 text-sm text-gray-300">
+                <dl className="mt-3 space-y-1 text-sm text-muted">
                   <div className="flex gap-2">
-                    <dt className="font-bold text-gray-100">Type</dt>
+                    <dt className="font-bold text-ink">Type</dt>
                     <dd>{pokemonTypes.join(" · ") || "Unknown"}</dd>
                   </div>
                   <div className="flex gap-2">
-                    <dt className="font-bold text-gray-100">Debut</dt>
+                    <dt className="font-bold text-ink">Debut</dt>
                     <dd>{generation}</dd>
                   </div>
                   <div className="flex gap-2">
-                    <dt className="font-bold text-gray-100">Class</dt>
+                    <dt className="font-bold text-ink">Class</dt>
                     <dd>{classifications.join(" · ") || "Standard"}</dd>
                   </div>
                 </dl>
