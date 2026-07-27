@@ -56,6 +56,20 @@ describe("ToggleDarkMode", () => {
     expect(setTheme).toHaveBeenCalledWith("dark")
   })
 
+  it("uses a persisted explicit theme before the browser resolves it", () => {
+    mockedUseTheme.mockReturnValue({
+      resolvedTheme: undefined,
+      setTheme,
+      theme: "dark",
+    } as never)
+
+    render(<ToggleDarkMode />)
+
+    expect(
+      screen.getByRole("button", { name: "Switch to light theme" }),
+    ).toHaveAttribute("aria-pressed", "true")
+  })
+
   it("waits for a browser-resolved system preference", () => {
     mockedUseTheme.mockReturnValue({
       resolvedTheme: undefined,
