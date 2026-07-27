@@ -70,11 +70,11 @@ export default function PokemonDetailsPanel({
       id={POKEDEX_WORKSPACE_SECTION_IDS.dossier}
       aria-labelledby="selected-pokemon-heading"
       tabIndex={-1}
-      className="order-1 w-full scroll-mt-20 bg-panel motion-safe:animate-[dossier-reveal_240ms_ease-out] md:order-2"
+      className="bg-panel order-1 w-full scroll-mt-20 motion-safe:animate-[dossier-reveal_240ms_ease-out] md:order-2"
     >
       <h2
         id="selected-pokemon-heading"
-        className="flex justify-between border-b-2 border-solid border-b-outline p-5 text-xl sm:p-6 sm:text-2xl md:p-8"
+        className="border-b-outline flex justify-between border-b-2 border-solid p-5 text-xl sm:p-6 sm:text-2xl md:p-8"
       >
         <span
           className="tracking-wide"
@@ -83,7 +83,7 @@ export default function PokemonDetailsPanel({
           {pokemon.name}
         </span>
         <span
-          className="tracking-widest text-brand"
+          className="text-brand tracking-widest"
           title={ACCESSIBLE_ATTRIBUTE_TITLES.number}
         >
           #{pokemon.number}
@@ -224,7 +224,7 @@ function PokemonAttribute({
   return (
     <dl
       className={classNames(
-        "flex min-w-0 flex-col rounded-md border-2 border-solid border-outline p-2 text-center text-sm sm:text-base",
+        "border-outline flex min-w-0 flex-col rounded-md border-2 border-solid p-2 text-center text-sm sm:text-base",
         className,
       )}
       title={ACCESSIBLE_ATTRIBUTE_TITLES[title]}

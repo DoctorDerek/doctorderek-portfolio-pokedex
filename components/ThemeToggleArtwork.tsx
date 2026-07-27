@@ -190,7 +190,10 @@ export default function ThemeToggleArtwork() {
           y2="70"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#75DAF0" className="pokedex-theme-toggle-background-top-color" />
+          <stop
+            stopColor="#75DAF0"
+            className="pokedex-theme-toggle-background-top-color"
+          />
           <stop
             offset="1"
             stopColor="#C3EFF8"

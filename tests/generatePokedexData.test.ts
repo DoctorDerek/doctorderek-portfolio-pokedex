@@ -2,11 +2,11 @@ import { mkdir, readFile, writeFile } from "node:fs/promises"
 import { resolve } from "node:path"
 import { format } from "prettier"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { createPokedexArtifacts } from "@/scripts/createPokedexArtifacts.mts"
 import {
   fetchPokedexSnapshot,
   generatePokedexData,
 } from "@/scripts/generatePokedexData.mts"
-import { createPokedexArtifacts } from "@/scripts/createPokedexArtifacts.mts"
 
 const generatorMocks = vi.hoisted(() => ({
   createPokedexArtifacts: vi.fn(),
@@ -64,7 +64,9 @@ describe("Pokédex data generation", () => {
   it("fetches the bounded snapshot with the checked-in GraphQL document", async () => {
     const snapshot = { pokemon: [] }
     const fetchMock = vi.mocked(globalThis.fetch)
-    fetchMock.mockResolvedValue(createGraphqlResponse({ body: { data: snapshot } }))
+    fetchMock.mockResolvedValue(
+      createGraphqlResponse({ body: { data: snapshot } }),
+    )
 
     await expect(fetchPokedexSnapshot()).resolves.toEqual(snapshot)
 
@@ -159,10 +161,7 @@ describe("Pokédex data generation", () => {
   it("runs generation when Node executes the script directly", async () => {
     const snapshot = { pokemon: [] }
     const previousProcessArguments = process.argv
-    process.argv = [
-      process.argv[0],
-      resolve("scripts/generatePokedexData.mts"),
-    ]
+    process.argv = [process.argv[0], resolve("scripts/generatePokedexData.mts")]
     vi.mocked(globalThis.fetch).mockResolvedValue(
       createGraphqlResponse({ body: { data: snapshot } }),
     )

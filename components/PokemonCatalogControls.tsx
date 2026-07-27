@@ -28,7 +28,7 @@ export default function PokemonCatalogControls({
       role="search"
       aria-label="Pokémon catalog discovery"
       onSubmit={handleCatalogSearchSubmission}
-      className="space-y-3 border-b border-outline p-3 md:p-4"
+      className="border-outline space-y-3 border-b p-3 md:p-4"
     >
       <div>
         <label htmlFor="pokemon-search" className="mb-1 block font-bold">
@@ -82,7 +82,7 @@ export default function PokemonCatalogControls({
       <button
         type="button"
         onClick={handleCatalogFiltersReset}
-        className="min-h-11 rounded-md border-2 border-outline px-3 font-bold hover:border-brand hover:bg-panel hover:text-brand motion-safe:transition-[background-color,border-color,color] motion-safe:duration-150"
+        className="border-outline hover:border-brand hover:bg-panel hover:text-brand min-h-11 rounded-md border-2 px-3 font-bold motion-safe:transition-[background-color,border-color,color] motion-safe:duration-150"
       >
         Reset filters
       </button>

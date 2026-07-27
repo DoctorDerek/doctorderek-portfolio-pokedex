@@ -60,7 +60,7 @@ export default function PokemonBaseStats({
           <dl
             key={entry.key}
             title={entry.title}
-            className="rounded-md border-2 border-solid border-outline p-2 text-sm"
+            className="border-outline rounded-md border-2 border-solid p-2 text-sm"
           >
             <dt className="mb-1 flex items-center justify-between gap-2 font-semibold">
               <span>{entry.label}</span>
@@ -68,7 +68,7 @@ export default function PokemonBaseStats({
             </dt>
             <dd>
               <div
-                className="relative h-2 rounded-full bg-outline/40"
+                className="bg-outline/40 relative h-2 rounded-full"
                 aria-hidden="true"
               >
                 <span

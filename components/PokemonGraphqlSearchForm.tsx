@@ -173,7 +173,7 @@ export default function PokemonGraphqlSearchForm({
             <p
               id="graphql-pokemon-experience-error"
               role="alert"
-              className="mt-1 text-danger"
+              className="text-danger mt-1"
             >
               {errors.minimumBaseExperience.message}
             </p>
@@ -223,14 +223,14 @@ export default function PokemonGraphqlSearchForm({
         <button
           type="submit"
           disabled={isSearching}
-          className="min-h-11 rounded-md bg-accent px-4 font-bold text-canvas hover:bg-brand disabled:cursor-wait disabled:bg-disabled motion-safe:transition-colors motion-safe:duration-150"
+          className="bg-accent text-canvas hover:bg-brand disabled:bg-disabled min-h-11 rounded-md px-4 font-bold disabled:cursor-wait motion-safe:transition-colors motion-safe:duration-150"
         >
           {isSearching ? "Searching GraphQL…" : "GraphQL Search"}
         </button>
         <button
           type="button"
           onClick={handleResearchReset}
-          className="min-h-11 rounded-md border-2 border-outline px-4 font-bold hover:border-brand hover:bg-panel hover:text-brand motion-safe:transition-[background-color,border-color,color] motion-safe:duration-150"
+          className="border-outline hover:border-brand hover:bg-panel hover:text-brand min-h-11 rounded-md border-2 px-4 font-bold motion-safe:transition-[background-color,border-color,color] motion-safe:duration-150"
         >
           Reset research
         </button>

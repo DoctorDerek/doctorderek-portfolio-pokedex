@@ -5,13 +5,9 @@ import ThemeControlSlot from "@/components/ThemeControlSlot"
 const HEADER_LINK_CLASS_NAME =
   "rounded-sm font-semibold text-brand underline-offset-4 hover:text-brand-strong hover:underline motion-safe:transition-colors motion-safe:duration-150"
 
-export default function AppContainer({
-  children,
-}: {
-  children: ReactNode
-}) {
+export default function AppContainer({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen w-full flex-col bg-canvas text-ink">
+    <div className="bg-canvas text-ink flex min-h-screen w-full flex-col">
       <header className="grid min-h-12 w-full grid-cols-1 items-center gap-y-2 px-4 py-3 text-center sm:grid-cols-[1fr_auto_1fr] sm:gap-x-2">
         <div className="hidden justify-self-start sm:block" />
         <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1">

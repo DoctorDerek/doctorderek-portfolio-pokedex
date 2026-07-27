@@ -87,18 +87,18 @@ export default function PokemonGraphqlSearch() {
       id={POKEDEX_WORKSPACE_SECTION_IDS.graphqlSearch}
       aria-labelledby="graphql-search-heading"
       tabIndex={-1}
-      className="shadow-elevated w-full scroll-mt-20 rounded-lg border-2 border-outline bg-surface-elevated p-4 sm:p-6"
+      className="shadow-elevated border-outline bg-surface-elevated w-full scroll-mt-20 rounded-lg border-2 p-4 sm:p-6"
     >
       <div className="mb-5">
         <div className="flex flex-wrap items-baseline justify-between gap-2">
           <h2 id="graphql-search-heading" className="text-2xl font-bold">
             GraphQL Search
           </h2>
-          <span className="rounded-full border border-info px-3 py-1 text-xs font-bold tracking-wide text-info uppercase">
+          <span className="border-info text-info rounded-full border px-3 py-1 text-xs font-bold tracking-wide uppercase">
             One bounded request
           </span>
         </div>
-        <p className="mt-2 max-w-3xl text-muted">
+        <p className="text-muted mt-2 max-w-3xl">
           Run one bounded PokéAPI GraphQL query. Catalog filters stay local and
           make no network requests.
         </p>
@@ -114,7 +114,7 @@ export default function PokemonGraphqlSearch() {
         />
       </FormProvider>
 
-      <div className="mt-5 border-t border-outline pt-5">
+      <div className="border-outline mt-5 border-t pt-5">
         <PokemonGraphqlSearchResults state={resultsState} />
       </div>
     </section>
