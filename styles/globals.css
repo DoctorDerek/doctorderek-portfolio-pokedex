@@ -26,7 +26,10 @@
   --color-focus: var(--theme-focus);
   --color-danger: var(--theme-danger);
   --color-danger-surface: var(--theme-danger-surface);
+  --color-info: var(--theme-info);
   --color-artwork: var(--theme-artwork);
+  --color-success: var(--theme-success);
+  --color-success-soft: var(--theme-success-soft);
   --color-disabled: var(--theme-disabled);
   --color-glass: var(--theme-glass);
   --shadow-elevated: var(--theme-shadow-elevated);
@@ -42,14 +45,17 @@
   --theme-ink: #241f1b;
   --theme-muted: #62584f;
   --theme-outline: #8d7868;
-  --theme-brand: #b42332;
-  --theme-brand-strong: #8f1724;
+  --theme-brand: #9c0052;
+  --theme-brand-strong: #790fc5;
   --theme-accent: #8a5a00;
   --theme-accent-soft: #f5e2a5;
-  --theme-focus: #8a5a00;
+  --theme-focus: #008b8b;
   --theme-danger: #a61b2b;
   --theme-danger-surface: #fde8ea;
+  --theme-info: #006c95;
   --theme-artwork: #fffdf8;
+  --theme-success: #006b2a;
+  --theme-success-soft: #d9f4e2;
   --theme-disabled: #756b63;
   --theme-glass: rgb(255 250 242 / 0.9);
   --theme-shadow-elevated: 0 1.25rem 3rem rgb(70 45 25 / 0.16);
@@ -57,26 +63,29 @@
 }
 
 .dark {
-  --theme-canvas: #121416;
-  --theme-surface: #1d2024;
-  --theme-surface-elevated: #252a30;
-  --theme-panel: #2b3138;
-  --theme-panel-strong: #353c44;
+  --theme-canvas: #1e1e1e;
+  --theme-surface: #252a30;
+  --theme-surface-elevated: #30363d;
+  --theme-panel: #353c44;
+  --theme-panel-strong: #444c56;
   --theme-ink: #f8f2e8;
   --theme-muted: #c5b9ae;
   --theme-outline: #7b7169;
-  --theme-brand: #ff6374;
-  --theme-brand-strong: #ff8a96;
+  --theme-brand: #ff7cae;
+  --theme-brand-strong: #ffafd0;
   --theme-accent: #f4c95d;
   --theme-accent-soft: #4a3c14;
-  --theme-focus: #ffd76b;
+  --theme-focus: #00a5a5;
   --theme-danger: #ff9eaa;
   --theme-danger-surface: #4b1f28;
+  --theme-info: #65c6f0;
   --theme-artwork: #fffdf8;
+  --theme-success: #56d87f;
+  --theme-success-soft: #153d25;
   --theme-disabled: #8b827a;
-  --theme-glass: rgb(29 32 36 / 0.9);
-  --theme-shadow-elevated: 0 1.25rem 3rem rgb(0 0 0 / 0.36);
-  --theme-shadow-panel: 0 0.75rem 1.75rem rgb(0 0 0 / 0.3);
+  --theme-glass: rgb(37 42 48 / 0.9);
+  --theme-shadow-elevated: 0 1.25rem 3rem rgb(30 30 30 / 0.5);
+  --theme-shadow-panel: 0 0.75rem 1.75rem rgb(30 30 30 / 0.4);
 }
 
 @keyframes dossier-reveal {
@@ -96,7 +105,7 @@
 }
 
 :focus-visible {
-  outline: 0.125rem solid #facc15;
+  outline: 0.125rem solid var(--theme-focus);
   outline-offset: 0.1875rem;
   border-radius: 0.5rem;
 }
