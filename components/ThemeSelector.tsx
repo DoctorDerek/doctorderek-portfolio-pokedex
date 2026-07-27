@@ -3,6 +3,7 @@ import {
   type ResolvedThemeAppearance,
   type ThemePreference,
 } from "@/data/theme"
+import classNames from "@/utils/classNames"
 
 const THEME_PREFERENCE_LABELS = {
   dark: "Dark",
@@ -40,11 +41,12 @@ export default function ThemeSelector({
             }
             aria-pressed={isSelected}
             onClick={() => onThemeChange(preference)}
-            className={`flex min-h-11 min-w-0 items-center justify-center gap-1 rounded-md px-2 text-xs font-bold motion-safe:transition-[background-color,border-color,color,transform] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px ${
+            className={classNames(
+              "flex min-h-11 min-w-0 items-center justify-center gap-1 rounded-md px-2 text-xs font-bold motion-safe:transition-[background-color,border-color,color,transform] motion-safe:duration-150 motion-safe:ease-out motion-safe:hover:-translate-y-px",
               isSelected
                 ? "border-accent bg-accent-soft text-ink border"
-                : "text-muted hover:bg-panel hover:text-ink border border-transparent"
-            }`}
+                : "text-muted hover:bg-panel hover:text-ink border border-transparent",
+            )}
           >
             <ThemePreferenceIcon
               preference={preference}
