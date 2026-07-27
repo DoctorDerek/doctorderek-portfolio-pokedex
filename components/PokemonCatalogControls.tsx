@@ -1,6 +1,5 @@
 import type { FormEvent } from "react"
 import { useFormContext } from "react-hook-form"
-import classNames from "@/utils/classNames"
 import {
   ALL_POKEMON_TYPES_VALUE,
   DEFAULT_POKEMON_CATALOG_FILTERS,
@@ -8,9 +7,7 @@ import {
 } from "@/utils/pokemonCatalog"
 
 const CONTROL_CLASS_NAME =
-  "min-h-11 w-full rounded-md border-2 border-gray-600 bg-gray-900 px-3 text-white"
-const FOCUS_STATE_CLASS_NAME =
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-yellow-400"
+  "min-h-11 w-full rounded-md border-2 border-outline bg-canvas px-3 text-ink"
 
 export default function PokemonCatalogControls({
   pokemonTypes,
@@ -31,7 +28,7 @@ export default function PokemonCatalogControls({
       role="search"
       aria-label="Pokémon catalog discovery"
       onSubmit={handleCatalogSearchSubmission}
-      className="space-y-3 border-b border-gray-700 p-3 md:p-4"
+      className="space-y-3 border-b border-outline p-3 md:p-4"
     >
       <div>
         <label htmlFor="pokemon-search" className="mb-1 block font-bold">
@@ -43,7 +40,7 @@ export default function PokemonCatalogControls({
           type="search"
           autoComplete="off"
           placeholder="e.g. “Pikachu” or “#025”"
-          className={classNames(CONTROL_CLASS_NAME, FOCUS_STATE_CLASS_NAME)}
+          className={CONTROL_CLASS_NAME}
         />
       </div>
 
@@ -55,7 +52,7 @@ export default function PokemonCatalogControls({
           <select
             {...register("type")}
             id="pokemon-type"
-            className={classNames(CONTROL_CLASS_NAME, FOCUS_STATE_CLASS_NAME)}
+            className={CONTROL_CLASS_NAME}
           >
             <option value={ALL_POKEMON_TYPES_VALUE}>All types</option>
             {pokemonTypes.map((pokemonType) => (
@@ -73,7 +70,7 @@ export default function PokemonCatalogControls({
           <select
             {...register("sort")}
             id="pokemon-sort"
-            className={classNames(CONTROL_CLASS_NAME, FOCUS_STATE_CLASS_NAME)}
+            className={CONTROL_CLASS_NAME}
           >
             <option value="nationalNumber">National number</option>
             <option value="name">Name A–Z</option>
@@ -85,10 +82,7 @@ export default function PokemonCatalogControls({
       <button
         type="button"
         onClick={handleCatalogFiltersReset}
-        className={classNames(
-          "min-h-11 rounded-md border-2 border-gray-600 px-3 font-bold hover:border-yellow-400 hover:bg-gray-700 hover:text-yellow-400 motion-safe:transition-colors motion-safe:duration-150",
-          FOCUS_STATE_CLASS_NAME,
-        )}
+        className="min-h-11 rounded-md border-2 border-outline px-3 font-bold hover:border-brand hover:bg-panel hover:text-brand motion-safe:transition-[background-color,border-color,color] motion-safe:duration-150"
       >
         Reset filters
       </button>

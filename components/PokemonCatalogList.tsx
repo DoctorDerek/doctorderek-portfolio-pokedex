@@ -26,7 +26,7 @@ export default function PokemonCatalogList({
       className="md:min-h-0 md:flex-1 md:overflow-y-auto"
     >
       {pokemons.length === 0 ? (
-        <p className="p-4 text-center text-gray-300">
+        <p className="p-4 text-center text-muted">
           No Pokémon match these filters.
         </p>
       ) : (

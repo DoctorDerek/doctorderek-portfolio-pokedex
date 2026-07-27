@@ -24,8 +24,8 @@ export default function PokemonCatalogEntries({
               className={classNames(
                 "group flex min-h-12 items-center justify-start gap-3 rounded-lg border-2 border-solid px-3 py-2 motion-safe:transition-[background-color,border-color,transform] motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:-translate-y-0.5 md:gap-4 md:px-4 md:py-3",
                 isCurrentPokemon
-                  ? "border-yellow-400 bg-gray-700"
-                  : "border-transparent bg-gray-600 hover:bg-gray-700",
+                  ? "border-brand bg-panel-strong"
+                  : "border-transparent bg-panel hover:border-accent hover:bg-panel-strong",
               )}
             >
               <PokemonImage
@@ -33,7 +33,7 @@ export default function PokemonCatalogEntries({
                 imageUrl={pokemon.imageUrl}
                 altText=""
               />
-              <span className="shrink-0 font-bold text-yellow-400">
+              <span className="shrink-0 font-bold text-brand">
                 {pokemon.number}
               </span>
               <span className="min-w-0 truncate">{pokemon.name}</span>

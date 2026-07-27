@@ -60,18 +60,18 @@ export default function PokemonCatalog({
         id={POKEDEX_WORKSPACE_SECTION_IDS.localPokedex}
         aria-labelledby="local-pokedex-heading"
         tabIndex={-1}
-        className="relative order-2 flex w-full scroll-mt-20 flex-col bg-gray-800 text-sm md:order-1 md:min-h-0"
+        className="relative order-2 flex w-full scroll-mt-20 flex-col bg-surface text-sm md:order-1 md:min-h-0"
       >
-        <div className="border-b border-gray-700 px-3 py-3 md:px-4">
+        <div className="border-b border-outline px-3 py-3 md:px-4">
           <h2 id="local-pokedex-heading" className="text-xl font-bold">
             Local Pokédex
           </h2>
-          <p className="mt-1 text-gray-300">
+          <p className="mt-1 text-muted">
             Filter the complete prefetched catalog without another data request.
           </p>
         </div>
         <PokemonCatalogControls pokemonTypes={pokemonTypes} />
-        <div className="border-b border-gray-700 px-3 py-2 md:px-4">
+        <div className="border-b border-outline px-3 py-2 md:px-4">
           <p role="status" aria-live="polite">
             {hasActiveDiscovery
               ? `${POKEMON_COUNT_FORMATTER.format(visiblePokemons.length)} matches`
