@@ -42,18 +42,12 @@ const mockedWriteFile = vi.mocked(writeFile)
 
 function createGraphqlResponse({
   body,
-  ok = true,
   status = 200,
 }: {
   body: unknown
-  ok?: boolean
   status?: number
 }) {
-  return {
-    json: vi.fn().mockResolvedValue(body),
-    ok,
-    status,
-  } as Response
+  return new Response(JSON.stringify(body), { status })
 }
 
 describe("Pokédex data generation", () => {
@@ -72,7 +66,7 @@ describe("Pokédex data generation", () => {
     const fetchMock = vi.mocked(globalThis.fetch)
     fetchMock.mockResolvedValue(createGraphqlResponse({ body: { data: snapshot } }))
 
-    await expect(fetchPokedexSnapshot()).resolves.toBe(snapshot)
+    await expect(fetchPokedexSnapshot()).resolves.toEqual(snapshot)
 
     expect(mockedReadFile).toHaveBeenCalledWith(expect.any(URL), "utf8")
     expect(fetchMock).toHaveBeenCalledWith(
@@ -89,50 +83,43 @@ describe("Pokédex data generation", () => {
     {
       body: { data: {} },
       expectedError: "PokéAPI GraphQL request failed with status 503.",
-      ok: false,
       status: 503,
     },
     {
       body: null,
       expectedError: "PokéAPI GraphQL returned an invalid response.",
-      ok: true,
       status: 200,
     },
     {
       body: { errors: [{ message: "PokéAPI rejected the query." }] },
       expectedError: "PokéAPI rejected the query.",
-      ok: true,
       status: 200,
     },
     {
       body: { data: null },
       expectedError: "PokéAPI GraphQL returned no snapshot data.",
-      ok: true,
       status: 200,
     },
     {
       body: { errors: [null] },
       expectedError: "PokéAPI GraphQL returned no snapshot data.",
-      ok: true,
       status: 200,
     },
     {
       body: { data: {}, errors: [{}] },
       expectedError: undefined,
-      ok: true,
       status: 200,
     },
     {
       body: { data: {}, errors: [{ message: 42 }] },
       expectedError: undefined,
-      ok: true,
       status: 200,
     },
   ])(
     "processes the snapshot response: $expectedError",
-    async ({ body, expectedError, ok, status }) => {
+    async ({ body, expectedError, status }) => {
       vi.mocked(globalThis.fetch).mockResolvedValue(
-        createGraphqlResponse({ body, ok, status }),
+        createGraphqlResponse({ body, status }),
       )
 
       if (expectedError)
