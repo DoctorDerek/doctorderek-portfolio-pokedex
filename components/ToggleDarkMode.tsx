@@ -9,12 +9,10 @@ export default function ToggleDarkMode() {
   const isDarkTheme = effectiveTheme === "dark"
   const isThemeSettled = isDarkTheme || effectiveTheme === "light"
 
-  if (!isThemeSettled) return null
-
-  return (
+  return isThemeSettled ? (
     <ThemeToggle
       isDarkTheme={isDarkTheme}
       onToggle={() => setTheme(isDarkTheme ? "light" : "dark")}
     />
-  )
+  ) : null
 }
