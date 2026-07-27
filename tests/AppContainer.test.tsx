@@ -19,5 +19,10 @@ describe("AppContainer", () => {
       "href",
       "https://www.doctorderek.com/",
     )
+    expect(
+      screen.getByText(
+        "Unofficial National Pokédex research registry: non-commercial portfolio exploration of GraphQL, progressive catalog behavior, and accessible interaction.",
+      ),
+    ).toBeInTheDocument()
   })
 })

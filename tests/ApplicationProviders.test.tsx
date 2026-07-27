@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query"
 import { render, screen } from "@testing-library/react"
+import { useTheme } from "next-themes"
 import { describe, expect, it, vi } from "vitest"
 import ApplicationProviders from "@/app/providers"
+import { THEME_STORAGE_KEY } from "@/data/theme"
 
 function PokemonQueryConsumer({
   queryFunction,
@@ -20,7 +22,29 @@ function PokemonQueryConsumer({
   return <p>{data}</p>
 }
 
+function ThemePreferenceConsumer() {
+  const { resolvedTheme, theme } = useTheme()
+
+  return (
+    <p>{`${theme === "system" ? "System" : theme} preference · ${resolvedTheme === "dark" ? "Dark" : "Light"} appearance`}</p>
+  )
+}
+
 describe("ApplicationProviders", () => {
+  it("defaults to the resolved system color preference", () => {
+    window.localStorage.removeItem(THEME_STORAGE_KEY)
+
+    render(
+      <ApplicationProviders>
+        <ThemePreferenceConsumer />
+      </ApplicationProviders>,
+    )
+
+    expect(
+      screen.getByText("System preference · Light appearance"),
+    ).toBeInTheDocument()
+  })
+
   it("provides TanStack Query state to application consumers", async () => {
     const queryFunction = vi.fn().mockResolvedValue("Bulbasaur")
 

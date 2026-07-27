@@ -4,6 +4,7 @@ export { MAX_POKEMON_NUMBER } from "@/data/pokemonCatalog"
 
 export const ALL_POKEMON_TYPES_VALUE = "all"
 export const POKEMON_CATALOG_CONTEXT_RADIUS = 10
+export const POKEMON_CATALOG_EXPANSION_SIZE = 20
 
 export const POKEMON_CATALOG_SORT_OPTIONS = [
   "nationalNumber",
@@ -19,6 +20,13 @@ export interface PokemonCatalogFilters {
   sort: PokemonCatalogSortOption
   type: string
 }
+
+export interface PokemonCatalogRange {
+  endIndex: number
+  startIndex: number
+}
+
+export type PokemonCatalogExpansionDirection = "after" | "before" | "both"
 
 export const DEFAULT_POKEMON_CATALOG_FILTERS: PokemonCatalogFilters = {
   search: "",
@@ -45,6 +53,24 @@ export function getContextualPokemonCatalogEntries({
   currentPokemonId: number
   pokemons: ReadonlyArray<PokemonCatalogEntry>
 }) {
+  const contextualRange = getContextualPokemonCatalogRange({
+    currentPokemonId,
+    pokemons,
+  })
+
+  return getPokemonCatalogEntriesInRange({
+    pokemons,
+    range: contextualRange,
+  })
+}
+
+export function getContextualPokemonCatalogRange({
+  currentPokemonId,
+  pokemons,
+}: {
+  currentPokemonId: number
+  pokemons: ReadonlyArray<PokemonCatalogEntry>
+}): PokemonCatalogRange {
   const contextualCatalogSize = POKEMON_CATALOG_CONTEXT_RADIUS * 2 + 1
   const currentPokemonIndex = pokemons.findIndex(
     ({ id }) => id === currentPokemonId,
@@ -58,10 +84,47 @@ export function getContextualPokemonCatalogEntries({
     maximumWindowStartIndex,
   )
 
-  return pokemons.slice(
-    windowStartIndex,
-    windowStartIndex + contextualCatalogSize,
-  )
+  return {
+    endIndex: Math.min(
+      windowStartIndex + contextualCatalogSize,
+      pokemons.length,
+    ),
+    startIndex: windowStartIndex,
+  }
+}
+
+export function expandPokemonCatalogRange({
+  direction,
+  pokemonCount,
+  range,
+}: {
+  direction: PokemonCatalogExpansionDirection
+  pokemonCount: number
+  range: PokemonCatalogRange
+}): PokemonCatalogRange {
+  return {
+    endIndex:
+      direction === "before"
+        ? range.endIndex
+        : Math.min(
+            range.endIndex + POKEMON_CATALOG_EXPANSION_SIZE,
+            pokemonCount,
+          ),
+    startIndex:
+      direction === "after"
+        ? range.startIndex
+        : Math.max(range.startIndex - POKEMON_CATALOG_EXPANSION_SIZE, 0),
+  }
+}
+
+export function getPokemonCatalogEntriesInRange({
+  pokemons,
+  range,
+}: {
+  pokemons: ReadonlyArray<PokemonCatalogEntry>
+  range: PokemonCatalogRange
+}) {
+  return pokemons.slice(range.startIndex, range.endIndex)
 }
 
 export function getPokemonCatalogTypes({

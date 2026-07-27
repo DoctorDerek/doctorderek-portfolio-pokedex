@@ -7,13 +7,15 @@ function renderPokemonCatalog() {
   return render(<PokemonCatalog currentPokemonId={1} />)
 }
 
+function getPokemonNavigation() {
+  return screen.getByRole("navigation", { name: "Pokémon catalog" })
+}
+
 describe("PokemonCatalog", () => {
   it("presents a nearby default window without loading states", () => {
     renderPokemonCatalog()
 
-    const pokemonNavigation = screen.getByRole("navigation", {
-      name: "Pokémon catalog",
-    })
+    const pokemonNavigation = getPokemonNavigation()
     const currentPokemonLink = within(pokemonNavigation).getByRole("link", {
       name: "0001 Bulbasaur",
     })
@@ -33,7 +35,7 @@ describe("PokemonCatalog", () => {
       }),
     ).not.toBeInTheDocument()
     expect(screen.getByRole("status")).toHaveTextContent(
-      `21 nearby Pokémon · ${MAX_POKEMON_NUMBER.toLocaleString("en-US")} ready.`,
+      `21 nearby initially · ${MAX_POKEMON_NUMBER.toLocaleString("en-US")} ready locally.`,
     )
     expect(screen.queryByRole("alert")).not.toBeInTheDocument()
     expect(
@@ -49,9 +51,7 @@ describe("PokemonCatalog", () => {
     ({ currentPokemonId, firstHref, lastHref }) => {
       render(<PokemonCatalog currentPokemonId={currentPokemonId} />)
 
-      const pokemonNavigation = screen.getByRole("navigation", {
-        name: "Pokémon catalog",
-      })
+      const pokemonNavigation = getPokemonNavigation()
       const pokemonLinks = within(pokemonNavigation).getAllByRole("link")
 
       expect(pokemonLinks).toHaveLength(21)
@@ -66,9 +66,6 @@ describe("PokemonCatalog", () => {
   it("searches by name and number while filtering by Pokémon type", () => {
     renderPokemonCatalog()
 
-    const pokemonNavigation = screen.getByRole("navigation", {
-      name: "Pokémon catalog",
-    })
     const pokemonSearch = screen.getByRole("searchbox", {
       name: "Search Pokémon",
     })
@@ -77,15 +74,17 @@ describe("PokemonCatalog", () => {
     fireEvent.change(pokemonSearch, { target: { value: "saur" } })
 
     expect(
-      within(pokemonNavigation).getByRole("link", {
+      within(getPokemonNavigation()).getByRole("link", {
         name: "0001 Bulbasaur",
       }),
     ).toBeInTheDocument()
     expect(
-      within(pokemonNavigation).getByRole("link", { name: "0002 Ivysaur" }),
+      within(getPokemonNavigation()).getByRole("link", {
+        name: "0002 Ivysaur",
+      }),
     ).toBeInTheDocument()
     expect(
-      within(pokemonNavigation).queryByRole("link", {
+      within(getPokemonNavigation()).queryByRole("link", {
         name: "0004 Charmander",
       }),
     ).not.toBeInTheDocument()
@@ -93,22 +92,22 @@ describe("PokemonCatalog", () => {
     fireEvent.change(pokemonSearch, { target: { value: "#0004" } })
 
     expect(
-      within(pokemonNavigation).getByRole("link", {
+      within(getPokemonNavigation()).getByRole("link", {
         name: "0004 Charmander",
       }),
     ).toBeInTheDocument()
-    expect(within(pokemonNavigation).getAllByRole("link")).toHaveLength(1)
+    expect(within(getPokemonNavigation()).getAllByRole("link")).toHaveLength(1)
 
     fireEvent.change(pokemonSearch, { target: { value: "" } })
     fireEvent.change(pokemonType, { target: { value: "Fire" } })
 
     expect(
-      within(pokemonNavigation).getByRole("link", {
+      within(getPokemonNavigation()).getByRole("link", {
         name: "0004 Charmander",
       }),
     ).toBeInTheDocument()
     expect(
-      within(pokemonNavigation).queryByRole("link", {
+      within(getPokemonNavigation()).queryByRole("link", {
         name: "0001 Bulbasaur",
       }),
     ).not.toBeInTheDocument()
@@ -117,9 +116,6 @@ describe("PokemonCatalog", () => {
   it("sorts the canonical catalog and resets every discovery control", () => {
     renderPokemonCatalog()
 
-    const pokemonNavigation = screen.getByRole("navigation", {
-      name: "Pokémon catalog",
-    })
     const pokemonSearch = screen.getByRole("searchbox", {
       name: "Search Pokémon",
     })
@@ -129,7 +125,7 @@ describe("PokemonCatalog", () => {
     fireEvent.change(pokemonSort, { target: { value: "baseStatTotal" } })
 
     expect(
-      within(pokemonNavigation)
+      within(getPokemonNavigation())
         .getAllByRole("link")
         .slice(0, 3)
         .map((link) => link.getAttribute("href")),
@@ -139,7 +135,9 @@ describe("PokemonCatalog", () => {
     fireEvent.change(pokemonType, { target: { value: "Fire" } })
 
     expect(
-      within(pokemonNavigation).getByText("No Pokémon match these filters."),
+      within(getPokemonNavigation()).getByText(
+        "No Pokémon match these filters.",
+      ),
     ).toBeInTheDocument()
 
     fireEvent.click(screen.getByRole("button", { name: "Reset filters" }))
@@ -147,12 +145,26 @@ describe("PokemonCatalog", () => {
     expect(pokemonSearch).toHaveValue("")
     expect(pokemonType).toHaveValue("all")
     expect(pokemonSort).toHaveValue("nationalNumber")
-    const resetPokemonLinks = within(pokemonNavigation).getAllByRole("link")
+    const resetPokemonLinks = within(getPokemonNavigation()).getAllByRole(
+      "link",
+    )
 
     expect(resetPokemonLinks).toHaveLength(21)
     expect(resetPokemonLinks.at(0)).toHaveAttribute("href", "/1")
     expect(screen.getByRole("status")).toHaveTextContent(
-      "21 nearby Pokémon · 1,025 ready.",
+      "21 nearby initially · 1,025 ready locally.",
     )
+  })
+
+  it("keeps catalog form submission local", () => {
+    renderPokemonCatalog()
+
+    expect(() =>
+      fireEvent.submit(
+        screen.getByRole("search", {
+          name: "Pokémon catalog discovery",
+        }),
+      ),
+    ).not.toThrow()
   })
 })

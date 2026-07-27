@@ -6,6 +6,7 @@ query AdvancedPokemonSearch(
   $legendaryStatuses: [Boolean!]!
   $mythicalStatuses: [Boolean!]!
   $minimumBaseExperience: Int!
+  $maximumPokemonId: Int!
   $limit: Int!
   $orderByNumber: Boolean!
   $orderByName: Boolean!
@@ -15,7 +16,7 @@ query AdvancedPokemonSearch(
     limit: $limit
     order_by: [{ id: asc }]
     where: {
-      id: { _lte: 1025 }
+      id: { _lte: $maximumPokemonId }
       is_default: { _eq: true }
       name: { _ilike: $namePattern }
       base_experience: { _gte: $minimumBaseExperience }
@@ -33,7 +34,7 @@ query AdvancedPokemonSearch(
     limit: $limit
     order_by: [{ name: asc }, { id: asc }]
     where: {
-      id: { _lte: 1025 }
+      id: { _lte: $maximumPokemonId }
       is_default: { _eq: true }
       name: { _ilike: $namePattern }
       base_experience: { _gte: $minimumBaseExperience }
@@ -51,7 +52,7 @@ query AdvancedPokemonSearch(
     limit: $limit
     order_by: [{ base_experience: desc_nulls_last }, { id: asc }]
     where: {
-      id: { _lte: 1025 }
+      id: { _lte: $maximumPokemonId }
       is_default: { _eq: true }
       name: { _ilike: $namePattern }
       base_experience: { _gte: $minimumBaseExperience }

@@ -1,7 +1,9 @@
 "use client"
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ThemeProvider } from "next-themes"
 import { useState, type ReactNode } from "react"
+import { THEME_STORAGE_KEY } from "@/data/theme"
 
 export default function ApplicationProviders({
   children,
@@ -11,6 +13,14 @@ export default function ApplicationProviders({
   const [queryClient] = useState(() => new QueryClient())
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <ThemeProvider
+      attribute="class"
+      defaultTheme="system"
+      enableColorScheme
+      enableSystem
+      storageKey={THEME_STORAGE_KEY}
+    >
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </ThemeProvider>
   )
 }

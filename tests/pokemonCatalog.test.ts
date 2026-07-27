@@ -7,7 +7,10 @@ import {
 } from "@/tests/fixtures/pokedex"
 import {
   DEFAULT_POKEMON_CATALOG_FILTERS,
+  expandPokemonCatalogRange,
   getContextualPokemonCatalogEntries,
+  getContextualPokemonCatalogRange,
+  getPokemonCatalogEntriesInRange,
   getPokemonCatalogTypes,
   getVisiblePokemonCatalogEntries,
   hasActivePokemonCatalogDiscovery,
@@ -55,6 +58,74 @@ describe("Pokémon catalog model", () => {
         pokemons: POKEMONS,
       }),
     ).toEqual(POKEMONS)
+  })
+
+  it("expands one local buffer in both directions around the selected dossier", () => {
+    const contextualRange = getContextualPokemonCatalogRange({
+      currentPokemonId: 500,
+      pokemons: POKEMON_CATALOG,
+    })
+    const expandedRange = expandPokemonCatalogRange({
+      direction: "both",
+      pokemonCount: POKEMON_CATALOG.length,
+      range: contextualRange,
+    })
+    const expandedPokemons = getPokemonCatalogEntriesInRange({
+      pokemons: POKEMON_CATALOG,
+      range: expandedRange,
+    })
+
+    expect(expandedPokemons).toHaveLength(61)
+    expect(expandedPokemons.at(0)?.id).toBe(470)
+    expect(expandedPokemons.at(-1)?.id).toBe(530)
+  })
+
+  it.each([
+    { currentPokemonId: 1, firstPokemonId: 1, lastPokemonId: 41 },
+    { currentPokemonId: 1_025, firstPokemonId: 985, lastPokemonId: 1_025 },
+  ])(
+    "clamps expanded route $currentPokemonId to its dataset boundary",
+    ({ currentPokemonId, firstPokemonId, lastPokemonId }) => {
+      const contextualRange = getContextualPokemonCatalogRange({
+        currentPokemonId,
+        pokemons: POKEMON_CATALOG,
+      })
+      const expandedRange = expandPokemonCatalogRange({
+        direction: "both",
+        pokemonCount: POKEMON_CATALOG.length,
+        range: contextualRange,
+      })
+      const expandedPokemons = getPokemonCatalogEntriesInRange({
+        pokemons: POKEMON_CATALOG,
+        range: expandedRange,
+      })
+
+      expect(expandedPokemons).toHaveLength(41)
+      expect(expandedPokemons.at(0)?.id).toBe(firstPokemonId)
+      expect(expandedPokemons.at(-1)?.id).toBe(lastPokemonId)
+    },
+  )
+
+  it("accumulates repeated expansion until the complete local catalog is ready", () => {
+    let range = getContextualPokemonCatalogRange({
+      currentPokemonId: 500,
+      pokemons: POKEMON_CATALOG,
+    })
+
+    for (let expansion = 0; expansion < 103; expansion += 1)
+      range = expandPokemonCatalogRange({
+        direction: "both",
+        pokemonCount: POKEMON_CATALOG.length,
+        range,
+      })
+
+    expect(range).toEqual({ endIndex: 1_025, startIndex: 0 })
+    expect(
+      getPokemonCatalogEntriesInRange({
+        pokemons: POKEMON_CATALOG,
+        range,
+      }),
+    ).toHaveLength(1_025)
   })
 
   it.each([
@@ -147,5 +218,19 @@ describe("Pokémon catalog model", () => {
         pokemons: POKEMONS,
       }),
     ).toEqual(expected)
+  })
+
+  it("breaks equal-name ties with the national number", () => {
+    const sameNamePokemons = [
+      { ...CHARMANDER_CATALOG_FIXTURE, name: "Tie" },
+      { ...BULBASAUR_CATALOG_FIXTURE, name: "Tie" },
+    ]
+
+    expect(
+      getVisiblePokemonCatalogEntries({
+        filters: { search: "", sort: "name", type: "all" },
+        pokemons: sameNamePokemons,
+      }).map(({ id }) => id),
+    ).toEqual([1, 4])
   })
 })

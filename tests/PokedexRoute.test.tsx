@@ -4,6 +4,7 @@ import PokedexPage, {
   dynamicParams,
   generateStaticParams,
 } from "@/app/[id]/page"
+import ApplicationProviders from "@/app/providers"
 import { MAX_POKEMON_NUMBER } from "@/data/pokemonCatalog"
 
 describe("App Router Pokédex route", () => {
@@ -27,7 +28,7 @@ describe("App Router Pokédex route", () => {
       params: Promise.resolve({ id: "2" }),
     })
 
-    render(routeContent)
+    render(<ApplicationProviders>{routeContent}</ApplicationProviders>)
 
     expect(
       screen.getByRole("heading", { level: 2, name: "Ivysaur #0002" }),
