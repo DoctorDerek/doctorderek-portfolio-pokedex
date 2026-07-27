@@ -99,8 +99,8 @@ export default function PokemonGraphqlSearch() {
           </span>
         </div>
         <p className="mt-2 max-w-3xl text-muted">
-          Run an explicit server-side research query across canonical Pokémon
-          metadata. The instant catalog filter remains local and request-free.
+          Run one bounded PokéAPI GraphQL query. Catalog filters stay local and
+          make no network requests.
         </p>
       </div>
 
