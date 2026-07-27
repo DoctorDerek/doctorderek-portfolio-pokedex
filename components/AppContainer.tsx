@@ -30,9 +30,8 @@ export default function AppContainer({
           <ThemeControlSlot />
         </div>
         <p className="text-muted col-span-full text-sm leading-tight sm:col-span-3">
-          Unofficial National Pokédex research registry: non-commercial
-          portfolio exploration of GraphQL, progressive catalog behavior, and
-          accessible interaction.
+          Unofficial Pokédex parody and GraphQL portfolio demo. Catalog filters
+          run locally.
         </p>
       </header>
       <main className="flex w-full flex-1 items-start justify-center px-3 pb-3 sm:px-6 md:pb-6">

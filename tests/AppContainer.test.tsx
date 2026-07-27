@@ -21,7 +21,7 @@ describe("AppContainer", () => {
     )
     expect(
       screen.getByText(
-        "Unofficial National Pokédex research registry: non-commercial portfolio exploration of GraphQL, progressive catalog behavior, and accessible interaction.",
+        "Unofficial Pokédex parody and GraphQL portfolio demo. Catalog filters run locally.",
       ),
     ).toBeInTheDocument()
   })
