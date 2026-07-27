@@ -1,5 +1,6 @@
 import type { SubmitHandler } from "react-hook-form"
 import { useFormContext } from "react-hook-form"
+import classNames from "@/utils/classNames"
 import type { PokemonSearchGenerationOption } from "@/utils/pokemonSearch"
 import {
   ALL_POKEMON_SEARCH_VALUES,
@@ -7,7 +8,6 @@ import {
   POKEMON_SEARCH_LIMIT_OPTIONS,
   type PokemonGraphqlSearchFilters,
 } from "@/utils/pokemonSearch"
-import classNames from "@/utils/classNames"
 
 const SEARCH_CONTROL_CLASS_NAME =
   "min-h-11 w-full rounded-md border-2 border-gray-600 bg-gray-950 px-3 text-white"

@@ -1,11 +1,11 @@
 import type { FormEvent } from "react"
 import { useFormContext } from "react-hook-form"
+import classNames from "@/utils/classNames"
 import {
   ALL_POKEMON_TYPES_VALUE,
   DEFAULT_POKEMON_CATALOG_FILTERS,
   type PokemonCatalogFilters,
 } from "@/utils/pokemonCatalog"
-import classNames from "@/utils/classNames"
 
 const CONTROL_CLASS_NAME =
   "min-h-11 w-full rounded-md border-2 border-gray-600 bg-gray-900 px-3 text-white"
