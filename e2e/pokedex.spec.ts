@@ -1,7 +1,17 @@
-import { expect, test } from "@playwright/test"
+import { expect, test, type Locator } from "@playwright/test"
 
 const MOBILE_VIEWPORT = { width: 320, height: 800 }
 const DESKTOP_VIEWPORT = { width: 1280, height: 720 }
+
+async function getThemeArtworkTransitionDuration(themeToggle: Locator) {
+  return themeToggle.evaluate((element) => {
+    const sun = element.querySelector(".pokedex-theme-toggle-sun")
+
+    if (!sun) throw new Error("The day-night artwork is unavailable.")
+
+    return getComputedStyle(sun).transitionDuration
+  })
+}
 
 test.describe("App Router Pokédex entry points", () => {
   test.use({ viewport: DESKTOP_VIEWPORT })
@@ -427,11 +437,42 @@ test.describe("Pokédex motion feedback", () => {
   })
 })
 
+test.describe("Pokédex themes", () => {
+  test.use({ viewport: DESKTOP_VIEWPORT })
+
+  test("uses an accessible day-night toggle and persists an explicit choice", async ({
+    page,
+  }) => {
+    await page.emulateMedia({
+      colorScheme: "light",
+      reducedMotion: "no-preference",
+    })
+    await page.goto("/1")
+
+    const themeToggle = page.getByRole("button", {
+      name: "Switch to dark theme",
+    })
+
+    await expect(themeToggle).toHaveAttribute("aria-pressed", "false")
+    expect(await getThemeArtworkTransitionDuration(themeToggle)).toBe("0.8s")
+
+    await themeToggle.click()
+    await expect(
+      page.getByRole("button", { name: "Switch to light theme" }),
+    ).toHaveAttribute("aria-pressed", "true")
+
+    await page.reload()
+    await expect(
+      page.getByRole("button", { name: "Switch to light theme" }),
+    ).toHaveAttribute("aria-pressed", "true")
+  })
+})
+
 test.describe("reduced-motion Pokédex", () => {
   test.use({ viewport: DESKTOP_VIEWPORT })
 
   test("removes nonessential dossier and catalog motion", async ({ page }) => {
-    await page.emulateMedia({ reducedMotion: "reduce" })
+    await page.emulateMedia({ colorScheme: "light", reducedMotion: "reduce" })
     await page.goto("/1")
 
     const selectedPokemon = page.getByRole("region", {
@@ -440,9 +481,13 @@ test.describe("reduced-motion Pokédex", () => {
     const currentPokemonLink = page.getByRole("link", {
       name: "0001 Bulbasaur",
     })
+    const themeToggle = page.getByRole("button", {
+      name: "Switch to dark theme",
+    })
 
     await expect(selectedPokemon).toBeVisible()
     await expect(currentPokemonLink).toBeVisible()
+    await expect(themeToggle).toBeVisible()
     await expect(page.getByRole("button", { name: /motion/i })).toHaveCount(0)
     expect(
       await page.evaluate(
@@ -460,5 +505,6 @@ test.describe("reduced-motion Pokédex", () => {
         (element) => getComputedStyle(element).transitionDuration,
       ),
     ).toBe("0s")
+    expect(await getThemeArtworkTransitionDuration(themeToggle)).toBe("0s")
   })
 })
