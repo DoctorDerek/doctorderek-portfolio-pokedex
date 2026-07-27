@@ -33,7 +33,9 @@ test.describe("App Router Pokédex entry points", () => {
     const catalog = page.getByRole("navigation", { name: "Pokémon catalog" })
     const catalogLinks = catalog.getByRole("link")
 
-    expect(await catalogLinks.count()).toBeGreaterThanOrEqual(21)
+    await expect
+      .poll(async () => catalogLinks.count())
+      .toBeGreaterThanOrEqual(21)
     await expect(catalog.locator('a[href="/490"]')).toHaveCount(1)
     await expect(catalog.locator('a[href="/510"]')).toHaveCount(1)
     await expect(catalog.locator('a[aria-current="page"]')).toHaveAttribute(
@@ -274,6 +276,7 @@ test.describe("mobile Pokédex", () => {
       name: "Local Pokédex",
     })
 
+    await expect(selectedPokemon).toBeVisible()
     await selectedPokemon.evaluate((element) =>
       Promise.all(
         element.getAnimations().map((animation) => animation.finished),
