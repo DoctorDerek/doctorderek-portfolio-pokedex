@@ -15,10 +15,10 @@ export default function PokedexPageContent({
   if (!pokemon) return <div>Sorry, Pokémon #{id} not found 😔.</div>
 
   return (
-    <AppContainer bgColor="bg-gray-600">
+    <AppContainer>
       <div className="flex w-full max-w-4xl flex-col gap-4 sm:gap-6">
         <PokedexWorkspaceNavigation />
-        <div className="grid w-full overflow-hidden rounded-lg shadow-2xl md:h-128 md:grid-cols-[minmax(18rem,2fr)_3fr]">
+        <div className="shadow-elevated grid w-full overflow-hidden rounded-lg md:h-128 md:grid-cols-[minmax(18rem,2fr)_3fr]">
           <PokemonDetailsPanel key={pokemon.id} pokemon={pokemon} />
           <PokemonCatalog currentPokemonId={Number(id)} />
         </div>
