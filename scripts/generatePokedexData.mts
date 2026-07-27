@@ -43,7 +43,7 @@ function getGraphqlErrorMessage(errors: unknown) {
   return firstError.message
 }
 
-async function fetchPokedexSnapshot() {
+export async function fetchPokedexSnapshot() {
   const graphqlDocument = await readFile(POKEAPI_GRAPHQL_DOCUMENT_URL, "utf8")
   const response = await fetch(POKEAPI_GRAPHQL_ENDPOINT, {
     body: JSON.stringify({
@@ -73,7 +73,7 @@ async function fetchPokedexSnapshot() {
   return responseBody.data as PokedexSnapshotQuery
 }
 
-async function generatePokedexData() {
+export async function generatePokedexData() {
   const snapshot = await fetchPokedexSnapshot()
   const { catalog, dossiers } = createPokedexArtifacts(snapshot)
   const [catalogJson, dossiersJson] = await Promise.all([
