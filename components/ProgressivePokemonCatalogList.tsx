@@ -97,8 +97,6 @@ export default function ProgressivePokemonCatalogList({
     const isNearBottom =
       remainingScrollDistance <= POKEMON_CATALOG_PRELOAD_DISTANCE_PIXELS
 
-    if (!isNearTop && !isNearBottom) return
-
     if (isNearTop && canExpandBefore) expansionDirections.push("before")
     if (isNearBottom && canExpandAfter) expansionDirections.push("after")
 
