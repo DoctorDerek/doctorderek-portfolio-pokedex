@@ -16,7 +16,7 @@ describe("ToggleDarkMode", () => {
     setTheme.mockReset()
   })
 
-  it("reads system as the selected preference and maps dark resolution correctly", () => {
+  it("presents the dark appearance and switches to light", () => {
     mockedUseTheme.mockReturnValue({
       resolvedTheme: "dark",
       setTheme,
@@ -25,18 +25,18 @@ describe("ToggleDarkMode", () => {
 
     render(<ToggleDarkMode />)
 
-    expect(
-      screen.getByRole("button", { name: "Use system theme, currently dark" }),
-    ).toBeInTheDocument()
-    expect(
-      screen.getByRole("button", { name: "Use dark theme" }),
-    ).toHaveAttribute("aria-pressed", "false")
-    expect(
-      screen.getByRole("button", { name: "Use light theme" }),
-    ).toHaveAttribute("aria-pressed", "false")
+    const themeToggle = screen.getByRole("button", {
+      name: "Switch to light theme",
+    })
+
+    expect(themeToggle).toHaveAttribute("aria-pressed", "true")
+
+    fireEvent.click(themeToggle)
+
+    expect(setTheme).toHaveBeenCalledWith("light")
   })
 
-  it("notifies theme mutation through the exact preference mapping", () => {
+  it("presents the light appearance and switches to dark", () => {
     mockedUseTheme.mockReturnValue({
       resolvedTheme: "light",
       setTheme,
@@ -45,11 +45,26 @@ describe("ToggleDarkMode", () => {
 
     render(<ToggleDarkMode />)
 
-    fireEvent.click(screen.getByRole("button", { name: "Use light theme" }))
-    fireEvent.click(screen.getByRole("button", { name: "Use dark theme" }))
+    const themeToggle = screen.getByRole("button", {
+      name: "Switch to dark theme",
+    })
 
-    expect(setTheme).toHaveBeenCalledTimes(2)
-    expect(setTheme).toHaveBeenNthCalledWith(1, "light")
-    expect(setTheme).toHaveBeenNthCalledWith(2, "dark")
+    expect(themeToggle).toHaveAttribute("aria-pressed", "false")
+
+    fireEvent.click(themeToggle)
+
+    expect(setTheme).toHaveBeenCalledWith("dark")
+  })
+
+  it("waits for a browser-resolved system preference", () => {
+    mockedUseTheme.mockReturnValue({
+      resolvedTheme: undefined,
+      setTheme,
+      theme: "system",
+    } as never)
+
+    render(<ToggleDarkMode />)
+
+    expect(screen.queryByRole("button")).not.toBeInTheDocument()
   })
 })

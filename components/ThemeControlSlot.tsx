@@ -9,7 +9,7 @@ const ThemeToggleControl = dynamic(
     loading: () => (
       <div
         aria-hidden="true"
-        className="border-outline bg-surface-elevated/60 h-14 w-64 rounded-lg border"
+        className="border-outline bg-surface-elevated/60 h-[70px] w-[170px] rounded-full border"
       />
     ),
   },
