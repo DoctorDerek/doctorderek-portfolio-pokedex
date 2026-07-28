@@ -501,6 +501,21 @@ describe("ProgressivePokemonCatalogList", () => {
     },
   )
 
+  it("falls back to preparing earlier entries at the lower route boundary", () => {
+    render(
+      <ProgressivePokemonCatalogList
+        currentPokemonId={1_025}
+        pokemons={POKEMON_CATALOG}
+      />,
+    )
+
+    approachCatalogBoundary(1_800)
+
+    expect(getRenderedPokemonHrefs()).toHaveLength(61)
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/965")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/1025")
+  })
+
   it("preserves the visible anchor when local entries are prepended", () => {
     render(
       <ProgressivePokemonCatalogList
@@ -529,5 +544,39 @@ describe("ProgressivePokemonCatalogList", () => {
     approachCatalogBoundary(50)
 
     expect(navigation.scrollTop).toBe(690)
+  })
+
+  it("keeps its scroll position when a prepend anchor disappears", () => {
+    render(
+      <ProgressivePokemonCatalogList
+        currentPokemonId={500}
+        pokemons={POKEMON_CATALOG}
+      />,
+    )
+
+    const navigation = screen.getByRole("navigation", {
+      name: "Pokémon catalog",
+    })
+    const originalQuerySelector = navigation.querySelector.bind(navigation)
+    let anchorLookupCount = 0
+
+    Object.defineProperties(navigation, {
+      clientHeight: { configurable: true, value: 200 },
+      scrollHeight: { configurable: true, value: 2_000 },
+    })
+    vi.spyOn(navigation, "querySelector").mockImplementation((selector) => {
+      if (selector === "[data-pokemon-id='490']") {
+        anchorLookupCount += 1
+
+        if (anchorLookupCount > 1) return null
+      }
+
+      return originalQuerySelector(selector)
+    })
+
+    approachCatalogBoundary(50)
+
+    expect(getRenderedPokemonHrefs()).toHaveLength(61)
+    expect(navigation.scrollTop).toBe(50)
   })
 })

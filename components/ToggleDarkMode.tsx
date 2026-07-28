@@ -1,21 +1,18 @@
 "use client"
 
 import { useTheme } from "next-themes"
-import ThemeSelector from "@/components/ThemeSelector"
-import type { ResolvedThemeAppearance, ThemePreference } from "@/data/theme"
+import ThemeToggle from "@/components/ThemeToggle"
 
 export default function ToggleDarkMode() {
   const { resolvedTheme, setTheme, theme } = useTheme()
-  const resolvedAppearance: ResolvedThemeAppearance =
-    resolvedTheme === "dark" ? "dark" : "light"
-  const selectedPreference: ThemePreference =
-    theme === "dark" || theme === "light" ? theme : "system"
+  const effectiveTheme = resolvedTheme ?? theme
+  const isDarkTheme = effectiveTheme === "dark"
+  const isThemeSettled = isDarkTheme || effectiveTheme === "light"
 
-  return (
-    <ThemeSelector
-      onThemeChange={setTheme}
-      resolvedAppearance={resolvedAppearance}
-      selectedPreference={selectedPreference}
+  return isThemeSettled ? (
+    <ThemeToggle
+      isDarkTheme={isDarkTheme}
+      onToggle={() => setTheme(isDarkTheme ? "light" : "dark")}
     />
-  )
+  ) : null
 }

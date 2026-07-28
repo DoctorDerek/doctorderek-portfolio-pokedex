@@ -13,9 +13,9 @@ export default function PokemonImage({
   return (
     <div
       className={classNames(
-        "relative overflow-hidden rounded-full bg-white",
+        "bg-artwork relative overflow-hidden rounded-full",
         size === "h-16 w-16"
-          ? "h-16 w-16 border-2 border-solid border-gray-400"
+          ? "border-outline h-16 w-16 border-2 border-solid"
           : "h-8 w-8",
       )}
     >
