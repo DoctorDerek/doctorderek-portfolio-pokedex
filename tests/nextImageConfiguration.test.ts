@@ -5,7 +5,7 @@ describe("Next image configuration", () => {
   it("limits Vercel transformations to the rendered Pokémon artwork sizes", () => {
     expect(nextConfig.images?.deviceSizes).toEqual([192])
     expect(nextConfig.images?.formats).toEqual(["image/webp"])
-    expect(nextConfig.images?.imageSizes).toEqual([32, 64, 96, 128])
+    expect(nextConfig.images?.imageSizes).toEqual([96])
     expect(nextConfig.images?.localPatterns).toEqual([])
     expect(nextConfig.images?.minimumCacheTTL).toBe(31_536_000)
     expect(nextConfig.images?.qualities).toEqual([75])
