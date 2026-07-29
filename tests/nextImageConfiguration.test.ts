@@ -14,7 +14,7 @@ describe("Next image configuration", () => {
         hostname: "raw.githubusercontent.com",
         port: "",
         pathname:
-          "/PokeAPI/sprites/8dfa3d97e953caaafaafd4963eff7621811af08e/sprites/pokemon/other/official-artwork/**",
+          "/PokeAPI/sprites/8dfa3d97e953caaafaafd4963eff7621811af08e/sprites/pokemon/other/official-artwork/*.png",
         protocol: "https",
         search: "",
       },

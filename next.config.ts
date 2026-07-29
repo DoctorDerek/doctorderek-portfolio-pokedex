@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "raw.githubusercontent.com",
         port: "",
-        pathname: `${POKEMON_ARTWORK_REPOSITORY_PATH}/**`,
+        pathname: `${POKEMON_ARTWORK_REPOSITORY_PATH}/*.png`,
         search: "",
       },
     ],
