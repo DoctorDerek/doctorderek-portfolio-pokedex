@@ -1,4 +1,4 @@
-import { expect, test, type Locator } from "@playwright/test"
+import { expect, test, type Locator, type Page } from "@playwright/test"
 
 const MOBILE_VIEWPORT = { width: 320, height: 800 }
 const DESKTOP_VIEWPORT = { width: 1280, height: 720 }
@@ -13,14 +13,29 @@ async function getThemeArtworkTransitionDuration(themeToggle: Locator) {
   })
 }
 
-async function expectElementTransformToSettle(element: Locator) {
-  await expect
-    .poll(() =>
-      element.evaluate(
-        (renderedElement) => getComputedStyle(renderedElement).transform,
-      ),
-    )
-    .toBe("none")
+async function getAdjacentPokedexSectionBounds(page: Page) {
+  return page.evaluate(() => {
+    const selectedPokemon = document.getElementById("pokemon-dossier")
+    const discovery = document.getElementById("local-pokedex")
+
+    if (!selectedPokemon || !discovery)
+      throw new Error("The adjacent Pokédex sections are unavailable.")
+
+    const selectedPokemonBounds = selectedPokemon.getBoundingClientRect()
+    const discoveryBounds = discovery.getBoundingClientRect()
+
+    return {
+      discovery: {
+        right: discoveryBounds.right,
+        top: discoveryBounds.top,
+      },
+      selectedPokemon: {
+        bottom: selectedPokemonBounds.bottom,
+        left: selectedPokemonBounds.left,
+        top: selectedPokemonBounds.top,
+      },
+    }
+  })
 }
 
 test.describe("App Router Pokédex entry points", () => {
@@ -314,19 +329,15 @@ test.describe("mobile Pokédex", () => {
     })
 
     await expect(selectedPokemon).toBeVisible()
-    await expectElementTransformToSettle(selectedPokemon)
+    const sectionBounds = await getAdjacentPokedexSectionBounds(page)
 
-    const selectedPokemonBounds = await selectedPokemon.evaluate((element) => {
-      const bounds = element.getBoundingClientRect()
-      return { bottom: bounds.bottom, top: bounds.top }
-    })
-    const discoveryBounds = await discovery.evaluate((element) => {
-      const bounds = element.getBoundingClientRect()
-      return { top: bounds.top }
-    })
-
-    expect(selectedPokemonBounds.top).toBeLessThan(discoveryBounds.top)
-    expect(selectedPokemonBounds.bottom).toBeCloseTo(discoveryBounds.top, 3)
+    expect(sectionBounds.selectedPokemon.top).toBeLessThan(
+      sectionBounds.discovery.top,
+    )
+    expect(sectionBounds.selectedPokemon.bottom).toBeCloseTo(
+      sectionBounds.discovery.top,
+      3,
+    )
   })
 
   test("keeps discovery controls touchable and filters immediately", async ({
@@ -404,19 +415,16 @@ test.describe("desktop Pokédex", () => {
 
     await expect(catalog).toBeVisible()
     await expect(selectedPokemon).toBeVisible()
-    await expectElementTransformToSettle(selectedPokemon)
+    const sectionBounds = await getAdjacentPokedexSectionBounds(page)
 
-    const catalogBounds = await catalog.evaluate((element) => {
-      const bounds = element.getBoundingClientRect()
-      return { right: bounds.right, top: bounds.top }
-    })
-    const selectedPokemonBounds = await selectedPokemon.evaluate((element) => {
-      const bounds = element.getBoundingClientRect()
-      return { left: bounds.left, top: bounds.top }
-    })
-
-    expect(selectedPokemonBounds.top).toBeCloseTo(catalogBounds.top, 3)
-    expect(selectedPokemonBounds.left).toBeCloseTo(catalogBounds.right, 3)
+    expect(sectionBounds.selectedPokemon.top).toBeCloseTo(
+      sectionBounds.discovery.top,
+      3,
+    )
+    expect(sectionBounds.selectedPokemon.left).toBeCloseTo(
+      sectionBounds.discovery.right,
+      3,
+    )
   })
 })
 
