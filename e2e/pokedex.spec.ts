@@ -293,6 +293,7 @@ test.describe("mobile Pokédex", () => {
   test("prioritizes the selected dossier before catalog discovery", async ({
     page,
   }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" })
     await page.goto("/pokemon/1")
 
     const selectedPokemon = page.getByRole("region", {
@@ -303,11 +304,6 @@ test.describe("mobile Pokédex", () => {
     })
 
     await expect(selectedPokemon).toBeVisible()
-    await selectedPokemon.evaluate((element) =>
-      Promise.all(
-        element.getAnimations().map((animation) => animation.finished),
-      ),
-    )
 
     const selectedPokemonBounds = await selectedPokemon.evaluate((element) => {
       const bounds = element.getBoundingClientRect()
@@ -384,6 +380,7 @@ test.describe("desktop Pokédex", () => {
   test("presents the catalog and selected Pokémon as a split layout", async ({
     page,
   }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" })
     await page.goto("/pokemon/1")
 
     const catalog = page.getByRole("region", {
@@ -396,11 +393,6 @@ test.describe("desktop Pokédex", () => {
 
     await expect(catalog).toBeVisible()
     await expect(selectedPokemon).toBeVisible()
-    await selectedPokemon.evaluate((element) =>
-      Promise.all(
-        element.getAnimations().map((animation) => animation.finished),
-      ),
-    )
 
     const catalogBounds = await catalog.evaluate((element) => {
       const bounds = element.getBoundingClientRect()
