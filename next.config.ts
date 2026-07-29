@@ -2,7 +2,7 @@ import type { NextConfig } from "next"
 import { POKEMON_ARTWORK_REPOSITORY_PATH } from "./data/pokemonArtwork.ts"
 
 const POKEMON_ARTWORK_IMAGE_SIZES = [32, 64, 96, 128]
-const POKEMON_ARTWORK_MINIMUM_CACHE_TTL_SECONDS = 2_678_400
+const POKEMON_ARTWORK_MINIMUM_CACHE_TTL_SECONDS = 31_536_000
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
