@@ -52,11 +52,11 @@ test.describe("GraphQL Pokémon research", () => {
         status: 200,
       })
     })
-    await page.goto("/1")
+    await page.goto("/pokemon/1")
     await expect(
       page
         .getByRole("navigation", { name: "Pokémon catalog" })
-        .locator('a[href="/25"]'),
+        .locator('a[href="/pokemon/25"]'),
     ).toHaveCount(1)
 
     const graphqlSearchRegion = page.getByRole("region", {
@@ -73,7 +73,7 @@ test.describe("GraphQL Pokémon research", () => {
 
     await expect(
       graphqlSearchRegion.getByRole("link", { name: /Pikachu/ }),
-    ).toHaveAttribute("href", "/25")
+    ).toHaveAttribute("href", "/pokemon/25")
     expect(requestCount).toBe(1)
 
     await graphqlSearch.click()
@@ -98,11 +98,11 @@ test.describe("mobile GraphQL Pokémon research", () => {
         status: 200,
       })
     })
-    await page.goto("/1")
+    await page.goto("/pokemon/1")
     await expect(
       page
         .getByRole("navigation", { name: "Pokémon catalog" })
-        .locator('a[href="/25"]'),
+        .locator('a[href="/pokemon/25"]'),
     ).toHaveCount(1)
     await page
       .getByRole("navigation", { name: "Pokédex research workspace" })

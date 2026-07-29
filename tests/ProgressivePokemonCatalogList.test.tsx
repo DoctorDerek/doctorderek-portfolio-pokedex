@@ -80,8 +80,8 @@ describe("ProgressivePokemonCatalogList", () => {
     )
 
     expect(serverPokemonLinks).toHaveLength(21)
-    expect(serverPokemonLinks.item(0)).toHaveAttribute("href", "/490")
-    expect(serverPokemonLinks.item(20)).toHaveAttribute("href", "/510")
+    expect(serverPokemonLinks.item(0)).toHaveAttribute("href", "/pokemon/490")
+    expect(serverPokemonLinks.item(20)).toHaveAttribute("href", "/pokemon/510")
   })
 
   it("repeatedly prepares more local entries in both directions", () => {
@@ -95,20 +95,20 @@ describe("ProgressivePokemonCatalogList", () => {
     )
 
     expect(getRenderedPokemonHrefs()).toHaveLength(21)
-    expect(getRenderedPokemonHrefs().at(0)).toBe("/490")
-    expect(getRenderedPokemonHrefs().at(-1)).toBe("/510")
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/pokemon/490")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/510")
 
     approachCatalogBoundary()
 
     expect(getRenderedPokemonHrefs()).toHaveLength(61)
-    expect(getRenderedPokemonHrefs().at(0)).toBe("/450")
-    expect(getRenderedPokemonHrefs().at(-1)).toBe("/510")
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/pokemon/450")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/510")
 
     approachCatalogBoundary()
 
     expect(getRenderedPokemonHrefs()).toHaveLength(101)
-    expect(getRenderedPokemonHrefs().at(0)).toBe("/410")
-    expect(getRenderedPokemonHrefs().at(-1)).toBe("/510")
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/pokemon/410")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/510")
     expect(fetchSpy).not.toHaveBeenCalled()
 
     fetchSpy.mockRestore()
@@ -139,8 +139,8 @@ describe("ProgressivePokemonCatalogList", () => {
     })
 
     expect(getRenderedPokemonHrefs()).toHaveLength(61)
-    expect(getRenderedPokemonHrefs().at(0)).toBe("/470")
-    expect(getRenderedPokemonHrefs().at(-1)).toBe("/530")
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/pokemon/470")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/530")
   })
 
   it("ignores a repeated initial frame after the buffer is prepared", () => {
@@ -187,8 +187,8 @@ describe("ProgressivePokemonCatalogList", () => {
     approachCatalogBoundary(1_800)
 
     expect(getRenderedPokemonHrefs()).toHaveLength(101)
-    expect(getRenderedPokemonHrefs().at(0)).toBe("/470")
-    expect(getRenderedPokemonHrefs().at(-1)).toBe("/570")
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/pokemon/470")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/570")
   })
 
   it("ignores a reentrant boundary event while an expansion is pending", () => {
@@ -414,7 +414,7 @@ describe("ProgressivePokemonCatalogList", () => {
     )
 
     expect(getRenderedPokemonHrefs()).toHaveLength(21)
-    expect(getRenderedPokemonHrefs()).not.toContain("/9999")
+    expect(getRenderedPokemonHrefs()).not.toContain("/pokemon/9999")
   })
 
   it("centers a newly selected entry when its geometry requires scrolling", () => {
@@ -475,13 +475,13 @@ describe("ProgressivePokemonCatalogList", () => {
   it.each([
     {
       currentPokemonId: 1,
-      expectedFirstHref: "/1",
-      expectedLastHref: "/61",
+      expectedFirstHref: "/pokemon/1",
+      expectedLastHref: "/pokemon/61",
     },
     {
       currentPokemonId: 1_025,
-      expectedFirstHref: "/965",
-      expectedLastHref: "/1025",
+      expectedFirstHref: "/pokemon/965",
+      expectedLastHref: "/pokemon/1025",
     },
   ])(
     "expands route $currentPokemonId only toward available entries",
@@ -512,8 +512,8 @@ describe("ProgressivePokemonCatalogList", () => {
     approachCatalogBoundary(1_800)
 
     expect(getRenderedPokemonHrefs()).toHaveLength(61)
-    expect(getRenderedPokemonHrefs().at(0)).toBe("/965")
-    expect(getRenderedPokemonHrefs().at(-1)).toBe("/1025")
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/pokemon/965")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/1025")
   })
 
   it("preserves the visible anchor when local entries are prepended", () => {

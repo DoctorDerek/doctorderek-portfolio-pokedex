@@ -1,5 +1,6 @@
 import { permanentRedirect } from "next/navigation"
+import { getPokemonDossierRoute } from "@/data/pokemonRoutes"
 
 export default function HomePage() {
-  permanentRedirect("/1")
+  permanentRedirect(getPokemonDossierRoute(1))
 }

@@ -10,6 +10,6 @@ describe("HomePage", () => {
   it("redirects the root route to the first Pokédex entry", () => {
     HomePage()
 
-    expect(permanentRedirect).toHaveBeenCalledWith("/1")
+    expect(permanentRedirect).toHaveBeenCalledWith("/pokemon/1")
   })
 })

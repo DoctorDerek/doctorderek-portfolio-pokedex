@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { getPokemonDossierRoute } from "@/data/pokemonRoutes"
 import type { PokemonSearchResultFragment } from "@/graphql/pokemonSearch.generated"
 
 export type PokemonGraphqlSearchResultsState =
@@ -88,7 +89,7 @@ export default function PokemonGraphqlSearchResults({
           return (
             <li key={pokemon.id}>
               <Link
-                href={`/${pokemon.id}`}
+                href={getPokemonDossierRoute(pokemon.id)}
                 prefetch={false}
                 className="group border-outline bg-panel hover:border-brand hover:bg-panel-strong block h-full rounded-lg border-2 p-4 motion-safe:transition-[background-color,border-color,transform] motion-safe:duration-200 motion-safe:ease-out motion-safe:hover:-translate-y-0.5"
               >
