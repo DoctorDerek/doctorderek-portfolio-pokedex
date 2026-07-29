@@ -4,6 +4,7 @@ import {
   MAX_POKEMON_NUMBER,
   POKEMON_CATALOG,
 } from "@/data/pokemonCatalog"
+import { createPokemonArtworkUrl } from "@/data/pokemonArtwork"
 import { getPokemonDossier } from "@/data/pokemonDossiers.server"
 
 describe("static Pokédex data", () => {
@@ -31,6 +32,17 @@ describe("static Pokédex data", () => {
     expect(new Set(staticParameters.map(({ id }) => id)).size).toBe(
       MAX_POKEMON_NUMBER,
     )
+  })
+
+  it("uses one immutable artwork revision throughout the generated data", () => {
+    for (const pokemon of POKEMON_CATALOG) {
+      const expectedImageUrl = createPokemonArtworkUrl(pokemon.id)
+
+      expect(pokemon.imageUrl).toBe(expectedImageUrl)
+      expect(getPokemonDossier({ id: String(pokemon.id) })?.imageUrl).toBe(
+        expectedImageUrl,
+      )
+    }
   })
 
   it("resolves only exact canonical dossier identifiers", () => {
