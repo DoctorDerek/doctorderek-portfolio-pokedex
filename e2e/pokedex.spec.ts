@@ -76,6 +76,19 @@ test.describe("App Router Pokédex entry points", () => {
     }
   })
 
+  test("preserves legacy numeric dossiers as permanent redirects", async ({
+    request,
+  }) => {
+    for (const pokemonId of [1, 404, 500, 1025]) {
+      const response = await request.get(`/${pokemonId}`, {
+        maxRedirects: 0,
+      })
+
+      expect(response.status()).toBe(308)
+      expect(response.headers().location).toBe(`/pokemon/${pokemonId}`)
+    }
+  })
+
   test("keeps the selected dossier inside its prepared local context", async ({
     page,
   }) => {

@@ -20,4 +20,14 @@ describe("Next image configuration", () => {
       },
     ])
   })
+
+  it("preserves legacy numeric dossier paths as permanent redirects", async () => {
+    await expect(nextConfig.redirects?.()).resolves.toEqual([
+      {
+        destination: "/pokemon/:id",
+        permanent: true,
+        source: "/:id(\\d+)",
+      },
+    ])
+  })
 })
