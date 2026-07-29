@@ -13,6 +13,16 @@ async function getThemeArtworkTransitionDuration(themeToggle: Locator) {
   })
 }
 
+async function expectElementTransformToSettle(element: Locator) {
+  await expect
+    .poll(() =>
+      element.evaluate(
+        (renderedElement) => getComputedStyle(renderedElement).transform,
+      ),
+    )
+    .toBe("none")
+}
+
 test.describe("App Router Pokédex entry points", () => {
   test.use({ viewport: DESKTOP_VIEWPORT })
 
@@ -304,6 +314,7 @@ test.describe("mobile Pokédex", () => {
     })
 
     await expect(selectedPokemon).toBeVisible()
+    await expectElementTransformToSettle(selectedPokemon)
 
     const selectedPokemonBounds = await selectedPokemon.evaluate((element) => {
       const bounds = element.getBoundingClientRect()
@@ -393,6 +404,7 @@ test.describe("desktop Pokédex", () => {
 
     await expect(catalog).toBeVisible()
     await expect(selectedPokemon).toBeVisible()
+    await expectElementTransformToSettle(selectedPokemon)
 
     const catalogBounds = await catalog.evaluate((element) => {
       const bounds = element.getBoundingClientRect()
