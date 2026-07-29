@@ -1,10 +1,10 @@
 import { describe, expect, it } from "vitest"
+import { createPokemonArtworkUrl } from "@/data/pokemonArtwork"
 import {
   getPokedexStaticParameters,
   MAX_POKEMON_NUMBER,
   POKEMON_CATALOG,
 } from "@/data/pokemonCatalog"
-import { createPokemonArtworkUrl } from "@/data/pokemonArtwork"
 import { getPokemonDossier } from "@/data/pokemonDossiers.server"
 
 describe("static Pokédex data", () => {
