@@ -1,4 +1,5 @@
 import type { PokedexSnapshotQuery } from "@/graphql/pokeapi.generated"
+import { createPokemonArtworkUrl } from "../data/pokemonArtwork.ts"
 import type {
   PokedexArtifacts,
   PokemonCatalogEntry,
@@ -8,8 +9,6 @@ import type {
 export const EXPECTED_POKEMON_COUNT = 1_025
 
 const POKEMON_NUMBER_WIDTH = String(EXPECTED_POKEMON_COUNT).length
-const OFFICIAL_ARTWORK_BASE_URL =
-  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork"
 
 const REQUIRED_BASE_STAT_NAMES = [
   "hp",
@@ -148,7 +147,7 @@ function createPokemonDossier(
     habitat: formatOptionalIdentifier(species.pokemonhabitat?.name),
     heightInMeters: pokemon.height === null ? null : pokemon.height / 10,
     id: speciesId,
-    imageUrl: `${OFFICIAL_ARTWORK_BASE_URL}/${speciesId}.png`,
+    imageUrl: createPokemonArtworkUrl(speciesId),
     isLegendary: species.is_legendary,
     isMythical: species.is_mythical,
     name: englishSpeciesName.name,

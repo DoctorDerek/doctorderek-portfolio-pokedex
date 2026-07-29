@@ -1,4 +1,5 @@
 import type { NextConfig } from "next"
+import { POKEMON_ARTWORK_REPOSITORY_PATH } from "./data/pokemonArtwork.ts"
 
 const POKEMON_ARTWORK_IMAGE_SIZES = [32, 64, 96, 128]
 const POKEMON_ARTWORK_MINIMUM_CACHE_TTL_SECONDS = 2_678_400
@@ -17,8 +18,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "raw.githubusercontent.com",
         port: "",
-        pathname:
-          "/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/**",
+        pathname: `${POKEMON_ARTWORK_REPOSITORY_PATH}/**`,
         search: "",
       },
     ],
