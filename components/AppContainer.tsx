@@ -11,7 +11,7 @@ export default function AppContainer({ children }: { children: ReactNode }) {
       <header className="grid min-h-12 w-full grid-cols-1 items-center gap-y-2 px-4 py-3 text-center sm:grid-cols-[1fr_auto_1fr] sm:gap-x-2">
         <div className="hidden justify-self-start sm:block" />
         <div className="flex flex-wrap items-center justify-center gap-x-1 gap-y-1">
-          <Link href="/" className={HEADER_LINK_CLASS_NAME}>
+          <Link href="/" prefetch={false} className={HEADER_LINK_CLASS_NAME}>
             Pokédex
           </Link>
           <span>by</span>
