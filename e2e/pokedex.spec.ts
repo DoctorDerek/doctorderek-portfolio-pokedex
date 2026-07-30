@@ -38,6 +38,14 @@ async function getAdjacentPokedexSectionBounds(page: Page) {
   })
 }
 
+async function resetApplicationDataRequestsAfterNetworkSettles(
+  page: Page,
+  applicationDataRequests: string[],
+) {
+  await page.waitForLoadState("networkidle")
+  applicationDataRequests.length = 0
+}
+
 test.describe("App Router Pokédex entry points", () => {
   test.use({ viewport: DESKTOP_VIEWPORT })
 
@@ -127,7 +135,10 @@ test.describe("App Router Pokédex entry points", () => {
     await expect(catalog.locator('a[href="/pokemon/530"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(61)
 
-    applicationDataRequests.length = 0
+    await resetApplicationDataRequestsAfterNetworkSettles(
+      page,
+      applicationDataRequests,
+    )
 
     await catalog.evaluate((element) => {
       element.scrollTop = element.scrollHeight
@@ -302,7 +313,10 @@ test.describe("mobile Pokédex", () => {
     await expect(links).toHaveCount(61)
     const initialVisibleCount = await links.count()
 
-    applicationDataRequests.length = 0
+    await resetApplicationDataRequestsAfterNetworkSettles(
+      page,
+      applicationDataRequests,
+    )
 
     expect(initialVisibleCount).toBeGreaterThanOrEqual(21)
 
