@@ -1,5 +1,4 @@
 import type { PokedexSnapshotQuery } from "@/graphql/pokeapi.generated"
-import { createPokemonArtworkUrl } from "../data/pokemonArtwork.ts"
 import type {
   PokedexArtifacts,
   PokemonCatalogEntry,
@@ -42,20 +41,10 @@ export function createPokedexArtifacts(data: PokedexSnapshotQuery) {
     throw new Error("PokéAPI did not return one continuous national Pokédex.")
 
   const catalog: PokemonCatalogEntry[] = dossiers.map(
-    ({
+    ({ baseStatTotal, generation, id, name, number, slug, types }) => ({
       baseStatTotal,
       generation,
       id,
-      imageUrl,
-      name,
-      number,
-      slug,
-      types,
-    }) => ({
-      baseStatTotal,
-      generation,
-      id,
-      imageUrl,
       name,
       number,
       slug,
@@ -147,7 +136,6 @@ function createPokemonDossier(
     habitat: formatOptionalIdentifier(species.pokemonhabitat?.name),
     heightInMeters: pokemon.height === null ? null : pokemon.height / 10,
     id: speciesId,
-    imageUrl: createPokemonArtworkUrl(speciesId),
     isLegendary: species.is_legendary,
     isMythical: species.is_mythical,
     name: englishSpeciesName.name,

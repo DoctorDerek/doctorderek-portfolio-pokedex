@@ -100,7 +100,7 @@ export default function PokemonDetailsPanel({
           <div className="col-span-2 row-start-1 flex items-center justify-center sm:col-span-1 sm:col-start-2">
             <PokemonImage
               size="h-16 w-16"
-              imageUrl={pokemon.imageUrl}
+              pokemonId={pokemon.id}
               altText={pokemon.name}
             />
           </div>

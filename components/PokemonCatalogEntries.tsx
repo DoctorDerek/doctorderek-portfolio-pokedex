@@ -29,11 +29,7 @@ export default function PokemonCatalogEntries({
                   : "bg-panel hover:border-accent hover:bg-panel-strong border-transparent",
               )}
             >
-              <PokemonImage
-                size="h-8 w-8"
-                imageUrl={pokemon.imageUrl}
-                altText=""
-              />
+              <PokemonImage size="h-8 w-8" pokemonId={pokemon.id} altText="" />
               <span className="text-brand shrink-0 font-bold">
                 {pokemon.number}
               </span>

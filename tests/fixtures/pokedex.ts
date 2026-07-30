@@ -4,8 +4,6 @@ export const BULBASAUR_CATALOG_FIXTURE: PokemonCatalogEntry = {
   baseStatTotal: 318,
   generation: "Generation I",
   id: 1,
-  imageUrl:
-    "https://raw.githubusercontent.com/PokeAPI/sprites/8dfa3d97e953caaafaafd4963eff7621811af08e/sprites/pokemon/other/official-artwork/1.png",
   name: "Bulbasaur",
   number: "0001",
   slug: "bulbasaur",
@@ -16,8 +14,6 @@ export const IVYSAUR_CATALOG_FIXTURE: PokemonCatalogEntry = {
   baseStatTotal: 405,
   generation: "Generation I",
   id: 2,
-  imageUrl:
-    "https://raw.githubusercontent.com/PokeAPI/sprites/8dfa3d97e953caaafaafd4963eff7621811af08e/sprites/pokemon/other/official-artwork/2.png",
   name: "Ivysaur",
   number: "0002",
   slug: "ivysaur",
@@ -28,8 +24,6 @@ export const CHARMANDER_CATALOG_FIXTURE: PokemonCatalogEntry = {
   baseStatTotal: 309,
   generation: "Generation I",
   id: 4,
-  imageUrl:
-    "https://raw.githubusercontent.com/PokeAPI/sprites/8dfa3d97e953caaafaafd4963eff7621811af08e/sprites/pokemon/other/official-artwork/4.png",
   name: "Charmander",
   number: "0004",
   slug: "charmander",

@@ -34,15 +34,17 @@ describe("static Pokédex data", () => {
     )
   })
 
-  it("uses one immutable artwork revision throughout the generated data", () => {
+  it("keeps derived artwork URLs out of the canonical data snapshot", () => {
     for (const pokemon of POKEMON_CATALOG) {
-      const expectedImageUrl = createPokemonArtworkUrl(pokemon.id)
-
-      expect(pokemon.imageUrl).toBe(expectedImageUrl)
-      expect(getPokemonDossier({ id: String(pokemon.id) })?.imageUrl).toBe(
-        expectedImageUrl,
+      expect(pokemon).not.toHaveProperty("imageUrl")
+      expect(getPokemonDossier({ id: String(pokemon.id) })).not.toHaveProperty(
+        "imageUrl",
       )
     }
+
+    expect(createPokemonArtworkUrl(1)).toMatch(
+      /\/PokeAPI\/sprites\/[0-9a-f]{40}\/sprites\/pokemon\/other\/official-artwork\/1\.png$/,
+    )
   })
 
   it("resolves only exact canonical dossier identifiers", () => {
