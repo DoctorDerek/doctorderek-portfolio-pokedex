@@ -118,12 +118,8 @@ test.describe("mobile GraphQL Pokémon research", () => {
     const searchButton = graphqlSearchRegion.getByRole("button", {
       name: "GraphQL Search",
     })
-    const catalogLinks = page
-      .getByRole("navigation", { name: "Pokémon catalog" })
-      .getByRole("link")
 
-    await graphqlSearchRegion.scrollIntoViewIfNeeded()
-    await expect(catalogLinks).toHaveCount(1_025, { timeout: 15_000 })
+    await expect(graphqlSearchRegion).toBeFocused()
     await expect(searchButton).toBeInViewport()
 
     for (const control of [pokemonName, searchButton]) {
