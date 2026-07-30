@@ -42,8 +42,8 @@ describe("static Pokédex data", () => {
       )
     }
 
-    expect(createPokemonArtworkUrl(1)).toMatch(
-      /\/PokeAPI\/sprites\/[0-9a-f]{40}\/sprites\/pokemon\/other\/official-artwork\/1\.png$/,
+    expect(createPokemonArtworkUrl(1)).toBe(
+      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
     )
   })
 
