@@ -23,6 +23,12 @@ An unofficial, non-commercial parody and GraphQL portfolio demo that turns a 1,0
 - GraphQL, GraphQL Code Generator, and TanStack Query 5
 - Vitest, Testing Library, MSW, Playwright, ESLint, and Prettier
 
+## Architecture and Performance
+
+- All 1,025 dossier routes are generated from a checked-in snapshot, so route navigation and catalog filtering do not wait on the public API.
+- Progressive catalog expansion reveals local rows without visible pagination. GraphQL research runs only after an explicit submission, caps responses at 100 entries, and reuses identical TanStack Query results for 30 minutes.
+- The image pipeline accepts one canonical artwork path, emits only 96 px and 192 px WebP candidates at quality 75, and gives each transformation a one-year cache lifetime.
+
 ## Local Development
 
 Use [fnm](https://github.com/Schniz/fnm) for the Node version declared in `.node-version` and [pnpm](https://pnpm.io/) for dependency management.
@@ -45,15 +51,10 @@ pnpm test
 pnpm test:coverage
 pnpm exec playwright test
 pnpm build
+pnpm audit --prod
 ```
 
 Vitest, Testing Library, and MSW cover the TanStack Query provider, generated GraphQL success and failure behavior, build-time query variables, catalog selection and progressive range state, and the selected Pokémon statistics without contacting the live API. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, motion preferences, and the desktop split layout without relying on test-only selectors.
-
-## Roadmap
-
-- Keep the generated 1,025-dossier snapshot deterministic and healthy
-- Deepen the parody-forward visual design and dossier copy
-- Expand Testing Trophy coverage and measured Codecov reporting around future user journeys
 
 ## License and Parody Notice
 
