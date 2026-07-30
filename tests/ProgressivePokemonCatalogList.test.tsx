@@ -84,7 +84,7 @@ describe("ProgressivePokemonCatalogList", () => {
     expect(serverPokemonLinks.item(20)).toHaveAttribute("href", "/pokemon/510")
   })
 
-  it("repeatedly prepares more local entries in both directions", () => {
+  it("repeatedly prepares more local entries in both directions without fetching", () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch")
 
     render(
@@ -98,17 +98,29 @@ describe("ProgressivePokemonCatalogList", () => {
     expect(getRenderedPokemonHrefs().at(0)).toBe("/pokemon/490")
     expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/510")
 
-    approachCatalogBoundary()
+    approachCatalogBoundary(1_800)
 
     expect(getRenderedPokemonHrefs()).toHaveLength(61)
-    expect(getRenderedPokemonHrefs().at(0)).toBe("/pokemon/450")
-    expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/510")
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/pokemon/490")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/550")
 
     approachCatalogBoundary()
 
     expect(getRenderedPokemonHrefs()).toHaveLength(101)
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/pokemon/450")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/550")
+
+    approachCatalogBoundary(1_800)
+
+    expect(getRenderedPokemonHrefs()).toHaveLength(141)
+    expect(getRenderedPokemonHrefs().at(0)).toBe("/pokemon/450")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/590")
+
+    approachCatalogBoundary()
+
+    expect(getRenderedPokemonHrefs()).toHaveLength(181)
     expect(getRenderedPokemonHrefs().at(0)).toBe("/pokemon/410")
-    expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/510")
+    expect(getRenderedPokemonHrefs().at(-1)).toBe("/pokemon/590")
     expect(fetchSpy).not.toHaveBeenCalled()
 
     fetchSpy.mockRestore()
