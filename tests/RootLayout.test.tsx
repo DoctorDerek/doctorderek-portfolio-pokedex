@@ -9,14 +9,23 @@ vi.mock("@/app/providers", () => ({
 }))
 
 describe("RootLayout", () => {
-  it("sets the document language, page title, and application boundary", () => {
+  it("sets the site identity and application boundary", () => {
     const markup = renderToStaticMarkup(
       <RootLayout>
         <p>Pokédex workspace</p>
       </RootLayout>,
     )
 
-    expect(metadata.title).toBe("Pokédex by @DoctorDerek")
+    expect(metadata.description).toBe(
+      "An unofficial Pokédex parody and GraphQL portfolio demo with 1,025 statically generated Pokémon dossiers.",
+    )
+    expect(metadata.metadataBase?.toString()).toBe(
+      "https://portfolio-pokedex.doctorderek.com/",
+    )
+    expect(metadata.title).toEqual({
+      default: "Pokédex by @DoctorDerek",
+      template: "%s | Pokédex by @DoctorDerek",
+    })
     expect(markup).toContain('<html lang="en">')
     expect(markup).toContain('<div data-testid="application-providers">')
     expect(markup).toContain("Pokédex workspace")

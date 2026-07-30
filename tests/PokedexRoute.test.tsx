@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import PokedexPage, {
   dynamicParams,
+  generateMetadata,
   generateStaticParams,
 } from "@/app/pokemon/[id]/page"
 import ApplicationProviders from "@/app/providers"
@@ -44,5 +45,26 @@ describe("App Router Pokédex route", () => {
     expect(fetchSpy).not.toHaveBeenCalled()
 
     fetchSpy.mockRestore()
+  })
+
+  it("publishes canonical metadata for each generated dossier", async () => {
+    await expect(
+      generateMetadata({
+        params: Promise.resolve({ id: "2" }),
+      }),
+    ).resolves.toEqual({
+      alternates: {
+        canonical: "/pokemon/2",
+      },
+      description:
+        "Ivysaur (#0002) dossier with types, abilities, dimensions, and base stats in an unofficial Pokédex parody.",
+      title: "Ivysaur #0002",
+    })
+
+    await expect(
+      generateMetadata({
+        params: Promise.resolve({ id: "1026" }),
+      }),
+    ).resolves.toEqual({})
   })
 })
