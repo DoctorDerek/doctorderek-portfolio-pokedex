@@ -1,6 +1,7 @@
 packages:
   - "."
 overrides:
+  "next@16>sharp": "^0.35.3"
   postcss: "^8"
 allowBuilds:
   core-js: true
