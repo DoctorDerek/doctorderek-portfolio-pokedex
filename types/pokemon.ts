@@ -2,7 +2,6 @@ export interface PokemonCatalogEntry {
   baseStatTotal: number
   generation: string
   id: number
-  imageUrl: string
   name: string
   number: string
   slug: string

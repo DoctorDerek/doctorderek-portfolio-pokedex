@@ -115,7 +115,7 @@ describe("PokemonGraphqlSearch", () => {
 
     expect(
       await screen.findByRole("link", { name: /Pikachu/ }),
-    ).toHaveAttribute("href", "/25")
+    ).toHaveAttribute("href", "/pokemon/25")
     expect(requestCount).toBe(1)
 
     fireEvent.click(submitSearch)
@@ -131,7 +131,7 @@ describe("PokemonGraphqlSearch", () => {
 
     expect(await screen.findByRole("link", { name: /Eevee/ })).toHaveAttribute(
       "href",
-      "/133",
+      "/pokemon/133",
     )
     await waitFor(() => expect(requestCount).toBe(2))
 
@@ -170,7 +170,7 @@ describe("PokemonGraphqlSearch", () => {
 
     expect(
       await screen.findByRole("link", { name: /Bulbasaur/ }),
-    ).toHaveAttribute("href", "/1")
+    ).toHaveAttribute("href", "/pokemon/1")
     expect(requestCount).toBe(2)
   })
 
@@ -212,7 +212,7 @@ describe("PokemonGraphqlSearch", () => {
 
     expect(
       await screen.findByRole("link", { name: /Bulbasaur/ }),
-    ).toHaveAttribute("href", "/1")
+    ).toHaveAttribute("href", "/pokemon/1")
     expect(requestCount).toBe(2)
   })
 

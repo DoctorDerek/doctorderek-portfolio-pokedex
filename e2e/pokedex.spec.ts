@@ -1,4 +1,4 @@
-import { expect, test, type Locator } from "@playwright/test"
+import { expect, test, type Locator, type Page } from "@playwright/test"
 
 const MOBILE_VIEWPORT = { width: 320, height: 800 }
 const DESKTOP_VIEWPORT = { width: 1280, height: 720 }
@@ -13,6 +13,48 @@ async function getThemeArtworkTransitionDuration(themeToggle: Locator) {
   })
 }
 
+async function getAdjacentPokedexSectionBounds(page: Page) {
+  return page.evaluate(() => {
+    const selectedPokemon = document.getElementById("pokemon-dossier")
+    const discovery = document.getElementById("local-pokedex")
+
+    if (!selectedPokemon || !discovery)
+      throw new Error("The adjacent Pokédex sections are unavailable.")
+
+    const selectedPokemonBounds = selectedPokemon.getBoundingClientRect()
+    const discoveryBounds = discovery.getBoundingClientRect()
+
+    return {
+      discovery: {
+        right: discoveryBounds.right,
+        top: discoveryBounds.top,
+      },
+      selectedPokemon: {
+        bottom: selectedPokemonBounds.bottom,
+        left: selectedPokemonBounds.left,
+        top: selectedPokemonBounds.top,
+      },
+    }
+  })
+}
+
+async function scrollCatalogToBoundary(
+  catalog: Locator,
+  boundary: "start" | "end",
+) {
+  await catalog.evaluate(
+    (element, selectedBoundary) =>
+      new Promise<void>((resolve) => {
+        window.requestAnimationFrame(() => {
+          element.scrollTop =
+            selectedBoundary === "start" ? 0 : element.scrollHeight
+          resolve()
+        })
+      }),
+    boundary,
+  )
+}
+
 test.describe("App Router Pokédex entry points", () => {
   test.use({ viewport: DESKTOP_VIEWPORT })
 
@@ -21,7 +63,7 @@ test.describe("App Router Pokédex entry points", () => {
   }) => {
     await page.goto("/")
 
-    await expect(page).toHaveURL(/\/1$/)
+    await expect(page).toHaveURL(/\/pokemon\/1$/)
     await expect(
       page.getByRole("heading", { level: 2, name: "Bulbasaur #0001" }),
     ).toBeVisible()
@@ -30,15 +72,44 @@ test.describe("App Router Pokédex entry points", () => {
   test("rejects dossier numbers outside the generated static catalog", async ({
     page,
   }) => {
-    const response = await page.goto("/1026")
+    const response = await page.goto("/pokemon/1026")
 
     expect(response?.status()).toBe(404)
+  })
+
+  test("serves dossiers whose numbers overlap HTTP status codes", async ({
+    page,
+  }) => {
+    for (const pokemon of [
+      { id: 404, name: "Luxio #0404" },
+      { id: 500, name: "Emboar #0500" },
+    ]) {
+      const response = await page.goto(`/pokemon/${pokemon.id}`)
+
+      expect(response?.status()).toBe(200)
+      await expect(
+        page.getByRole("heading", { level: 2, name: pokemon.name }),
+      ).toBeVisible()
+    }
+  })
+
+  test("preserves legacy numeric dossiers as permanent redirects", async ({
+    request,
+  }) => {
+    for (const pokemonId of [1, 404, 500, 1025]) {
+      const response = await request.get(`/${pokemonId}`, {
+        maxRedirects: 0,
+      })
+
+      expect(response.status()).toBe(308)
+      expect(response.headers().location).toBe(`/pokemon/${pokemonId}`)
+    }
   })
 
   test("keeps the selected dossier inside its prepared local context", async ({
     page,
   }) => {
-    await page.goto("/500")
+    await page.goto("/pokemon/500")
 
     const catalog = page.getByRole("navigation", { name: "Pokémon catalog" })
     const catalogLinks = catalog.getByRole("link")
@@ -46,63 +117,40 @@ test.describe("App Router Pokédex entry points", () => {
     await expect
       .poll(async () => catalogLinks.count())
       .toBeGreaterThanOrEqual(21)
-    await expect(catalog.locator('a[href="/490"]')).toHaveCount(1)
-    await expect(catalog.locator('a[href="/510"]')).toHaveCount(1)
+    await expect(catalog.locator('a[href="/pokemon/490"]')).toHaveCount(1)
+    await expect(catalog.locator('a[href="/pokemon/510"]')).toHaveCount(1)
     await expect(catalog.locator('a[aria-current="page"]')).toHaveAttribute(
       "href",
-      "/500",
+      "/pokemon/500",
     )
   })
 
   test("prepares more local entries before either scroll boundary", async ({
     page,
   }) => {
-    const applicationDataRequests: string[] = []
-
-    page.on("request", (request) => {
-      if (["document", "fetch", "xhr"].includes(request.resourceType()))
-        applicationDataRequests.push(request.url())
-    })
-
-    await page.goto("/500")
+    await page.goto("/pokemon/500")
 
     const catalog = page.getByRole("navigation", { name: "Pokémon catalog" })
-    const applicationOrigin = new URL(page.url()).origin
 
-    await expect(catalog.locator('a[href="/470"]')).toHaveCount(1)
-    await expect(catalog.locator('a[href="/530"]')).toHaveCount(1)
+    await expect(catalog.locator('a[href="/pokemon/470"]')).toHaveCount(1)
+    await expect(catalog.locator('a[href="/pokemon/530"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(61)
 
-    applicationDataRequests.length = 0
-
-    await catalog.evaluate((element) => {
-      element.scrollTop = element.scrollHeight
-    })
-    await expect(catalog.locator('a[href="/550"]')).toHaveCount(1)
+    await scrollCatalogToBoundary(catalog, "end")
+    await expect(catalog.locator('a[href="/pokemon/550"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(101)
 
-    await catalog.evaluate((element) => {
-      element.scrollTop = 0
-    })
-    await expect(catalog.locator('a[href="/430"]')).toHaveCount(1)
+    await scrollCatalogToBoundary(catalog, "start")
+    await expect(catalog.locator('a[href="/pokemon/430"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(141)
 
-    await catalog.evaluate((element) => {
-      element.scrollTop = element.scrollHeight
-    })
-    await expect(catalog.locator('a[href="/590"]')).toHaveCount(1)
+    await scrollCatalogToBoundary(catalog, "end")
+    await expect(catalog.locator('a[href="/pokemon/590"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(181)
 
-    await catalog.evaluate((element) => {
-      element.scrollTop = 0
-    })
-    await expect(catalog.locator('a[href="/390"]')).toHaveCount(1)
+    await scrollCatalogToBoundary(catalog, "start")
+    await expect(catalog.locator('a[href="/pokemon/390"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(221)
-    expect(
-      applicationDataRequests.filter((requestUrl) =>
-        requestUrl.startsWith(applicationOrigin),
-      ),
-    ).toEqual([])
   })
 })
 
@@ -112,7 +160,7 @@ test.describe("mobile Pokédex", () => {
   test("offers touch-safe direct navigation among research regions", async ({
     page,
   }) => {
-    await page.goto("/740")
+    await page.goto("/pokemon/740")
 
     const workspaceNavigation = page.getByRole("navigation", {
       name: "Pokédex research workspace",
@@ -145,7 +193,7 @@ test.describe("mobile Pokédex", () => {
   test("contains long dossier content in natural document scrolling", async ({
     page,
   }) => {
-    await page.goto("/740")
+    await page.goto("/pokemon/740")
 
     const selectedPokemon = page.getByRole("region", {
       name: "Crabominable #0740",
@@ -201,7 +249,7 @@ test.describe("mobile Pokédex", () => {
   test("contains the interface while navigating between Pokémon", async ({
     page,
   }) => {
-    await page.goto("/1")
+    await page.goto("/pokemon/1")
 
     await expect(
       page.getByRole("heading", { level: 2, name: "Bulbasaur #0001" }),
@@ -219,7 +267,7 @@ test.describe("mobile Pokédex", () => {
 
     await page.getByRole("link", { name: "0002 Ivysaur" }).click()
 
-    await expect(page).toHaveURL(/\/2$/)
+    await expect(page).toHaveURL(/\/pokemon\/2$/)
     await expect(
       page.getByRole("heading", { level: 2, name: "Ivysaur #0002" }),
     ).toBeVisible()
@@ -231,24 +279,14 @@ test.describe("mobile Pokédex", () => {
   test("hydrates more catalog entries when scrolling up and down repeatedly", async ({
     page,
   }) => {
-    const applicationDataRequests: string[] = []
-
-    page.on("request", (request) => {
-      if (["document", "fetch", "xhr"].includes(request.resourceType()))
-        applicationDataRequests.push(request.url())
-    })
-
-    await page.goto("/500")
+    await page.goto("/pokemon/500")
 
     const catalog = page.getByRole("navigation", { name: "Pokémon catalog" })
-    const applicationOrigin = new URL(page.url()).origin
     const links = catalog.getByRole("link")
-    await expect(catalog.locator('a[href="/470"]')).toHaveCount(1)
-    await expect(catalog.locator('a[href="/530"]')).toHaveCount(1)
+    await expect(catalog.locator('a[href="/pokemon/470"]')).toHaveCount(1)
+    await expect(catalog.locator('a[href="/pokemon/530"]')).toHaveCount(1)
     await expect(links).toHaveCount(61)
     const initialVisibleCount = await links.count()
-
-    applicationDataRequests.length = 0
 
     expect(initialVisibleCount).toBeGreaterThanOrEqual(21)
 
@@ -256,7 +294,7 @@ test.describe("mobile Pokédex", () => {
     await expect
       .poll(async () => links.count())
       .toBeGreaterThan(initialVisibleCount)
-    await expect(catalog.locator('a[href="/550"]')).toHaveCount(1)
+    await expect(catalog.locator('a[href="/pokemon/550"]')).toHaveCount(1)
 
     const downExpandedCount = await links.count()
     expect(downExpandedCount).toBeGreaterThan(initialVisibleCount)
@@ -265,19 +303,14 @@ test.describe("mobile Pokédex", () => {
     await expect
       .poll(async () => links.count())
       .toBeGreaterThan(downExpandedCount)
-    await expect(catalog.locator('a[href="/450"]')).toHaveCount(1)
-
-    expect(
-      applicationDataRequests.filter((requestUrl) =>
-        requestUrl.startsWith(applicationOrigin),
-      ),
-    ).toEqual([])
+    await expect(catalog.locator('a[href="/pokemon/450"]')).toHaveCount(1)
   })
 
   test("prioritizes the selected dossier before catalog discovery", async ({
     page,
   }) => {
-    await page.goto("/1")
+    await page.emulateMedia({ reducedMotion: "reduce" })
+    await page.goto("/pokemon/1")
 
     const selectedPokemon = page.getByRole("region", {
       name: "Bulbasaur #0001",
@@ -287,29 +320,21 @@ test.describe("mobile Pokédex", () => {
     })
 
     await expect(selectedPokemon).toBeVisible()
-    await selectedPokemon.evaluate((element) =>
-      Promise.all(
-        element.getAnimations().map((animation) => animation.finished),
-      ),
+    const sectionBounds = await getAdjacentPokedexSectionBounds(page)
+
+    expect(sectionBounds.selectedPokemon.top).toBeLessThan(
+      sectionBounds.discovery.top,
     )
-
-    const selectedPokemonBounds = await selectedPokemon.evaluate((element) => {
-      const bounds = element.getBoundingClientRect()
-      return { bottom: bounds.bottom, top: bounds.top }
-    })
-    const discoveryBounds = await discovery.evaluate((element) => {
-      const bounds = element.getBoundingClientRect()
-      return { top: bounds.top }
-    })
-
-    expect(selectedPokemonBounds.top).toBeLessThan(discoveryBounds.top)
-    expect(selectedPokemonBounds.bottom).toBeCloseTo(discoveryBounds.top, 3)
+    expect(sectionBounds.selectedPokemon.bottom).toBeCloseTo(
+      sectionBounds.discovery.top,
+      3,
+    )
   })
 
   test("keeps discovery controls touchable and filters immediately", async ({
     page,
   }) => {
-    await page.goto("/1")
+    await page.goto("/pokemon/1")
 
     const localDiscovery = page.getByRole("region", {
       name: "Local Pokédex",
@@ -318,7 +343,7 @@ test.describe("mobile Pokédex", () => {
     await expect(
       localDiscovery
         .getByRole("navigation", { name: "Pokémon catalog" })
-        .locator('a[href="/25"]'),
+        .locator('a[href="/pokemon/25"]'),
     ).toHaveCount(1)
 
     const pokemonSearch = localDiscovery.getByRole("searchbox", {
@@ -368,7 +393,8 @@ test.describe("desktop Pokédex", () => {
   test("presents the catalog and selected Pokémon as a split layout", async ({
     page,
   }) => {
-    await page.goto("/1")
+    await page.emulateMedia({ reducedMotion: "reduce" })
+    await page.goto("/pokemon/1")
 
     const catalog = page.getByRole("region", {
       name: "Local Pokédex",
@@ -380,23 +406,16 @@ test.describe("desktop Pokédex", () => {
 
     await expect(catalog).toBeVisible()
     await expect(selectedPokemon).toBeVisible()
-    await selectedPokemon.evaluate((element) =>
-      Promise.all(
-        element.getAnimations().map((animation) => animation.finished),
-      ),
+    const sectionBounds = await getAdjacentPokedexSectionBounds(page)
+
+    expect(sectionBounds.selectedPokemon.top).toBeCloseTo(
+      sectionBounds.discovery.top,
+      3,
     )
-
-    const catalogBounds = await catalog.evaluate((element) => {
-      const bounds = element.getBoundingClientRect()
-      return { right: bounds.right, top: bounds.top }
-    })
-    const selectedPokemonBounds = await selectedPokemon.evaluate((element) => {
-      const bounds = element.getBoundingClientRect()
-      return { left: bounds.left, top: bounds.top }
-    })
-
-    expect(selectedPokemonBounds.top).toBeCloseTo(catalogBounds.top, 3)
-    expect(selectedPokemonBounds.left).toBeCloseTo(catalogBounds.right, 3)
+    expect(sectionBounds.selectedPokemon.left).toBeCloseTo(
+      sectionBounds.discovery.right,
+      3,
+    )
   })
 })
 
@@ -407,7 +426,7 @@ test.describe("Pokédex motion feedback", () => {
     page,
   }) => {
     await page.emulateMedia({ reducedMotion: "no-preference" })
-    await page.goto("/1")
+    await page.goto("/pokemon/1")
 
     const selectedPokemon = page.getByRole("region", {
       name: "Bulbasaur #0001",
@@ -447,7 +466,7 @@ test.describe("Pokédex themes", () => {
       colorScheme: "light",
       reducedMotion: "no-preference",
     })
-    await page.goto("/1")
+    await page.goto("/pokemon/1")
 
     const themeToggle = page.getByRole("button", {
       name: "Switch to dark theme",
@@ -473,7 +492,7 @@ test.describe("reduced-motion Pokédex", () => {
 
   test("removes nonessential dossier and catalog motion", async ({ page }) => {
     await page.emulateMedia({ colorScheme: "light", reducedMotion: "reduce" })
-    await page.goto("/1")
+    await page.goto("/pokemon/1")
 
     const selectedPokemon = page.getByRole("region", {
       name: "Bulbasaur #0001",

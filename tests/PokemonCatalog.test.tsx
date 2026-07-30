@@ -21,14 +21,14 @@ describe("PokemonCatalog", () => {
     })
 
     expect(currentPokemonLink).toHaveAttribute("aria-current", "page")
-    expect(currentPokemonLink).toHaveAttribute("href", "/1")
+    expect(currentPokemonLink).toHaveAttribute("href", "/pokemon/1")
     expect(
       within(pokemonNavigation).getByRole("link", { name: "0002 Ivysaur" }),
-    ).toHaveAttribute("href", "/2")
+    ).toHaveAttribute("href", "/pokemon/2")
     expect(within(pokemonNavigation).getAllByRole("link")).toHaveLength(21)
     expect(
       within(pokemonNavigation).getByRole("link", { name: "0021 Spearow" }),
-    ).toHaveAttribute("href", "/21")
+    ).toHaveAttribute("href", "/pokemon/21")
     expect(
       within(pokemonNavigation).queryByRole("link", {
         name: "1025 Pecharunt",
@@ -44,8 +44,16 @@ describe("PokemonCatalog", () => {
   })
 
   it.each([
-    { currentPokemonId: 500, firstHref: "/490", lastHref: "/510" },
-    { currentPokemonId: 1_025, firstHref: "/1005", lastHref: "/1025" },
+    {
+      currentPokemonId: 500,
+      firstHref: "/pokemon/490",
+      lastHref: "/pokemon/510",
+    },
+    {
+      currentPokemonId: 1_025,
+      firstHref: "/pokemon/1005",
+      lastHref: "/pokemon/1025",
+    },
   ])(
     "keeps route $currentPokemonId inside a stable contextual window",
     ({ currentPokemonId, firstHref, lastHref }) => {
@@ -59,7 +67,7 @@ describe("PokemonCatalog", () => {
       expect(pokemonLinks.at(-1)).toHaveAttribute("href", lastHref)
       expect(
         within(pokemonNavigation).getByRole("link", { current: "page" }),
-      ).toHaveAttribute("href", `/${currentPokemonId}`)
+      ).toHaveAttribute("href", `/pokemon/${currentPokemonId}`)
     },
   )
 
@@ -129,7 +137,7 @@ describe("PokemonCatalog", () => {
         .getAllByRole("link")
         .slice(0, 3)
         .map((link) => link.getAttribute("href")),
-    ).toEqual(["/493", "/890", "/150"])
+    ).toEqual(["/pokemon/493", "/pokemon/890", "/pokemon/150"])
 
     fireEvent.change(pokemonSearch, { target: { value: "MissingNo" } })
     fireEvent.change(pokemonType, { target: { value: "Fire" } })
@@ -150,7 +158,7 @@ describe("PokemonCatalog", () => {
     )
 
     expect(resetPokemonLinks).toHaveLength(21)
-    expect(resetPokemonLinks.at(0)).toHaveAttribute("href", "/1")
+    expect(resetPokemonLinks.at(0)).toHaveAttribute("href", "/pokemon/1")
     expect(screen.getByRole("status")).toHaveTextContent(
       "21 nearby initially · 1,025 ready locally.",
     )

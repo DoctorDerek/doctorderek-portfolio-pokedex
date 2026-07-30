@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest"
+import { createPokemonArtworkUrl } from "@/data/pokemonArtwork"
 import {
   getPokedexStaticParameters,
   MAX_POKEMON_NUMBER,
@@ -30,6 +31,19 @@ describe("static Pokédex data", () => {
     expect(staticParameters.at(-1)).toEqual({ id: "1025" })
     expect(new Set(staticParameters.map(({ id }) => id)).size).toBe(
       MAX_POKEMON_NUMBER,
+    )
+  })
+
+  it("keeps derived artwork URLs out of the canonical data snapshot", () => {
+    for (const pokemon of POKEMON_CATALOG) {
+      expect(pokemon).not.toHaveProperty("imageUrl")
+      expect(getPokemonDossier({ id: String(pokemon.id) })).not.toHaveProperty(
+        "imageUrl",
+      )
+    }
+
+    expect(createPokemonArtworkUrl(1)).toBe(
+      "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
     )
   })
 

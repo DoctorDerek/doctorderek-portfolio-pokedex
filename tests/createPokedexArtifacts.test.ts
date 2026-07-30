@@ -73,8 +73,6 @@ describe("Pokédex data artifact generation", () => {
       baseStatTotal: 318,
       generation: "Generation IX",
       id: 1,
-      imageUrl:
-        "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
       name: "Pokémon 1",
       number: "0001",
       slug: "pokemon-1",

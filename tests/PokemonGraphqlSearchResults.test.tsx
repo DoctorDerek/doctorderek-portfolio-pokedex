@@ -21,7 +21,7 @@ describe("PokemonGraphqlSearchResults", () => {
 
     expect(screen.getByRole("link", { name: /Mr Mime/ })).toHaveAttribute(
       "href",
-      "/122",
+      "/pokemon/122",
     )
     expect(screen.getByText("—")).toBeVisible()
     expect(screen.getByText("Unknown")).toBeVisible()

@@ -1,10 +1,21 @@
 import type { NextConfig } from "next"
+import { POKEMON_ARTWORK_REPOSITORY_PATH } from "./data/pokemonArtwork.ts"
+import { POKEMON_DOSSIER_ROUTE_PREFIX } from "./data/pokemonRoutes.ts"
 
-const POKEMON_ARTWORK_IMAGE_SIZES = [32, 64, 96, 128]
-const POKEMON_ARTWORK_MINIMUM_CACHE_TTL_SECONDS = 2_678_400
+const POKEMON_ARTWORK_IMAGE_SIZES = [96]
+const POKEMON_ARTWORK_MINIMUM_CACHE_TTL_SECONDS = 31_536_000
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: "/:id(\\d+)",
+        destination: `${POKEMON_DOSSIER_ROUTE_PREFIX}/:id`,
+        permanent: true,
+      },
+    ]
+  },
   images: {
     deviceSizes: [192],
     formats: ["image/webp"],
@@ -17,8 +28,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "raw.githubusercontent.com",
         port: "",
-        pathname:
-          "/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/**",
+        pathname: `${POKEMON_ARTWORK_REPOSITORY_PATH}/*.png`,
         search: "",
       },
     ],

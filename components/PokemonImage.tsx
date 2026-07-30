@@ -1,13 +1,14 @@
 import Image from "next/image"
+import { createPokemonArtworkUrl } from "@/data/pokemonArtwork"
 import classNames from "@/utils/classNames"
 
 export default function PokemonImage({
   size,
-  imageUrl,
+  pokemonId,
   altText,
 }: {
   size: "h-8 w-8" | "h-16 w-16"
-  imageUrl: string
+  pokemonId: number
   altText: string
 }) {
   return (
@@ -20,7 +21,7 @@ export default function PokemonImage({
       )}
     >
       <Image
-        src={imageUrl}
+        src={createPokemonArtworkUrl(pokemonId)}
         fill
         sizes={size === "h-16 w-16" ? "64px" : "32px"}
         alt={altText}

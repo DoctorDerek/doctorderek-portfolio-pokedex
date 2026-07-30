@@ -8,8 +8,6 @@ import type {
 export const EXPECTED_POKEMON_COUNT = 1_025
 
 const POKEMON_NUMBER_WIDTH = String(EXPECTED_POKEMON_COUNT).length
-const OFFICIAL_ARTWORK_BASE_URL =
-  "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork"
 
 const REQUIRED_BASE_STAT_NAMES = [
   "hp",
@@ -43,20 +41,10 @@ export function createPokedexArtifacts(data: PokedexSnapshotQuery) {
     throw new Error("PokéAPI did not return one continuous national Pokédex.")
 
   const catalog: PokemonCatalogEntry[] = dossiers.map(
-    ({
+    ({ baseStatTotal, generation, id, name, number, slug, types }) => ({
       baseStatTotal,
       generation,
       id,
-      imageUrl,
-      name,
-      number,
-      slug,
-      types,
-    }) => ({
-      baseStatTotal,
-      generation,
-      id,
-      imageUrl,
       name,
       number,
       slug,
@@ -148,7 +136,6 @@ function createPokemonDossier(
     habitat: formatOptionalIdentifier(species.pokemonhabitat?.name),
     heightInMeters: pokemon.height === null ? null : pokemon.height / 10,
     id: speciesId,
-    imageUrl: `${OFFICIAL_ARTWORK_BASE_URL}/${speciesId}.png`,
     isLegendary: species.is_legendary,
     isMythical: species.is_mythical,
     name: englishSpeciesName.name,

@@ -1,6 +1,7 @@
 import { render, screen, within } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 import PokemonDetailsPanel from "@/components/PokemonDetailsPanel"
+import { createPokemonArtworkUrl } from "@/data/pokemonArtwork"
 import { BULBASAUR_DOSSIER_FIXTURE } from "@/tests/fixtures/pokedex"
 
 describe("PokemonDetailsPanel", () => {
@@ -27,6 +28,16 @@ describe("PokemonDetailsPanel", () => {
     expect(
       within(selectedPokemonRegion).getByText("Overgrow, Chlorophyll (Hidden)"),
     ).toBeVisible()
+    expect(
+      within(selectedPokemonRegion).getByRole("img", { name: "Bulbasaur" }),
+    ).toHaveAttribute(
+      "src",
+      expect.stringContaining(
+        encodeURIComponent(
+          createPokemonArtworkUrl(BULBASAUR_DOSSIER_FIXTURE.id),
+        ),
+      ),
+    )
     expect(within(selectedPokemonRegion).getByText("HP")).toBeVisible()
     expect(within(selectedPokemonRegion).getByText("Attack")).toBeVisible()
     expect(within(selectedPokemonRegion).getByText("Defense")).toBeVisible()

@@ -1,5 +1,6 @@
 import Link from "next/link"
 import PokemonImage from "@/components/PokemonImage"
+import { getPokemonDossierRoute } from "@/data/pokemonRoutes"
 import type { PokemonCatalogEntry } from "@/types/pokemon"
 import classNames from "@/utils/classNames"
 
@@ -18,7 +19,7 @@ export default function PokemonCatalogEntries({
         return (
           <li key={pokemon.id} data-pokemon-id={pokemon.id}>
             <Link
-              href={`/${pokemon.id}`}
+              href={getPokemonDossierRoute(pokemon.id)}
               prefetch={false}
               aria-current={isCurrentPokemon ? "page" : undefined}
               className={classNames(
@@ -28,11 +29,7 @@ export default function PokemonCatalogEntries({
                   : "bg-panel hover:border-accent hover:bg-panel-strong border-transparent",
               )}
             >
-              <PokemonImage
-                size="h-8 w-8"
-                imageUrl={pokemon.imageUrl}
-                altText=""
-              />
+              <PokemonImage size="h-8 w-8" pokemonId={pokemon.id} altText="" />
               <span className="text-brand shrink-0 font-bold">
                 {pokemon.number}
               </span>

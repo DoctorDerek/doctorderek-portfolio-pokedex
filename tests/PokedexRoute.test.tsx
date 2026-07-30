@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest"
 import PokedexPage, {
   dynamicParams,
   generateStaticParams,
-} from "@/app/[id]/page"
+} from "@/app/pokemon/[id]/page"
 import ApplicationProviders from "@/app/providers"
 import { MAX_POKEMON_NUMBER } from "@/data/pokemonCatalog"
 

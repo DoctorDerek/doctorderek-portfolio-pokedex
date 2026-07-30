@@ -5,18 +5,28 @@ describe("Next image configuration", () => {
   it("limits Vercel transformations to the rendered Pokémon artwork sizes", () => {
     expect(nextConfig.images?.deviceSizes).toEqual([192])
     expect(nextConfig.images?.formats).toEqual(["image/webp"])
-    expect(nextConfig.images?.imageSizes).toEqual([32, 64, 96, 128])
+    expect(nextConfig.images?.imageSizes).toEqual([96])
     expect(nextConfig.images?.localPatterns).toEqual([])
-    expect(nextConfig.images?.minimumCacheTTL).toBe(2_678_400)
+    expect(nextConfig.images?.minimumCacheTTL).toBe(31_536_000)
     expect(nextConfig.images?.qualities).toEqual([75])
     expect(nextConfig.images?.remotePatterns).toEqual([
       {
         hostname: "raw.githubusercontent.com",
         port: "",
         pathname:
-          "/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/**",
+          "/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/*.png",
         protocol: "https",
         search: "",
+      },
+    ])
+  })
+
+  it("preserves legacy numeric dossier paths as permanent redirects", async () => {
+    await expect(nextConfig.redirects?.()).resolves.toEqual([
+      {
+        destination: "/pokemon/:id",
+        permanent: true,
+        source: "/:id(\\d+)",
       },
     ])
   })
