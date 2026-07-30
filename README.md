@@ -56,12 +56,6 @@ pnpm audit --prod
 
 Vitest, Testing Library, and MSW cover the TanStack Query provider, generated GraphQL success and failure behavior, build-time query variables, catalog selection and progressive range state, and the selected Pokémon statistics without contacting the live API. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, motion preferences, and the desktop split layout without relying on test-only selectors.
 
-## Roadmap
-
-- Keep the generated 1,025-dossier snapshot deterministic and healthy
-- Deepen the parody-forward visual design and dossier copy
-- Expand Testing Trophy coverage and measured Codecov reporting around future user journeys
-
 ## License and Parody Notice
 
 The source code is provided under the all-rights-reserved terms in [LICENSE.txt](LICENSE.txt).
