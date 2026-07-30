@@ -46,6 +46,23 @@ async function resetApplicationDataRequestsAfterNetworkSettles(
   applicationDataRequests.length = 0
 }
 
+async function scrollCatalogToBoundary(
+  catalog: Locator,
+  boundary: "start" | "end",
+) {
+  await catalog.evaluate(
+    (element, selectedBoundary) =>
+      new Promise<void>((resolve) => {
+        window.requestAnimationFrame(() => {
+          element.scrollTop =
+            selectedBoundary === "start" ? 0 : element.scrollHeight
+          resolve()
+        })
+      }),
+    boundary,
+  )
+}
+
 test.describe("App Router Pokédex entry points", () => {
   test.use({ viewport: DESKTOP_VIEWPORT })
 
@@ -140,27 +157,19 @@ test.describe("App Router Pokédex entry points", () => {
       applicationDataRequests,
     )
 
-    await catalog.evaluate((element) => {
-      element.scrollTop = element.scrollHeight
-    })
+    await scrollCatalogToBoundary(catalog, "end")
     await expect(catalog.locator('a[href="/pokemon/550"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(101)
 
-    await catalog.evaluate((element) => {
-      element.scrollTop = 0
-    })
+    await scrollCatalogToBoundary(catalog, "start")
     await expect(catalog.locator('a[href="/pokemon/430"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(141)
 
-    await catalog.evaluate((element) => {
-      element.scrollTop = element.scrollHeight
-    })
+    await scrollCatalogToBoundary(catalog, "end")
     await expect(catalog.locator('a[href="/pokemon/590"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(181)
 
-    await catalog.evaluate((element) => {
-      element.scrollTop = 0
-    })
+    await scrollCatalogToBoundary(catalog, "start")
     await expect(catalog.locator('a[href="/pokemon/390"]')).toHaveCount(1)
     await expect(catalog.getByRole("link")).toHaveCount(221)
     expect(
