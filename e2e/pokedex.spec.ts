@@ -190,6 +190,36 @@ test.describe("mobile Pokédex", () => {
     }
   })
 
+  test("keeps the hydrated theme control within its reserved height", async ({
+    page,
+  }) => {
+    await page.emulateMedia({ colorScheme: "light" })
+    await page.goto("/pokemon/1")
+
+    const themeToggle = page.getByRole("button", {
+      name: "Switch to dark theme",
+    })
+
+    await expect(themeToggle).toBeVisible()
+
+    const themeControlGeometry = await themeToggle.evaluate((themeControl) => {
+      const themeControlSlot = themeControl.parentElement
+
+      if (!themeControlSlot)
+        throw new Error("The theme control layout slot is unavailable.")
+
+      return {
+        controlHeight: themeControl.getBoundingClientRect().height,
+        slotHeight: themeControlSlot.getBoundingClientRect().height,
+      }
+    })
+
+    expect(themeControlGeometry.controlHeight).toBeGreaterThan(0)
+    expect(themeControlGeometry.slotHeight).toBe(
+      themeControlGeometry.controlHeight,
+    )
+  })
+
   test("contains long dossier content in natural document scrolling", async ({
     page,
   }) => {
