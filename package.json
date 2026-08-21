@@ -7,6 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
+    "lighthouse": "lhci autorun",
+    "lighthouse:prepare": "node scripts/runTypeScript.mjs scripts/lighthouse/prepareLighthouseReports.cli.ts",
     "format": "prettier --write .",
     "test": "vitest run --passWithNoTests",
     "test:coverage": "vitest run --coverage --passWithNoTests",
