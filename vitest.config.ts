@@ -18,9 +18,10 @@ export default defineConfig({
         "graphql/**/*.ts",
         "hooks/**/*.ts",
         "next.config.ts",
-        "scripts/**/*.mts",
+        "scripts/**/*.{mts,ts}",
         "utils/**/*.ts",
       ],
+      exclude: ["scripts/**/*.cli.ts"],
       thresholds: {
         100: true,
         perFile: true,

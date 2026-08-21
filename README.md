@@ -29,6 +29,12 @@ An unofficial, non-commercial parody and GraphQL portfolio demo that turns a 1,0
 - Progressive catalog expansion reveals local rows without visible pagination. GraphQL research runs only after an explicit submission, caps responses at 100 entries, and reuses identical TanStack Query results for 30 minutes.
 - The image pipeline accepts one canonical artwork path, emits only 96 px and 192 px WebP candidates at quality 75, and gives each transformation a one-year cache lifetime.
 
+## Mobile Web Lighthouse Measurements
+
+Latest successful automated Lighthouse scores for the canonical production website, measured with Lighthouse’s standard mobile emulation. The badges and linked HTML report come from the audit with the median performance score among five production runs.
+
+[![Mobile Web Lighthouse Performance](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdoctorderek.github.io%2Fdoctorderek-portfolio-pokedex%2Flighthouse-results.json&query=%24.performance&label=performance&suffix=%2F100&logo=lighthouse&logoColor=white&color=informational)](https://doctorderek.github.io/doctorderek-portfolio-pokedex/) [![Mobile Web Lighthouse Accessibility](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdoctorderek.github.io%2Fdoctorderek-portfolio-pokedex%2Flighthouse-results.json&query=%24.accessibility&label=accessibility&suffix=%2F100&logo=lighthouse&logoColor=white&color=informational)](https://doctorderek.github.io/doctorderek-portfolio-pokedex/) [![Mobile Web Lighthouse Best Practices](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdoctorderek.github.io%2Fdoctorderek-portfolio-pokedex%2Flighthouse-results.json&query=%24.bestPractices&label=best%20practices&suffix=%2F100&logo=lighthouse&logoColor=white&color=informational)](https://doctorderek.github.io/doctorderek-portfolio-pokedex/) [![Mobile Web Lighthouse SEO](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdoctorderek.github.io%2Fdoctorderek-portfolio-pokedex%2Flighthouse-results.json&query=%24.seo&label=SEO&suffix=%2F100&logo=lighthouse&logoColor=white&color=informational)](https://doctorderek.github.io/doctorderek-portfolio-pokedex/)
+
 ## Local Development
 
 Use [fnm](https://github.com/Schniz/fnm) for the Node version declared in `.node-version` and [pnpm](https://pnpm.io/) for dependency management.
