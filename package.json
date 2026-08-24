@@ -13,6 +13,7 @@
     "format": "prettier --write .",
     "test": "vitest run --passWithNoTests",
     "test:coverage": "vitest run --coverage --passWithNoTests",
+    "test:xstate-diff": "vitest run --coverage --config vitest.xstate.config.ts",
     "generateData": "node scripts/generatePokedexData.mts",
     "generateTypes": "graphql-codegen"
   },
