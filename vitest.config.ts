@@ -1,6 +1,6 @@
 import path from "path"
 import react from "@vitejs/plugin-react"
-import { defineConfig } from "vitest/config"
+import { configDefaults, defineConfig } from "vitest/config"
 
 export default defineConfig({
   plugins: [react()],
@@ -21,13 +21,17 @@ export default defineConfig({
         "scripts/**/*.{mts,ts}",
         "utils/**/*.ts",
       ],
-      exclude: ["scripts/**/*.cli.ts"],
+      exclude: ["scripts/**/*.cli.ts", "scripts/xstate-diff/**"],
       thresholds: {
         100: true,
         perFile: true,
       },
     },
     environment: "happy-dom",
+    exclude: [
+      ...configDefaults.exclude,
+      "tests/scripts/xstate-diff/**/*.test.ts",
+    ],
     include: ["**/*.test.tsx", "**/*.test.ts"],
     setupFiles: ["./vitest.setup.ts"],
   },
