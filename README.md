@@ -1,6 +1,6 @@
 # Pokédex
 
-[![Production](https://img.shields.io/website?url=https%3A%2F%2Fportfolio-pokedex.doctorderek.com%2F&up_message=live&down_message=offline&label=production&logo=vercel&logoColor=white)](https://portfolio-pokedex.doctorderek.com/) [![Codecov](https://codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex/graph/badge.svg)](https://app.codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex) [![Test and lint](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/test-and-lint.yml/badge.svg)](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/test-and-lint.yml) [![Playwright](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/playwright.yml/badge.svg)](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/playwright.yml)
+[![Production](https://img.shields.io/website?url=https%3A%2F%2Fportfolio-pokedex.doctorderek.com%2F&up_message=live&down_message=offline&label=production&logo=vercel&logoColor=white)](https://portfolio-pokedex.doctorderek.com/) [![Codecov](https://codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex/graph/badge.svg)](https://app.codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex) [![ESLint, Vitest, and XState](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/eslint-vitest-xstate.yml/badge.svg)](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/eslint-vitest-xstate.yml) [![Playwright](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/playwright.yml/badge.svg)](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/playwright.yml)
 
 An unofficial, non-commercial parody and GraphQL portfolio demo that turns a 1,025-entry Pokémon snapshot into a suspiciously bureaucratic little field guide. The interface presents a touch-friendly mobile dossier and expands into the project’s compact catalog-and-details layout on larger screens.
 
@@ -55,12 +55,13 @@ pnpm exec tsc --noEmit
 pnpm lint
 pnpm test
 pnpm test:coverage
+pnpm test:xstate-diff
 pnpm exec playwright test
 pnpm build
 pnpm audit --prod
 ```
 
-Vitest, Testing Library, and MSW cover the TanStack Query provider, generated GraphQL success and failure behavior, build-time query variables, catalog selection and progressive range state, and the selected Pokémon statistics without contacting the live API. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, motion preferences, and the desktop split layout without relying on test-only selectors.
+Vitest, Testing Library, and MSW cover the TanStack Query provider, generated GraphQL success and failure behavior, build-time query variables, catalog selection and progressive range state, and the selected Pokémon statistics without contacting the live API. Pull requests also publish an advisory static XState v5 state-machine diff visualization. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, motion preferences, and the desktop split layout without relying on test-only selectors.
 
 ## License and Parody Notice
 
