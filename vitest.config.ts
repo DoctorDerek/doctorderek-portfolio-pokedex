@@ -11,6 +11,9 @@ export default defineConfig({
   },
   test: {
     coverage: {
+      reportOnFailure: true,
+      reportsDirectory: "coverage/vitest",
+      reporter: ["text", "html", "clover", "json", "lcovonly"],
       include: [
         "app/**/*.tsx",
         "components/**/*.tsx",
