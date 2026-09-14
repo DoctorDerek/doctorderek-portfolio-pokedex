@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          ref: ${{ github.event.deployment.sha }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@a3252b78c470c02df07e9d59298aecedc3ccdd6d # v3
@@ -57,7 +59,6 @@ jobs:
 
       - name: Run Playwright Tests and Capture Summary
         id: playwright
-        if: always()
         run: |
           set +e
           pnpm exec playwright test --pass-with-no-tests 2>&1 | tee "$RUNNER_TEMP/playwright-output.txt"
@@ -66,20 +67,73 @@ jobs:
 
           echo "PLAYWRIGHT_EXIT_CODE=$PLAYWRIGHT_EXIT_CODE" >> "$GITHUB_ENV"
           echo "PLAYWRIGHT_OUTPUT_FILE=$RUNNER_TEMP/playwright-output.txt" >> "$GITHUB_ENV"
+          exit "$PLAYWRIGHT_EXIT_CODE"
         env:
           PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
           PLAYWRIGHT_VERCEL_TRUSTED_OIDC_TOKEN: ${{ steps.github-oidc-token.outputs.token }}
 
+      - name: Remove Preview Credentials from Test Evidence
+        id: sanitize-evidence
+        if: ${{ !cancelled() && steps.playwright.outcome != 'skipped' }}
+        run: |
+          python3 -B -m unittest discover -s tests -p 'test_sanitizePlaywrightEvidence.py'
+          python3 -B scripts/sanitizePlaywrightEvidence.py
+        env:
+          PLAYWRIGHT_VERCEL_TRUSTED_OIDC_TOKEN: ${{ steps.github-oidc-token.outputs.token }}
+
+      - name: Inspect Playwright Evidence
+        if: ${{ !cancelled() }}
+        uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553 # v9
+        with:
+          retries: 3
+          script: |
+            const fs = require('fs');
+            const { execFileSync } = require('child_process');
+            const commit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+            const expectedCommit = context.payload.deployment.sha;
+            let evidence;
+            try {
+              const results = JSON.parse(fs.readFileSync('test-results/results.json', 'utf8'));
+              const projects = results.config.projects.map(project => project.name);
+              const missingProjects = ['chromium', 'firefox', 'webkit'].filter(project => !projects.includes(project));
+              const executedProjects = new Set();
+              const visit = suites => suites.forEach(suite => {
+                suite.specs.forEach(spec => spec.tests.forEach(test => {
+                  if (test.results.some(result => result.status !== 'skipped')) executedProjects.add(test.projectName);
+                }));
+                visit(suite.suites ?? []);
+              });
+              visit(results.suites);
+              const unexecutedProjects = projects.filter(project => !executedProjects.has(project));
+              const htmlAvailable = fs.existsSync('playwright-report/index.html');
+              evidence = { commit, expectedCommit, projects, missingProjects, unexecutedProjects, htmlAvailable, stats: results.stats, runnerExitCode: process.env.PLAYWRIGHT_EXIT_CODE, browserCodeCoverage: 'not collected' };
+              if (commit !== expectedCommit || missingProjects.length || unexecutedProjects.length || !htmlAvailable) {
+                core.warning('Playwright evidence is incomplete; inspect evidence.json for missing contributions.');
+              }
+            } catch {
+              evidence = { commit, expectedCommit, status: 'unavailable', browserCodeCoverage: 'not collected' };
+              core.warning('Playwright results are unavailable; preserving any partial reports.');
+            }
+            fs.mkdirSync('test-results', { recursive: true });
+            fs.writeFileSync('test-results/evidence.json', JSON.stringify(evidence, null, 2));
+            await core.summary.addHeading('Playwright test evidence')
+              .addCodeBlock(JSON.stringify(evidence, null, 2), 'json')
+              .addRaw('\nHTML, JSON, and traces describe test execution, not application code coverage.\n')
+              .write();
+
       - name: Upload Playwright Report
-        if: always()
+        if: ${{ !cancelled() && steps.sanitize-evidence.outcome == 'success' && hashFiles('playwright-report/**', 'test-results/**') != '' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: playwright-report
-          path: playwright-report/
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: warn
           retention-days: 14
 
       - name: Post Playwright PR Comment
-        if: always()
+        if: ${{ !cancelled() && (steps.playwright.outcome == 'skipped' || steps.sanitize-evidence.outcome == 'success') }}
         continue-on-error: true
         uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553 # v9
         with:
@@ -165,7 +219,7 @@ jobs:
             }
 
       - name: Enforce Playwright Result
-        if: always()
+        if: ${{ !cancelled() }}
         run: |
           if ! [[ "$PLAYWRIGHT_EXIT_CODE" =~ ^[0-9]+$ ]] || [ "$PLAYWRIGHT_EXIT_CODE" -ne 0 ]; then
             echo "Playwright tests failed or the runner could not complete."
