@@ -7,13 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "lighthouse": "node scripts/runTypeScript.mjs scripts/lighthouse/collectLighthouseReports.cli.ts",
-    "lighthouse:prepare": "node scripts/runTypeScript.mjs scripts/lighthouse/prepareLighthouseReports.cli.ts",
-    "xstate:diff": "node scripts/runTypeScript.mjs scripts/xstate-diff/xstateDiff.cli.ts",
     "format": "prettier --write .",
     "test": "vitest run --passWithNoTests",
     "test:coverage": "vitest run --coverage --passWithNoTests",
-    "test:xstate-diff": "vitest run --coverage --config vitest.xstate.config.ts",
     "generateData": "node scripts/generatePokedexData.mts",
     "generateTypes": "graphql-codegen"
   },

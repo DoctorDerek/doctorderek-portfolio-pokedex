@@ -55,7 +55,6 @@ pnpm exec tsc --noEmit
 pnpm lint
 pnpm test
 pnpm test:coverage
-pnpm test:xstate-diff
 pnpm exec playwright test
 pnpm build
 pnpm audit --prod
