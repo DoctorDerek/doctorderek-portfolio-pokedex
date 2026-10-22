@@ -62,6 +62,14 @@ pnpm audit --prod
 
 Vitest, Testing Library, and MSW cover the TanStack Query provider, generated GraphQL success and failure behavior, build-time query variables, catalog selection and progressive range state, and the selected Pokémon statistics without contacting the live API. Pull requests also publish an advisory static XState v5 state-machine diff visualization. Playwright exercises mobile containment, touch-target sizing, route navigation, selected-state semantics, motion preferences, and the desktop split layout without relying on test-only selectors.
 
+### TypeScript Lint Coverage
+
+`pnpm lint` scans the repository with the Next.js base rules and its TypeScript preset scoped to `.ts`, `.tsx`, `.mts`, and `.cts` files. Existing build outputs and private files remain excluded through `.gitignore`. Ordinary lint findings remain advisory; TypeScript checking and tests remain separate checks.
+
+The shared [DoctorDerekCICD quality workflow](https://github.com/DoctorDerek/DoctorDerekCICD/blob/28018031ea1409487e9919b0c62dd58602a3e649/.github/workflows/eslint-vitest-xstate.yml) also checks that every non-ignored, Git-tracked TypeScript file has TypeScript-specific lint rules enabled. That guard prevents silently missing lint coverage; it does not replace type checking or enable type-aware lint rules. Pokédex owns its rules and exceptions in `eslint.config.ts`, not inline suppressions or copied CI scripts.
+
+The sole rule exception is `@typescript-eslint/no-explicit-any` in `graphql/pokemonSearch.generated.ts`: GraphQL Code Generator’s `TypedDocumentString` template emits two open-ended metadata types. The generated file remains linted, all other rules stay enabled, and the exception does not extend to other GraphQL or hand-written code. Change the generator rather than manually editing its output if that metadata contract changes. The configuration integration tests exercise real ESLint diagnostics, including this exception’s boundaries, advisory severity, React Hooks rules, and JavaScript/private-file exclusions.
+
 ## License and Parody Notice
 
 The source code is provided under the all-rights-reserved terms in [LICENSE.txt](LICENSE.txt).

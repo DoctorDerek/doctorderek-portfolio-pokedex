@@ -345,9 +345,6 @@ test.describe("mobile Pokédex", () => {
     const selectedPokemon = page.getByRole("region", {
       name: "Bulbasaur #0001",
     })
-    const discovery = page.getByRole("region", {
-      name: "Local Pokédex",
-    })
 
     await expect(selectedPokemon).toBeVisible()
     const sectionBounds = await getAdjacentPokedexSectionBounds(page)
