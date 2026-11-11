@@ -47,7 +47,7 @@
     "eslint-config-prettier": "^10",
     "eslint-plugin-only-warn": "^1",
     "graphql": "^16",
-    "happy-dom": "^20",
+    "happy-dom": "^21",
     "jiti": "^2",
     "lighthouse": "^13",
     "msw": "^2",
