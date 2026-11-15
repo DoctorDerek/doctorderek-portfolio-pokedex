@@ -417,6 +417,44 @@ test.describe("mobile Pokédex", () => {
 test.describe("desktop Pokédex", () => {
   test.use({ viewport: DESKTOP_VIEWPORT })
 
+  for (const width of [1280, 1440]) {
+    test(`reaches the complete dossier by keyboard at ${width}px`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width, height: 900 })
+      await page.emulateMedia({ reducedMotion: "reduce" })
+      await page.goto("/pokemon/740")
+      await expect(
+        page.getByRole("button", { name: "Switch to dark theme" }),
+      ).toBeVisible()
+      const dossier = page.getByRole("region", { name: "Crabominable #0740" })
+      await expect(dossier).toHaveCSS("overflow-y", "auto")
+      expect(
+        await dossier.evaluate((element) => element.scrollHeight),
+      ).toBeGreaterThan(
+        await dossier.evaluate((element) => element.clientHeight),
+      )
+      await dossier.focus()
+      await expect(dossier).toBeFocused()
+      await page.keyboard.press("End")
+      await expect(
+        dossier.getByTitle("The abilities of this Pokémon", { exact: true }),
+      ).toBeInViewport({ ratio: 1 })
+      await expect(
+        dossier.getByTitle("The base experience awarded by this Pokémon", {
+          exact: true,
+        }),
+      ).toBeInViewport({ ratio: 1 })
+      await page.keyboard.press("Home")
+      await expect
+        .poll(() => dossier.evaluate((element) => element.scrollTop))
+        .toBe(0)
+      await expect(dossier.getByRole("heading", { level: 2 })).toBeInViewport({
+        ratio: 1,
+      })
+    })
+  }
+
   test("presents the catalog and selected Pokémon as a split layout", async ({
     page,
   }) => {
@@ -445,6 +483,46 @@ test.describe("desktop Pokédex", () => {
     )
   })
 })
+
+for (const width of [320, 390]) {
+  test(`keeps enlarged dossier text in natural mobile scrolling at ${width}px`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height: 844 })
+    await page.emulateMedia({ reducedMotion: "reduce" })
+    await page.goto("/pokemon/740")
+    await page.evaluate(() => {
+      document.documentElement.style.fontSize = "200%"
+    })
+    const dossier = page.getByRole("region", { name: "Crabominable #0740" })
+    await expect(dossier).toHaveCSS("overflow-y", "visible")
+    const bounds = await dossier.evaluate((element) => ({
+      left: element.getBoundingClientRect().left,
+      right: element.getBoundingClientRect().right,
+      width: element.clientWidth,
+      scrollWidth: element.scrollWidth,
+    }))
+    expect(bounds.left).toBeGreaterThanOrEqual(0)
+    expect(bounds.right).toBeLessThanOrEqual(width)
+    expect(bounds.scrollWidth).toBeLessThanOrEqual(bounds.width)
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth),
+    ).toBeLessThanOrEqual(width)
+    const abilities = dossier.getByTitle("The abilities of this Pokémon", {
+      exact: true,
+    })
+    await abilities.evaluate((element) =>
+      element.scrollIntoView({ block: "start", behavior: "instant" }),
+    )
+    await expect(
+      abilities.getByText("Abilities", { exact: true }),
+    ).toBeInViewport({ ratio: 1 })
+    await abilities.evaluate((element) =>
+      element.scrollIntoView({ block: "end", behavior: "instant" }),
+    )
+    await expect(abilities.locator("dd")).toBeInViewport({ ratio: 1 })
+  })
+}
 
 test.describe("Pokédex motion feedback", () => {
   test.use({ viewport: DESKTOP_VIEWPORT })
