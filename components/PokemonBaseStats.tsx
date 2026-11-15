@@ -48,7 +48,7 @@ export default function PokemonBaseStats({
   baseStats: PokemonDossier["baseStats"]
 }) {
   return (
-    <div className="grid gap-2">
+    <div className="grid min-w-0 grid-cols-1 gap-2">
       {BASE_STAT_LABELS.map((entry) => {
         const value = baseStats[entry.key]
         const percent = Math.max(
@@ -60,9 +60,9 @@ export default function PokemonBaseStats({
           <dl
             key={entry.key}
             title={entry.title}
-            className="border-outline rounded-md border-2 border-solid p-2 text-sm"
+            className="border-outline min-w-0 rounded-md border-2 border-solid p-2 text-sm wrap-anywhere"
           >
-            <dt className="mb-1 flex items-center justify-between gap-2 font-semibold">
+            <dt className="mb-1 flex flex-wrap items-center justify-between gap-2 font-semibold">
               <span>{entry.label}</span>
               <span>{value}</span>
             </dt>
