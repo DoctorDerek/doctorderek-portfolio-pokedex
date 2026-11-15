@@ -2,7 +2,7 @@
 
 [![Production](https://img.shields.io/website?url=https%3A%2F%2Fportfolio-pokedex.doctorderek.com%2F&up_message=live&down_message=offline&label=production&logo=vercel&logoColor=white)](https://portfolio-pokedex.doctorderek.com/) [![Codecov](https://codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex/graph/badge.svg)](https://app.codecov.io/gh/DoctorDerek/doctorderek-portfolio-pokedex) [![ESLint, Vitest, and XState](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/eslint-vitest-xstate.yml/badge.svg)](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/eslint-vitest-xstate.yml) [![Playwright](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/playwright.yml/badge.svg)](https://github.com/DoctorDerek/doctorderek-portfolio-pokedex/actions/workflows/playwright.yml)
 
-An unofficial, non-commercial parody and GraphQL portfolio demo that turns a 1,025-entry Pokémon snapshot into a suspiciously bureaucratic little field guide. The interface presents a touch-friendly mobile dossier and expands into the project’s compact catalog-and-details layout on larger screens.
+An unofficial, non-commercial parody and GraphQL portfolio demo that turns a 1,025-entry Pokémon snapshot into a suspiciously bureaucratic little field guide.
 
 [Open the live demo](https://portfolio-pokedex.doctorderek.com/)
 
@@ -26,7 +26,7 @@ An unofficial, non-commercial parody and GraphQL portfolio demo that turns a 1,0
 ## Architecture and Performance
 
 - All 1,025 dossier routes are generated from a checked-in snapshot, so route navigation and catalog filtering do not wait on the public API.
-- Progressive catalog expansion reveals local rows without visible pagination. GraphQL research runs only after an explicit submission, caps responses at 100 entries, and reuses identical TanStack Query results for 30 minutes.
+- Progressive catalog expansion reveals local rows without visible pagination. GraphQL search runs only after an explicit submission, caps responses at 100 entries, and reuses cached results for identical searches.
 - The image pipeline accepts one canonical artwork path, emits only 96 px and 192 px WebP candidates at quality 75, and gives each transformation a one-year cache lifetime.
 
 ## Mobile Web Lighthouse Measurements
