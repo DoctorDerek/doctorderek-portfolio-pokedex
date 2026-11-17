@@ -18,7 +18,7 @@ export default function PokedexPageContent({
     <AppContainer>
       <div className="flex w-full max-w-4xl flex-col gap-4 sm:gap-6">
         <PokedexWorkspaceNavigation />
-        <div className="shadow-elevated grid w-full overflow-hidden rounded-lg md:h-128 md:grid-cols-[minmax(18rem,2fr)_3fr]">
+        <div className="shadow-elevated grid w-full grid-cols-1 overflow-hidden rounded-lg md:h-128 md:grid-cols-[minmax(18rem,2fr)_3fr]">
           <PokemonDetailsPanel key={pokemon.id} pokemon={pokemon} />
           <PokemonCatalog currentPokemonId={Number(id)} />
         </div>

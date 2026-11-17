@@ -69,12 +69,12 @@ export default function PokemonDetailsPanel({
     <section
       id={POKEDEX_WORKSPACE_SECTION_IDS.dossier}
       aria-labelledby="selected-pokemon-heading"
-      tabIndex={-1}
-      className="bg-panel order-1 w-full scroll-mt-20 motion-safe:animate-[dossier-reveal_240ms_ease-out] md:order-2"
+      tabIndex={0}
+      className="bg-panel order-1 w-full min-w-0 scroll-mt-20 motion-safe:animate-[dossier-reveal_240ms_ease-out] md:order-2 md:min-h-0 md:overflow-y-auto"
     >
       <h2
         id="selected-pokemon-heading"
-        className="border-b-outline flex justify-between border-b-2 border-solid p-5 text-xl sm:p-6 sm:text-2xl md:p-8"
+        className="border-b-outline flex flex-wrap justify-between gap-2 border-b-2 border-solid p-5 text-xl wrap-anywhere sm:p-6 sm:text-2xl md:p-8"
       >
         <span
           className="tracking-wide"
@@ -89,7 +89,7 @@ export default function PokemonDetailsPanel({
           #{pokemon.number}
         </span>
       </h2>
-      <div className="grid gap-3 p-4 md:h-104 md:content-between">
+      <div className="grid grid-cols-1 gap-3 p-4">
         <div className="grid grid-cols-2 items-stretch gap-3 sm:grid-cols-[1fr_auto_1fr]">
           <PokemonAttribute
             title="category"
@@ -224,7 +224,7 @@ function PokemonAttribute({
   return (
     <dl
       className={classNames(
-        "border-outline flex min-w-0 flex-col rounded-md border-2 border-solid p-2 text-center text-sm sm:text-base",
+        "border-outline flex min-w-0 flex-col rounded-md border-2 border-solid p-2 text-center text-sm wrap-anywhere sm:text-base",
         className,
       )}
       title={ACCESSIBLE_ATTRIBUTE_TITLES[title]}
