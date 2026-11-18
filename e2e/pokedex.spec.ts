@@ -419,39 +419,57 @@ test.describe("desktop Pokédex", () => {
   test.use({ viewport: DESKTOP_VIEWPORT })
 
   for (const width of [1280, 1440]) {
-    test(`reaches the complete dossier by keyboard at ${width}px`, async ({
-      page,
-    }) => {
-      await page.setViewportSize({ width, height: 900 })
-      await page.emulateMedia({ reducedMotion: "reduce" })
-      await page.goto("/pokemon/740")
-      await expect(
-        page.getByRole("button", { name: "Switch to dark theme" }),
-      ).toBeVisible()
-      const dossier = page.getByRole("region", { name: "Crabominable #0740" })
-      await expect(dossier).toHaveCSS("overflow-y", "auto")
-      expect(
-        await dossier.evaluate((element) => element.scrollHeight),
-      ).toBeGreaterThan(
-        await dossier.evaluate((element) => element.clientHeight),
-      )
-      await dossier.focus()
-      await expect(dossier).toBeFocused()
-      await page.keyboard.press("End")
-      await expect(
-        dossier.getByTitle("The abilities of this Pokémon", { exact: true }),
-      ).toBeInViewport({ ratio: 1 })
-      await expect(
-        dossier.getByTitle("The base experience awarded by this Pokémon", {
-          exact: true,
-        }),
-      ).toBeInViewport({ ratio: 1 })
-      await page.keyboard.press("Home")
-      await expect
-        .poll(() => dossier.evaluate((element) => element.scrollTop))
-        .toBe(0)
-      await expect(dossier.getByRole("heading", { level: 2 })).toBeInViewport({
-        ratio: 1,
+    test.describe(`dossier keyboard navigation at ${width}px`, () => {
+      const dossierOn = (page: Page) =>
+        page.getByRole("region", { name: "Crabominable #0740" })
+
+      test.beforeEach(async ({ page }) => {
+        await page.setViewportSize({ width, height: 900 })
+        await page.emulateMedia({ reducedMotion: "reduce" })
+        await page.goto("/pokemon/740")
+        await expect(
+          page.getByRole("button", { name: "Switch to dark theme" }),
+        ).toBeVisible()
+        const dossier = dossierOn(page)
+        await expect(dossier).toHaveCSS("overflow-y", "auto")
+        expect(
+          await dossier.evaluate(
+            (element) => element.scrollHeight - element.clientHeight,
+          ),
+        ).toBeGreaterThan(0)
+        await dossier.focus()
+        await expect(dossier).toBeFocused()
+      })
+
+      test("End reaches the last attributes", async ({ page }) => {
+        const dossier = dossierOn(page)
+        await expect(dossier).toHaveJSProperty("scrollTop", 0)
+        await page.keyboard.press("End")
+        await expect(
+          dossier.getByTitle("The abilities of this Pokémon", { exact: true }),
+        ).toBeInViewport({ ratio: 1 })
+        await expect(
+          dossier.getByTitle("The base experience awarded by this Pokémon", {
+            exact: true,
+          }),
+        ).toBeInViewport({ ratio: 1 })
+      })
+
+      test("Home returns from the bottom to the heading", async ({ page }) => {
+        const dossier = dossierOn(page)
+        await dossier.evaluate((element) =>
+          element.scrollTo({ top: element.scrollHeight, behavior: "instant" }),
+        )
+        await expect(
+          dossier.getByTitle("The base experience awarded by this Pokémon", {
+            exact: true,
+          }),
+        ).toBeInViewport({ ratio: 1 })
+        await page.keyboard.press("Home")
+        await expect(dossier).toHaveJSProperty("scrollTop", 0)
+        await expect(dossier.getByRole("heading", { level: 2 })).toBeInViewport(
+          { ratio: 1 },
+        )
       })
     })
   }
