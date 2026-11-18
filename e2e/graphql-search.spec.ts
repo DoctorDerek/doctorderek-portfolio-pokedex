@@ -1,5 +1,6 @@
-import { expect, test } from "@playwright/test"
+import { expect } from "@playwright/test"
 import { POKEMON_GRAPHQL_ENDPOINT } from "@/data/pokemonSearch"
+import { test } from "@/e2e/fixtures"
 import type { AdvancedPokemonSearchQueryVariables } from "@/graphql/pokemonSearch.generated"
 
 interface GraphqlSearchRequestBody {

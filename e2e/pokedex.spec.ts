@@ -1,4 +1,5 @@
-import { expect, test, type Locator, type Page } from "@playwright/test"
+import { expect, type Locator, type Page } from "@playwright/test"
+import { test } from "@/e2e/fixtures"
 
 const MOBILE_VIEWPORT = { width: 320, height: 800 }
 const DESKTOP_VIEWPORT = { width: 1280, height: 720 }
