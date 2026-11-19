@@ -441,7 +441,9 @@ test.describe("desktop Pokédex", () => {
         await expect(dossier).toBeFocused()
       })
 
-      test("End reaches the last attributes", async ({ page }) => {
+      test("End reaches the last attributes and Home returns in the same dossier", async ({
+        page,
+      }) => {
         const dossier = dossierOn(page)
         await expect(dossier).toHaveJSProperty("scrollTop", 0)
         await page.keyboard.press("End")
@@ -453,6 +455,33 @@ test.describe("desktop Pokédex", () => {
             exact: true,
           }),
         ).toBeInViewport({ ratio: 1 })
+        // A keyboard scroll can reach its final pixel before the browser
+        // finishes the animation. Let it settle before reversing direction.
+        await expect
+          .poll(() =>
+            dossier.evaluate(async (element) => {
+              const atBottom = () =>
+                element.scrollHeight -
+                  element.clientHeight -
+                  element.scrollTop <
+                1
+              for (let frame = 0; frame < 3; frame += 1) {
+                if (!atBottom()) return false
+                await new Promise<void>((resolve) =>
+                  requestAnimationFrame(() => resolve()),
+                )
+              }
+              return atBottom()
+            }),
+          )
+          .toBe(true)
+        await expect(dossier).toBeFocused()
+        await page.keyboard.press("Home")
+        await expect(dossier).toHaveJSProperty("scrollTop", 0)
+        await expect(dossier.getByRole("heading", { level: 2 })).toBeInViewport(
+          { ratio: 1 },
+        )
+        await expect(dossier).toBeFocused()
       })
 
       test("Home returns from the bottom to the heading", async ({ page }) => {
