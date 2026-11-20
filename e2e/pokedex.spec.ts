@@ -6,7 +6,7 @@ const DESKTOP_VIEWPORT = { width: 1280, height: 720 }
 
 async function getThemeArtworkTransitionDuration(themeToggle: Locator) {
   return themeToggle.evaluate((element) => {
-    const sun = element.querySelector(".pokedex-theme-toggle-sun")
+    const sun = element.querySelector("[data-artwork='sun']")
 
     if (!sun) throw new Error("The day-night artwork is unavailable.")
 

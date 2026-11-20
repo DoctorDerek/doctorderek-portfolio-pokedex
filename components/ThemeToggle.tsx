@@ -1,5 +1,4 @@
 import ThemeToggleArtwork from "@/components/ThemeToggleArtwork"
-import classNames from "@/utils/classNames"
 
 export default function ThemeToggle({
   isDarkTheme,
@@ -15,12 +14,7 @@ export default function ThemeToggle({
       aria-label={
         isDarkTheme ? "Switch to light theme" : "Switch to dark theme"
       }
-      className={classNames(
-        "flex min-h-11 min-w-11 cursor-pointer rounded-full border-0 bg-transparent p-0",
-        isDarkTheme
-          ? "pokedex-theme-toggle--dark"
-          : "pokedex-theme-toggle--light",
-      )}
+      className="group/theme flex min-h-11 min-w-11 cursor-pointer rounded-full border-0 bg-transparent p-0"
       onClick={onToggle}
     >
       <ThemeToggleArtwork />
