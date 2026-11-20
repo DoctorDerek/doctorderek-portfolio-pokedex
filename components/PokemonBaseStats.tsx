@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react"
 import type { PokemonDossier } from "@/types/pokemon"
 import classNames from "@/utils/classNames"
 
@@ -74,10 +75,10 @@ export default function PokemonBaseStats({
                 <span
                   role="presentation"
                   className={classNames(
-                    "absolute inset-y-0 left-0 rounded-full",
+                    "absolute inset-y-0 left-0 w-(--stat-width) rounded-full",
                     percent < 25 ? "bg-danger" : "bg-success",
                   )}
-                  style={{ width: `${percent}%` }}
+                  style={{ "--stat-width": `${percent}%` } as CSSProperties}
                 />
               </div>
             </dd>
