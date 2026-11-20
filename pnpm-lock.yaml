@@ -101,6 +101,9 @@ importers:
       chrome-launcher:
         specifier: ^1
         version: 1.2.1
+      doctorderek-cicd:
+        specifier: git+https://github.com/DoctorDerek/DoctorDerekCICD.git#451abd174a5fb67b534e424cb3ffc337705e4200
+        version: https://codeload.github.com/DoctorDerek/DoctorDerekCICD/tar.gz/451abd174a5fb67b534e424cb3ffc337705e4200(@playwright/test@1.61.1)
       eslint:
         specifier: ^9
         version: 9.39.4(jiti@2.7.0)
@@ -2294,6 +2297,13 @@ packages:
 
   devtools-protocol@0.0.1704951:
     resolution: {integrity: sha512-GQhQOs9u/Mvm1zMtJIH872JS4AskuZdUSsPNPk4ChahtWAUqgz6atEtIsMt+nO7MqF1Ic4HxII/k8Cu36JivNg==}
+
+  doctorderek-cicd@https://codeload.github.com/DoctorDerek/DoctorDerekCICD/tar.gz/451abd174a5fb67b534e424cb3ffc337705e4200:
+    resolution: {gitHosted: true, integrity: sha512-1buAN1dUVwqS+r6B87rsQ3mIfzK0VJU2lY1l6YimFLbQ0h7iIdZUjtyNwVGnRvuzZFTfaT8bO4xh6/Gt8s9svQ==, tarball: https://codeload.github.com/DoctorDerek/DoctorDerekCICD/tar.gz/451abd174a5fb67b534e424cb3ffc337705e4200}
+    version: 0.0.0
+    engines: {node: 24.x}
+    peerDependencies:
+      '@playwright/test': ^1
 
   doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
@@ -6735,6 +6745,11 @@ snapshots:
   devtools-protocol@0.0.1663043: {}
 
   devtools-protocol@0.0.1704951: {}
+
+  doctorderek-cicd@https://codeload.github.com/DoctorDerek/DoctorDerekCICD/tar.gz/451abd174a5fb67b534e424cb3ffc337705e4200(@playwright/test@1.61.1):
+    dependencies:
+      '@playwright/test': 1.61.1
+      jiti: 2.7.0
 
   doctrine@2.1.0:
     dependencies:
